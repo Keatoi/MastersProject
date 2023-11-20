@@ -1,0 +1,58 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+/* Generic Projectile Base Class
+ * This class should be treated as a template for all projectiles that are fired from a cannon or a gun.
+ * Rockets, Bombs and Sabot type projectiles will likely get their own base classes due to their differences to
+ * traditional projectiles.
+ *
+ * ======Important Variables======
+ * Explosive Filler - the amount of explosives inside the projectile in Kg
+ * bUsePenOverride & PenOverride - instead of calculating the amount of armour penetration, you can instead manually
+ * enter the amount (in mm)
+ * Mass  - Mass of the projectile in Kg
+ * bSloMoMode = If enabled physically slows down the projectile, and inputs the maximum velocity into the penetration
+ * calculations, If not enabled the velocity used in the calculations is the projectiles current velocity
+ * bCreatesShrapnel - If true and a shrapnel component is attached then after hit several smaller projectiles are dispersed
+ * in random directions
+ */
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "BaseProjectile.generated.h"
+
+UCLASS()
+class MASTERSPROJECT_API ABaseProjectile : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ABaseProjectile();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UStaticMeshComponent* Shell;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float ExplosiveFiller = 0.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float Mass = 0.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	bool bUsePenOverride = false;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float PenetrationOverride = 0.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	bool bHasHit = false;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	bool bSloMoMode = false;
+	
+	
+	
+	
+};
