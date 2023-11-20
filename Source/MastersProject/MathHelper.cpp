@@ -60,8 +60,8 @@ float MathHelper::CalculateAngleofImpact(FVector normal, FVector impactForwardVe
 {
 	//note both inputs must already be normalised
 	float DotP = FVector::DotProduct(normal,impactForwardVector);
-	float Angle = FMath::RadiansToDegrees(acosf(-DotP));
-	return Angle;
+	return FMath::RadiansToDegrees(acosf(-DotP));
+	
 }
 
 
