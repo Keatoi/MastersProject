@@ -17,9 +17,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float KruppsEquation(float V, float P, float D);
 	UFUNCTION(BlueprintCallable)
-	float DeMarresEquation(float Mass, float Thickness, float Diameter, float V,float Deg,float K, float n, float s);
+	float DeMarresEquation(float RP, float V, float RV, float D, float RD, float W, float RW);
 	UFUNCTION(BlueprintCallable)
 	float CalculateRelativeArmourThickness(float ActualThickness,float AttackAngle);
 	UFUNCTION(BlueprintCallable)
 	float CalculateAngleofImpact(FVector normal, FVector impactForwardVector);
+	UFUNCTION(BlueprintCallable)
+	float CalculateAngleofImpact(FVector normal, FVector impactForwardVector, float Calibre,float thickness);
+	UFUNCTION(BlueprintCallable)
+	float LineOfSightThickness(float L, float a);
 };
