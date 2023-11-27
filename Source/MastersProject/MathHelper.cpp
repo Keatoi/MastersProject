@@ -84,7 +84,7 @@ float MathHelper::CalculateAngleofImpact(FVector normal, FVector impactForwardVe
 	//overloaded equation for determining if the sloped armour will be effective.
 	if(Calibre >(thickness * 7.0f))// if the calibre is bigger tham the armour thickness * 7.0f then it is too big to be effected by ricochet and sloped armour
 	{
-		return 90.0f;
+		return 0.0f;
 	}
 	else
 	{
