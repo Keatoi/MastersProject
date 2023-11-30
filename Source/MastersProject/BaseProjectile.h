@@ -44,13 +44,56 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float Mass = 0.0f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	bool bUsePenOverride = false;
+	FVector InitialLocation;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	FVector Velocity;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float Force;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	//how much force should be lost over time since firing
+	float ForceLoss;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float DeltaT;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	// I am using uint8 instead of bool as it saves a tiny bit of memory and functions exactly the same
+	uint8 bForceLookForward:1;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	//Amount to offset the z axis by assuming bApplyGravity is true
+	float Gravity;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	//Set to True if gravity need be applied
+	uint8 bApplyGravity:1;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float PenetrationForceLoss;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float BaseDamage;
+	
+	/*==================================DEBUG VARS================================================*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	uint8 bUsePenOverride:1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	float PenetrationOverride = 0.0f;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	bool bHasHit = false;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	bool bSloMoMode = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	bool bSloMoMode;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	//mark hits with a sphere
+	bool bMarkHits;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	// draw a line of travel 
+	bool bMarkPath;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	//prints a string for penetration calcs
+	bool bPenDebug;
+private:
+	float InitialForce;
+protected:
+	void SetInitialPosition();
+	void SetInitialVelocity();
+	void Move();
+	void ApplyGravity();
+	void ForceLossFunc();
+	void ForceLookForward();
+
 	
 	
 	

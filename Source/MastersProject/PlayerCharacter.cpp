@@ -102,8 +102,8 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 	if (Hit.bBlockingHit && IsValid(Hit.GetActor()))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Trace hit actor: %s"), *Hit.GetActor()->GetName());
-		float angle = MathHelper::CalculateAngleofImpact(Hit.Normal,fwdVector);
-		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), angle);
+		float Angle = MathHelper::CalculateAngleofImpact(Hit.Normal,fwdVector);
+		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 		
 	}
 	else {

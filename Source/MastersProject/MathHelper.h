@@ -21,7 +21,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float CalculateRelativeArmourThickness(float ActualThickness,float AttackAngle);
 	UFUNCTION(BlueprintCallable)
-	float CalculateAngleofImpact(FVector normal, FVector impactForwardVector);
+	static float CalculateAngleofImpact(FVector normal, FVector impactForwardVector);
 	UFUNCTION(BlueprintCallable)
 	float CalculateAngleofImpact(FVector normal, FVector impactForwardVector, float Calibre,float thickness);
 	UFUNCTION(BlueprintCallable)
