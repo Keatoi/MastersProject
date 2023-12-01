@@ -84,12 +84,14 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	//prints a string for penetration calcs
 	bool bPenDebug;
+	UFUNCTION()
+	void Move();
 private:
 	float InitialForce;
 protected:
 	void SetInitialPosition();
 	void SetInitialVelocity();
-	void Move();
+	
 	void ApplyGravity();
 	void ForceLossFunc();
 	void ForceLookForward();

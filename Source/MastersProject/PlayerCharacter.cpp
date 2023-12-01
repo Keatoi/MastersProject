@@ -88,7 +88,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 {
-	FHitResult Hit;
+	/*FHitResult Hit;
 	FVector TraceStart = GetActorLocation();
 	FVector fwdVector = GetActorForwardVector();
 	fwdVector.Normalize();
@@ -108,8 +108,36 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 	}
 	else {
 		UE_LOG(LogTemp, Log, TEXT("No Actors were hit"));
+	}*/
+	if(!ProjectileClass)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("No Projectile Class Loaded!!!"));
 	}
-	
+	else
+	{
+		//Get Camera POV, since this actor has no mesh
+		FVector CamLocation;
+		FRotator CamRotator;
+		GetActorEyesViewPoint(CamLocation,CamRotator);
+		FVector ProjectileSpawnLocation = CamLocation + FTransform(CamRotator).TransformVector(ProjectileSpawnOffset);
+		FRotator SpawnRotator = CamRotator;
+		//Spawn Parameters
+		UWorld* World = GetWorld();
+		if(World)
+		{
+			FActorSpawnParameters SParams;
+			SParams.Owner = this;
+			SParams.Instigator = GetInstigator();
+			ABaseProjectile* MainProj = World->SpawnActor<ABaseProjectile>(ProjectileClass,ProjectileSpawnLocation,SpawnRotator,SParams);
+			if(MainProj)
+			{
+				FVector FireDirection = SpawnRotator.Vector();
+				MainProj->Move();
+			}
+		}
+		
+		
+	}
  
 	
 	

@@ -1,7 +1,7 @@
 // Masters Project - Owen S Atkinson
 //This character is simply for testing the projectiles
 #pragma once
-
+#include "BaseProjectile.h"
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
@@ -36,6 +36,14 @@ public:
 	 UInputAction* InputFirePrimary;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputLook;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ABaseProjectile> ProjectileClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* PrimaryWeaponLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* SecondaryWeaponLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	FVector ProjectileSpawnOffset;
 	UFUNCTION()
 	void Move(const FInputActionValue &Value);
 	UFUNCTION()
