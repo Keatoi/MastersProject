@@ -3,6 +3,7 @@
 #include "BaseProjectile.h"
 #include "DrawDebugHelpers.h"
 #include "MathHelper.h"
+
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -12,6 +13,10 @@ ABaseProjectile::ABaseProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	SetRootComponent(Shell);
+	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
+	Sphere->InitSphereRadius(15.f);
+	Sphere->SetupAttachment(Shell);
+	
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +26,7 @@ void ABaseProjectile::BeginPlay()
 	InitialForce = Force;
 	SetInitialPosition();
 	SetInitialVelocity();
+	
 }
 
 // Called every frame
@@ -51,6 +57,9 @@ void ABaseProjectile::Move()
 {
 	//Offset actor each tick, BSweep = true to check for blocking collisions
 	AddActorWorldOffset(Velocity * Force,true);
+	
+	CheckCollision();
+	
 }
 
 void ABaseProjectile::ApplyGravity()
@@ -66,6 +75,9 @@ void ABaseProjectile::ForceLossFunc()
 {
 	
 	Force -= ForceLoss * DeltaT;
+	if(Force < 0.0f){Destroy();}
+	Velocity = Velocity * Force;
+	
 }
 
 void ABaseProjectile::ForceLookForward()
@@ -75,6 +87,35 @@ void ABaseProjectile::ForceLookForward()
 		SetActorRotation(UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()));
 	}
 	
+}
+
+void ABaseProjectile::CheckCollision()
+{
+	FHitResult HitResult;
+	FVector StartLocation = GetActorLocation();
+	FVector EndLocation  = StartLocation + Velocity * DeltaT;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult,StartLocation,EndLocation,TraceChannelProperty,QueryParams);
+	if (HitResult.bBlockingHit && IsValid(HitResult.GetActor()))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *HitResult.GetActor()->GetName());
+		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
+		float Angle = MathHelper::CalculateAngleofImpact(HitResult.Normal,NormalFWD);
+		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
+		FVector SpeedVector = GetVelocity();
+		Speed = SpeedVector.Length() * 0.01f;//Get length of Speed Vector and multiply by  0.01 to get speed of object in m/s;
+		UE_LOG(LogTemp, Log, TEXT("Speed: %f"), Speed);
+		
+	}
+	
+}
+
+
+
+void ABaseProjectile::NullVelocity()
+{
+	Velocity = FVector(0.f,0.f,0.f);
 }
 
 

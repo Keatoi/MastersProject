@@ -16,7 +16,7 @@
  */
 
 #pragma once
-
+#include "Components/SphereComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BaseProjectile.generated.h"
@@ -39,16 +39,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UStaticMeshComponent* Shell;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	USphereComponent* Sphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	float ExplosiveFiller = 0.0f;
+	float ExplosiveFiller = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	float Mass = 0.0f;
+	float Mass = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	FVector InitialLocation;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	FVector Velocity;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	float Force;
+	float Force = 0.2f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	//how much force should be lost over time since firing
 	float ForceLoss;
@@ -67,12 +69,21 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float PenetrationForceLoss;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float BaseDamage;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float PenetrationAmount;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float Calibre;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float Speed;
+	
+	UPROPERTY(EditAnywhere, Category="Collision")
+	TEnumAsByte<ECollisionChannel> TraceChannelProperty = ECC_Vehicle;
 	
 	/*==================================DEBUG VARS================================================*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	uint8 bUsePenOverride:1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
-	float PenetrationOverride = 0.0f;
+	float PenetrationOverride = 0.f;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	bool bSloMoMode;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
@@ -95,6 +106,8 @@ protected:
 	void ApplyGravity();
 	void ForceLossFunc();
 	void ForceLookForward();
+	void CheckCollision();
+	void NullVelocity();
 
 	
 	

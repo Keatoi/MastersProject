@@ -26,7 +26,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class UCameraComponent* TestPlayerCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;//Input Mapping Context
@@ -38,10 +38,7 @@ public:
 	 UInputAction* InputLook;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* PrimaryWeaponLocation;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* SecondaryWeaponLocation;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	FVector ProjectileSpawnOffset;
 	UFUNCTION()

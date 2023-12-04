@@ -17,7 +17,8 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	TestPlayerCamera = CreateDefaultSubobject<UCameraComponent>("Cam");
-	TestPlayerCamera->SetupAttachment(RootComponent);
+	TestPlayerCamera->SetupAttachment(GetMesh());
+	
 }
 
 // Called when the game starts or when spawned
@@ -47,7 +48,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInputComponent* Ei = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 		Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&APlayerCharacter::Move);
 		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::Look);
-		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::PrimaryFire);
+		Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&APlayerCharacter::PrimaryFire);
 		
 	
 	
@@ -57,7 +58,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	//movement code
-	UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
 	const FVector2d MoveValue = Value.Get<FVector2d>();
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
 	if(MoveValue.Y != 0.0f)//Forward/Backwards
@@ -68,7 +69,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	if(MoveValue.X != 0.0f)
 	{
 		const FVector Direction = MoveRot.RotateVector(FVector::RightVector);
-		AddMovementInput(Direction, MoveValue.X);
+		//AddMovementInput(Direction, MoveValue.X);
+		AddControllerYawInput(MoveValue.X);
 	}
 }
 
@@ -77,7 +79,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	const FVector2D LookValue = Value.Get<FVector2D>();
 	if (LookValue.X != 0.f)
 	{
-		AddControllerYawInput(LookValue.X);
+		
 	}
  
 	if (LookValue.Y != 0.f)
@@ -88,55 +90,37 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 {
-	/*FHitResult Hit;
-	FVector TraceStart = GetActorLocation();
-	FVector fwdVector = GetActorForwardVector();
-	fwdVector.Normalize();
-	//Use a range dependant on projectile later, just use 10,000 cm for now
-	FVector TraceEnd = GetActorLocation() + GetActorForwardVector() * 10000.0f;
-	FCollisionQueryParams QueryParams;
-	//add player to ignored actors to prevent self-harm
-	QueryParams.AddIgnoredActor(this);
-	//Use LineTrace Single for now, may need to change later if projectiles are too fast
-	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, TraceChannelProperty, QueryParams);
-	if (Hit.bBlockingHit && IsValid(Hit.GetActor()))
+	if(const bool FireValue = Value.Get<bool>())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Trace hit actor: %s"), *Hit.GetActor()->GetName());
-		float Angle = MathHelper::CalculateAngleofImpact(Hit.Normal,fwdVector);
-		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
-		
-	}
-	else {
-		UE_LOG(LogTemp, Log, TEXT("No Actors were hit"));
-	}*/
-	if(!ProjectileClass)
-	{
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("No Projectile Class Loaded!!!"));
+		if(!ProjectileClass)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
+		}
+		else
+		{
+			
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
+			//Spawn Parameters
+			if(UWorld* World = GetWorld())
+			{
+				FActorSpawnParameters SParams;
+				SParams.Owner = this;
+				SParams.Instigator = GetInstigator();
+				//Spawn Projectile At location of the Main Barrels Socket
+				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
+				FRotator SpawnRotation = GetActorRotation();
+				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
+				if(Projectile)
+				{
+					Projectile->Force = 200.f;
+					
+				}
+			}
+		}
 	}
 	else
 	{
-		//Get Camera POV, since this actor has no mesh
-		FVector CamLocation;
-		FRotator CamRotator;
-		GetActorEyesViewPoint(CamLocation,CamRotator);
-		FVector ProjectileSpawnLocation = CamLocation + FTransform(CamRotator).TransformVector(ProjectileSpawnOffset);
-		FRotator SpawnRotator = CamRotator;
-		//Spawn Parameters
-		UWorld* World = GetWorld();
-		if(World)
-		{
-			FActorSpawnParameters SParams;
-			SParams.Owner = this;
-			SParams.Instigator = GetInstigator();
-			ABaseProjectile* MainProj = World->SpawnActor<ABaseProjectile>(ProjectileClass,ProjectileSpawnLocation,SpawnRotator,SParams);
-			if(MainProj)
-			{
-				FVector FireDirection = SpawnRotator.Vector();
-				MainProj->Move();
-			}
-		}
-		
-		
+		return;
 	}
  
 	

@@ -12,18 +12,25 @@ class MASTERSPROJECT_API MathHelper
 public:
 	MathHelper();
 	~MathHelper();
+	/*================Penetration Functions============================================*/
 	UFUNCTION(BlueprintCallable)
-	float KruppsEquation(float V, float P, float D, float K);
+	static float KruppsEquation(float V, float P, float D, float K);
 	UFUNCTION(BlueprintCallable)
-	float KruppsEquation(float V, float P, float D);
+	static float KruppsEquation(float V, float P, float D);
 	UFUNCTION(BlueprintCallable)
-	float DeMarresEquation(float RP, float V, float RV, float D, float RD, float W, float RW);
+	static float DeMarresEquation(float RP, float V, float RV, float D, float RD, float W, float RW);
 	UFUNCTION(BlueprintCallable)
-	float CalculateRelativeArmourThickness(float ActualThickness,float AttackAngle);
+	static float CalculateRelativeArmourThickness(float ActualThickness,float AttackAngle);
 	UFUNCTION(BlueprintCallable)
 	static float CalculateAngleofImpact(FVector normal, FVector impactForwardVector);
 	UFUNCTION(BlueprintCallable)
-	float CalculateAngleofImpact(FVector normal, FVector impactForwardVector, float Calibre,float thickness);
+	static auto CalculateAngleofImpact(FVector normal, FVector impactForwardVector, float Calibre,
+	                                   float thickness) -> float;
 	UFUNCTION(BlueprintCallable)
-	float LineOfSightThickness(float L, float a);
+	static float LineOfSightThickness(float L, float a);
+	/*================Generic Math Functions============================================*/
+	/**
+	 * 
+	 */
+	
 };
