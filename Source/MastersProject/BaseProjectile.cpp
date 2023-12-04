@@ -103,9 +103,7 @@ void ABaseProjectile::CheckCollision()
 		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 		float Angle = MathHelper::CalculateAngleofImpact(HitResult.Normal,NormalFWD);
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
-		FVector SpeedVector = GetVelocity();
-		Speed = SpeedVector.Length() * 0.01f;//Get length of Speed Vector and multiply by  0.01 to get speed of object in m/s;
-		UE_LOG(LogTemp, Log, TEXT("Speed: %f"), Speed);
+		
 		
 	}
 	
