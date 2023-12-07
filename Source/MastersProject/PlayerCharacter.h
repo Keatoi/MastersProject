@@ -6,7 +6,13 @@
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
-
+UENUM(BlueprintType)
+enum ECameraType
+{
+	EDEFAULTCAM UMETA(DisplayName = "Default Camera"),
+	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
+	EGUNNERCAM UMETA(DisplayName = "Gunner Camera")
+};
 UCLASS()
 class MASTERSPROJECT_API APlayerCharacter : public ACharacter
 {
@@ -28,6 +34,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class UCameraComponent* TestPlayerCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	 UCameraComponent* ZoomCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UCameraComponent* GunnerCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -36,19 +46,57 @@ public:
 	 UInputAction* InputFirePrimary;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputLook;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputCameraSwap;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputDefaultCam;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputZoomCam;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputGunnerCam;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<ECameraType> CamEnum;
+	 //=============Turret Controls=========
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float TurretTraverse;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float TurretTraverseSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float MGTraverse;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float MGTraverseSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float TurretElevation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float TurretElevationSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float MGElevation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float MGElevationSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ABaseProjectile> MachineGunProjectileClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	FVector ProjectileSpawnOffset;
+	//=================Input Functions=============
 	UFUNCTION()
 	void Move(const FInputActionValue &Value);
 	UFUNCTION()
 	void Look(const FInputActionValue &Value);
 	UFUNCTION()
 	void PrimaryFire(const FInputActionValue &Value);
-	//collision
-	UPROPERTY(EditAnywhere, Category="Collision")
-	TEnumAsByte<ECollisionChannel> TraceChannelProperty = ECC_Pawn;
+	UFUNCTION()
+	void SecondaryFire(const FInputActionValue &Value);
+	UFUNCTION()
+	void CameraSwap(const FInputActionValue &Value);
+	UFUNCTION()
+	void DefaultView(const FInputActionValue &Value);
+	UFUNCTION()
+	void CommanderView(const FInputActionValue &Value);
+	UFUNCTION()
+	void GunnerView(const FInputActionValue &Value);
+	
 	
 };

@@ -16,8 +16,15 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//=====Cam Setup======
 	TestPlayerCamera = CreateDefaultSubobject<UCameraComponent>("Cam");
 	TestPlayerCamera->SetupAttachment(GetMesh());
+	ZoomCamera = CreateDefaultSubobject<UCameraComponent>("Commander Cam");
+	ZoomCamera->SetupAttachment(GetMesh());
+	ZoomCamera->SetActive(false);
+	GunnerCamera = CreateDefaultSubobject<UCameraComponent>("Gunner Cam");
+	GunnerCamera->SetupAttachment(GetMesh());
+	GunnerCamera->SetActive(false);
 	
 }
 
@@ -68,8 +75,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 	if(MoveValue.X != 0.0f)
 	{
-		const FVector Direction = MoveRot.RotateVector(FVector::RightVector);
-		//AddMovementInput(Direction, MoveValue.X);
+		
 		AddControllerYawInput(MoveValue.X);
 	}
 }
@@ -79,12 +85,13 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	const FVector2D LookValue = Value.Get<FVector2D>();
 	if (LookValue.X != 0.f)
 	{
-		
+		TurretTraverse = TurretTraverseSpeed * LookValue.X;
 	}
  
 	if (LookValue.Y != 0.f)
 	{
-		AddControllerPitchInput(LookValue.Y);
+		TurretElevation = TurretElevationSpeed * LookValue.X;
+		TurretElevation = FMath::Clamp(TurretElevation,-10.f,10.f);
 	}
 }
 
@@ -112,7 +119,7 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
 				if(Projectile)
 				{
-					Projectile->Force = 200.f;
+					
 					
 				}
 			}
@@ -127,5 +134,89 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 	
 	
 	
+}
+
+void APlayerCharacter::SecondaryFire(const FInputActionValue& Value)
+{
+	if(const bool FireValue = Value.Get<bool>())
+	{
+		if(!MachineGunProjectileClass)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
+		}
+		else
+		{
+			
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
+			//Spawn Parameters
+			if(UWorld* World = GetWorld())
+			{
+				FActorSpawnParameters SParams;
+				SParams.Owner = this;
+				SParams.Instigator = GetInstigator();
+				//Spawn Projectile At location of the Main Barrels Socket
+				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
+				FRotator SpawnRotation = GetActorRotation();
+				ABaseProjectile* MachineGunProjectile= World->SpawnActor<ABaseProjectile>(MachineGunProjectileClass,SpawnLocation,SpawnRotation,SParams);
+				
+			}
+		}
+	}
+}
+
+void APlayerCharacter::CameraSwap(const FInputActionValue& Value)
+{
+	
+}
+
+void APlayerCharacter::DefaultView(const FInputActionValue& Value)
+{
+	if(CamEnum == ECameraType::EDEFAULTCAM)
+	{
+		
+	}
+	else
+	{
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(true);
+		CamEnum = ECameraType::EDEFAULTCAM;
+	}
+}
+
+void APlayerCharacter::CommanderView(const FInputActionValue& Value)
+{
+	if(CamEnum == ECameraType::ECOMMANDERCAM)
+	{
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(true);
+		CamEnum = ECameraType::EDEFAULTCAM;
+	}
+	else
+	{
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(false);
+		ZoomCamera->SetActive(true);
+		CamEnum = ECameraType::ECOMMANDERCAM;
+	}
+}
+
+void APlayerCharacter::GunnerView(const FInputActionValue& Value)
+{
+	if(CamEnum == ECameraType::EGUNNERCAM)
+	{
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(true);
+		CamEnum = ECameraType::EDEFAULTCAM;
+	}
+	else
+	{
+		TestPlayerCamera->SetActive(false);
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(true);
+		CamEnum = ECameraType::EGUNNERCAM;
+	}
 }
 
