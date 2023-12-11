@@ -56,7 +56,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&APlayerCharacter::Move);
 		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::Look);
 		Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&APlayerCharacter::PrimaryFire);
-		
+	    Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&APlayerCharacter::CameraSwap);
+		Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&APlayerCharacter::DefaultView);
+		Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&APlayerCharacter::CommanderView);
+		Ei->BindAction(InputGunnerCam,ETriggerEvent::Started,this,&APlayerCharacter::GunnerView);
 	
 	
 
@@ -83,14 +86,15 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookValue = Value.Get<FVector2D>();
+	UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
 	if (LookValue.X != 0.f)
 	{
-		TurretTraverse = TurretTraverseSpeed * LookValue.X;
+		TurretTraverse += LookValue.X * 10.f;
 	}
  
 	if (LookValue.Y != 0.f)
 	{
-		TurretElevation = TurretElevationSpeed * LookValue.X;
+		TurretElevation += LookValue.Y * 10.f;
 		TurretElevation = FMath::Clamp(TurretElevation,-10.f,10.f);
 	}
 }
@@ -115,13 +119,9 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 				SParams.Instigator = GetInstigator();
 				//Spawn Projectile At location of the Main Barrels Socket
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
-				FRotator SpawnRotation = GetActorRotation();
+				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
-				if(Projectile)
-				{
-					
-					
-				}
+				
 			}
 		}
 	}
@@ -155,8 +155,8 @@ void APlayerCharacter::SecondaryFire(const FInputActionValue& Value)
 				SParams.Owner = this;
 				SParams.Instigator = GetInstigator();
 				//Spawn Projectile At location of the Main Barrels Socket
-				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
-				FRotator SpawnRotation = GetActorRotation();
+				FVector SpawnLocation = GetMesh()->GetSocketLocation("MachineGunSocket");
+				FRotator SpawnRotation = GetMesh()->GetSocketRotation("MachineGunSocket");
 				ABaseProjectile* MachineGunProjectile= World->SpawnActor<ABaseProjectile>(MachineGunProjectileClass,SpawnLocation,SpawnRotation,SParams);
 				
 			}

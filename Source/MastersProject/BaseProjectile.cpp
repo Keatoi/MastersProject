@@ -15,7 +15,7 @@ ABaseProjectile::ABaseProjectile()
 	SetRootComponent(Shell);
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->InitSphereRadius(15.f);
-	Sphere->SetupAttachment(Shell);
+	Sphere->SetupAttachment(RootComponent);
 	
 }
 
