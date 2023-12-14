@@ -40,6 +40,8 @@ public:
 UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UStaticMeshComponent* Shell;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	USceneComponent* rootComp;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USphereComponent* Sphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float ExplosiveFiller = 0.f;

@@ -11,8 +11,10 @@ ABaseProjectile::ABaseProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	rootComp = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(rootComp);
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
-	SetRootComponent(Shell);
+	Shell->SetupAttachment(rootComp);
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->InitSphereRadius(15.f);
 	Sphere->SetupAttachment(RootComponent);
