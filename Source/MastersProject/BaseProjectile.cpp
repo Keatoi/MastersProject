@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BaseProjectile.h"
+
+#include "ArmourActor.h"
+#include "ArmourInterface.h"
 #include "DrawDebugHelpers.h"
 #include "MathHelper.h"
 
@@ -105,6 +108,25 @@ void ABaseProjectile::CheckCollision()
 		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 		float Angle = MathHelper::CalculateAngleofImpact(HitResult.Normal,NormalFWD);
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
+		switch(HitResult.PhysMaterial->SurfaceType)
+		{
+			case(EPhysicalSurface::SurfaceType1): break;
+			
+		default: break;
+		}
+		if(HitResult.GetActor()->IsA<AArmourActor>())
+		{
+			UE_LOG(LogTemp,Log,TEXT("Actor is an armour panel"));
+			AArmourActor* HitArmour = Cast<AArmourActor>(HitResult.GetActor());
+			float Platethickness  = HitArmour->Thickness;//Assumes homogenous steel, will make adjustments for composite later
+			float EffectiveThickness = MathHelper::CalculateRelativeArmourThickness(Platethickness,Angle);// Get actual amount of armour we need the round to pen
+			if (EffectiveThickness < PenetrationAmount)
+			{
+				//projectile penetrates
+				bPenetrated = true;
+			}
+			
+		}
 		
 		
 	}
@@ -116,6 +138,33 @@ void ABaseProjectile::CheckCollision()
 void ABaseProjectile::NullVelocity()
 {
 	Velocity = FVector(0.f,0.f,0.f);
+}
+
+void ABaseProjectile::ProxCheck()
+{
+	//checks if a actor with a certain surface type is in radius. Requires a Minimum Range Fuse and radius and a projectile with explosive filler
+	if(DistanceTravelled() > MinRange)
+	{
+		// if the minimum range is surpassed check for collisions
+		TArray<FHitResult> Hits;
+		//start and end
+		FVector StartSweep = GetActorLocation();
+		FVector EndSweep = GetActorLocation();
+		FCollisionShape CollisionSphere = FCollisionShape::MakeSphere(DetectRadii);
+		if(bPenDebug){DrawDebugSphere(GetWorld(),GetActorLocation(),DetectRadii,50,FColor::Red,true);}
+		bool isHit = GetWorld()->SweepMultiByChannel(Hits,StartSweep,EndSweep,FQuat::Identity,ECC_Vehicle,CollisionSphere);
+		if(isHit)
+		{
+			//Explosion code stuff here
+		}
+			
+	}
+}
+
+float ABaseProjectile::DistanceTravelled()
+{
+	FVector DistanceVector =  GetActorLocation() - InitialLocation;
+	return DistanceVector.Length();
 }
 
 

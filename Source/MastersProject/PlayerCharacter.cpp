@@ -23,8 +23,9 @@ APlayerCharacter::APlayerCharacter()
 	ZoomCamera->SetupAttachment(GetMesh());
 	ZoomCamera->SetActive(false);
 	GunnerCamera = CreateDefaultSubobject<UCameraComponent>("Gunner Cam");
-	GunnerCamera->SetupAttachment(GetMesh());
+	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetActive(false);
+	
 	
 }
 

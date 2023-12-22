@@ -77,7 +77,16 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float Calibre;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float Speed;
-	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float MinRange;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	float DetectRadii;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	uint8 bPenetrated:1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	FVector DecalSize;//Decal for successful pen
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	FVector DecalSizeNonPen;//Decal for Unsuccessful pen
 	UPROPERTY(EditAnywhere, Category="Collision")
 	TEnumAsByte<ECollisionChannel> TraceChannelProperty = ECC_Vehicle;
 	
@@ -86,6 +95,8 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	uint8 bUsePenOverride:1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	float PenetrationOverride = 0.f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	float WallDamage = 100.f;//How much damage is done to destructible scenery
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	bool bSloMoMode;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
@@ -110,6 +121,8 @@ protected:
 	void ForceLookForward();
 	void CheckCollision();
 	void NullVelocity();
+	void ProxCheck();
+	float DistanceTravelled();
 
 	
 	
