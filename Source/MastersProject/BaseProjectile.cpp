@@ -6,7 +6,8 @@
 #include "ArmourInterface.h"
 #include "DrawDebugHelpers.h"
 #include "MathHelper.h"
-
+#include "Engine/DecalActor.h"
+#include "Components/DecalComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -108,12 +109,8 @@ void ABaseProjectile::CheckCollision()
 		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 		float Angle = MathHelper::CalculateAngleofImpact(HitResult.Normal,NormalFWD);
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
-		switch(HitResult.PhysMaterial->SurfaceType)
-		{
-			case(EPhysicalSurface::SurfaceType1): break;
-			
-		default: break;
-		}
+		ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location,FRotator());
+		
 		if(HitResult.GetActor()->IsA<AArmourActor>())
 		{
 			UE_LOG(LogTemp,Log,TEXT("Actor is an armour panel"));
@@ -127,6 +124,38 @@ void ABaseProjectile::CheckCollision()
 			}
 			
 		}
+		switch(HitResult.PhysMaterial->SurfaceType)
+		{
+		case(EPhysicalSurface::SurfaceType1):
+			{
+				//If metal and penetration successful
+					if(bPenetrated == true)
+					{
+						Decal->SetDecalMaterial(PenDecal);
+					}
+					else
+					{
+						Decal->SetDecalMaterial(NonPenDecal);
+					}
+						
+				break;
+			}
+		case(EPhysicalSurface::SurfaceType2):
+			{
+				//Walls
+				
+				Decal->SetDecalMaterial(GenericDecal);	
+				break;
+			}
+
+
+				
+			
+		default:;break;
+		}
+		Decal->SetLifeSpan(10.0f);
+		Decal->GetDecal()->DecalSize = DecalSize;
+		
 		
 		
 	}

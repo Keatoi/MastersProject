@@ -79,6 +79,15 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float Speed;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float MinRange;
+	/*====Decals====*/
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UMaterialInterface* PenDecal;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UMaterialInterface* NonPenDecal;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UMaterialInterface* GenericDecal;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UMaterialInterface* PreviousDecal;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float DetectRadii;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
