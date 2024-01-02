@@ -9,6 +9,7 @@
 #include "Engine/DecalActor.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ABaseProjectile::ABaseProjectile()
@@ -62,7 +63,7 @@ void ABaseProjectile::SetInitialVelocity()
 void ABaseProjectile::Move()
 {
 	//Offset actor each tick, BSweep = true to check for blocking collisions
-	AddActorWorldOffset(Velocity * Force,true);
+	AddActorWorldOffset(Velocity * Force,false);
 	
 	CheckCollision();
 	
@@ -100,14 +101,24 @@ void ABaseProjectile::CheckCollision()
 	FHitResult HitResult;
 	FVector StartLocation = GetActorLocation();
 	FVector EndLocation  = StartLocation + Velocity * DeltaT;
+	const FVector DirectionUnitVector = UKismetMathLibrary::GetDirectionUnitVector(StartLocation,EndLocation);
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
+	
 	GetWorld()->LineTraceSingleByChannel(HitResult,StartLocation,EndLocation,TraceChannelProperty,QueryParams);
+	if(bMarkPath){UKismetSystemLibrary::DrawDebugLine(GetWorld(),StartLocation,HitResult.Location,FColor::Red,5.f);}
 	if (HitResult.bBlockingHit && IsValid(HitResult.GetActor()))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *HitResult.GetActor()->GetName());
 		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 		float Angle = MathHelper::CalculateAngleofImpact(HitResult.Normal,NormalFWD);
+		
+		if (Angle >= 60.f)
+		{
+			FHitResult RicochetHit;
+			StartLocation = HitResult.Location;
+			EndLocation = (1000.f * FMath::GetReflectionVector(DirectionUnitVector,HitResult.Normal)) + StartLocation;
+		}
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 		ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location,FRotator());
 		
@@ -124,7 +135,7 @@ void ABaseProjectile::CheckCollision()
 			}
 			
 		}
-		switch(HitResult.PhysMaterial->SurfaceType)
+		/*switch(HitResult.PhysMaterial->SurfaceType)
 		{
 		case(EPhysicalSurface::SurfaceType1):
 			{
@@ -152,7 +163,7 @@ void ABaseProjectile::CheckCollision()
 				
 			
 		default:;break;
-		}
+		}*/
 		Decal->SetLifeSpan(10.0f);
 		Decal->GetDecal()->DecalSize = DecalSize;
 		
