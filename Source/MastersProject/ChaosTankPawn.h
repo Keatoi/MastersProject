@@ -1,26 +1,28 @@
 // Masters Project - Owen S Atkinson
-//This character is simply for testing the projectiles
+
 #pragma once
 #include "BaseProjectile.h"
-#include "CoreMinimal.h"
 #include "InputActionValue.h"
-#include "GameFramework/Character.h"
-#include "PlayerCharacter.generated.h"
+#include "CoreMinimal.h"
+#include "WheeledVehiclePawn.h"
+#include "ChaosTankPawn.generated.h"
 UENUM(BlueprintType)
-enum ECamType
+enum ECameraType
 {
 	EDEFAULTCAM UMETA(DisplayName = "Default Camera"),
 	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
 	EGUNNERCAM UMETA(DisplayName = "Gunner Camera")
 };
+/**
+ * 
+ */
 UCLASS()
-class MASTERSPROJECT_API APlayerCharacter : public ACharacter
+class MASTERSPROJECT_API AChaosTankPawn : public AWheeledVehiclePawn
 {
 	GENERATED_BODY()
-
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	AChaosTankPawn();
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,7 +31,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -55,7 +56,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputGunnerCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	TEnumAsByte<ECamType> CamEnum;
+	TEnumAsByte<ECameraType> CamEnum;
 	 //=============Turret Controls=========
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float TurretTraverse;
@@ -97,6 +98,4 @@ public:
 	void CommanderView(const FInputActionValue &Value);
 	UFUNCTION()
 	void GunnerView(const FInputActionValue &Value);
-	
-	
 };
