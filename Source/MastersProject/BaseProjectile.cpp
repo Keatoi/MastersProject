@@ -118,6 +118,10 @@ void ABaseProjectile::CheckCollision()
 			FHitResult RicochetHit;
 			StartLocation = HitResult.Location;
 			EndLocation = (1000.f * FMath::GetReflectionVector(DirectionUnitVector,HitResult.Normal)) + StartLocation;
+			if(bMarkPath){UKismetSystemLibrary::DrawDebugLine(GetWorld(),StartLocation,RicochetHit.Location,FColor::Green,5.f);}
+			FRotator NewRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(),EndLocation);
+			FRotator InterpedRot = FMath::RInterpTo(Shell->GetComponentRotation(),NewRot,DeltaT,1.f);
+			SetActorRotation(InterpedRot);
 		}
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 		ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location,FRotator());
@@ -135,35 +139,7 @@ void ABaseProjectile::CheckCollision()
 			}
 			
 		}
-		/*switch(HitResult.PhysMaterial->SurfaceType)
-		{
-		case(EPhysicalSurface::SurfaceType1):
-			{
-				//If metal and penetration successful
-					if(bPenetrated == true)
-					{
-						Decal->SetDecalMaterial(PenDecal);
-					}
-					else
-					{
-						Decal->SetDecalMaterial(NonPenDecal);
-					}
-						
-				break;
-			}
-		case(EPhysicalSurface::SurfaceType2):
-			{
-				//Walls
-				
-				Decal->SetDecalMaterial(GenericDecal);	
-				break;
-			}
-
-
-				
-			
-		default:;break;
-		}*/
+		
 		Decal->SetLifeSpan(10.0f);
 		Decal->GetDecal()->DecalSize = DecalSize;
 		

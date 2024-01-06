@@ -7,6 +7,7 @@
 #include "InputAction.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "MathHelper.h"
 #include "Camera/CameraComponent.h"
 #include "Math/Vector.h"
@@ -17,12 +18,25 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//=====Cam Setup======
+	//Instantiating Class Components
+	/*SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+	SpringArmComp->SetupAttachment(GetMesh());*/
+	
+	
+	
 	TestPlayerCamera = CreateDefaultSubobject<UCameraComponent>("Cam");
 	TestPlayerCamera->SetupAttachment(GetMesh());
+	/*TestPlayerCamera->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+	SpringArmComp->bUsePawnControlRotation = false;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->TargetArmLength = 1000.0f;*/
 	ZoomCamera = CreateDefaultSubobject<UCameraComponent>("Commander Cam");
-	ZoomCamera->SetupAttachment(GetMesh());
+	ZoomCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
+	ZoomCamera->SetupAttachment(GetMesh(),"CommanderCamSocket");
+	
 	ZoomCamera->SetActive(false);
 	GunnerCamera = CreateDefaultSubobject<UCameraComponent>("Gunner Cam");
+	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetActive(false);
 	
@@ -50,11 +64,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	//Get Player Controller and Enhanced Input Subsystem
 	
 	APlayerController* PC = Cast<APlayerController>(GetController());
-	auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
+	const auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
 	eiSubsystem->AddMappingContext(InputMapping, 0);
 		UE_LOG(LogTemp,Warning,TEXT("EIC loaded"));
 		UEnhancedInputComponent* Ei = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 		Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&APlayerCharacter::Move);
+	    //Ei->BindAction(InputMove,ETriggerEvent::Ongoing,this,&APlayerCharacter::UpdateSpeed);
 		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::Look);
 		Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&APlayerCharacter::PrimaryFire);
 	    Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&APlayerCharacter::CameraSwap);
@@ -80,14 +95,22 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	if(MoveValue.X != 0.0f)
 	{
 		
-		AddControllerYawInput(MoveValue.X);
+		AddControllerYawInput(-MoveValue.X  * TankRotationSpeed);
 	}
+}
+
+void APlayerCharacter::UpdateSpeed(const FInputActionValue& Value)
+{
+	const FVector2d MoveValue = Value.Get<FVector2d>();
+	float val = MoveValue.Y;
+	TankSpeed += val;
+	TankSpeed = std::clamp(TankSpeed,-5.f,35.f);
 }
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookValue = Value.Get<FVector2D>();
-	UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
 	if (LookValue.X != 0.f)
 	{
 		TurretTraverse += LookValue.X * 10.f;
@@ -106,7 +129,7 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 	{
 		if(!ProjectileClass)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!(Primary)"));
 		}
 		else
 		{
@@ -143,7 +166,7 @@ void APlayerCharacter::SecondaryFire(const FInputActionValue& Value)
 	{
 		if(!MachineGunProjectileClass)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!(Secondary)"));
 		}
 		else
 		{

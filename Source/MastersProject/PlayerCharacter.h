@@ -38,6 +38,8 @@ public:
 	 UCameraComponent* ZoomCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* GunnerCamera;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+	class USpringArmComponent* SpringArmComp;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -73,6 +75,10 @@ public:
 	float MGElevation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float MGElevationSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float TankRotationSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	float TankSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
@@ -83,6 +89,8 @@ public:
 	//=================Input Functions=============
 	UFUNCTION()
 	void Move(const FInputActionValue &Value);
+	UFUNCTION()
+	void UpdateSpeed(const FInputActionValue &Value);
 	UFUNCTION()
 	void Look(const FInputActionValue &Value);
 	UFUNCTION()

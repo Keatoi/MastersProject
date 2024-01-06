@@ -22,6 +22,7 @@ AChaosTankPawn::AChaosTankPawn()
 	ZoomCamera->SetActive(false);
 	GunnerCamera = CreateDefaultSubobject<UCameraComponent>("Gunner Cam");
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
+	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetActive(false);
 }
 
@@ -41,7 +42,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//Get Player Controller and Enhanced Input Subsystem
 	
 	APlayerController* PC = Cast<APlayerController>(GetController());
-	auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
+	const auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
 	eiSubsystem->AddMappingContext(InputMapping, 0);
 	UE_LOG(LogTemp,Warning,TEXT("EIC loaded"));
 	UEnhancedInputComponent* Ei = Cast<UEnhancedInputComponent>(PlayerInputComponent);
@@ -57,14 +58,18 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AChaosTankPawn::Move(const FInputActionValue& Value)
 {
 	//movement code
-	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
+	UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
 	const FVector2d MoveValue = Value.Get<FVector2d>();
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
-	if(MoveValue.Y != 0.0f)//Forward/Backwards
+	if(MoveValue.Y != 0.0f)
+	{
+		if(MoveValue.Y > 0.0f)
 		{
-		const FVector Direction = MoveRot.RotateVector(FVector::ForwardVector);
-		AddMovementInput(Direction,MoveValue.Y);
+			
 		}
+	}
+	
+	
 	if(MoveValue.X != 0.0f)
 	{
 		
