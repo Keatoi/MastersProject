@@ -11,6 +11,8 @@
 #include "MathHelper.h"
 #include "Camera/CameraComponent.h"
 #include "Math/Vector.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -19,17 +21,12 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	//=====Cam Setup======
 	//Instantiating Class Components
-	/*SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-	SpringArmComp->SetupAttachment(GetMesh());*/
+	
 	
 	
 	
 	TestPlayerCamera = CreateDefaultSubobject<UCameraComponent>("Cam");
 	TestPlayerCamera->SetupAttachment(GetMesh());
-	/*TestPlayerCamera->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
-	SpringArmComp->bUsePawnControlRotation = false;
-	SpringArmComp->bEnableCameraLag = true;
-	SpringArmComp->TargetArmLength = 1000.0f;*/
 	ZoomCamera = CreateDefaultSubobject<UCameraComponent>("Commander Cam");
 	ZoomCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	ZoomCamera->SetupAttachment(GetMesh(),"CommanderCamSocket");
@@ -39,6 +36,8 @@ APlayerCharacter::APlayerCharacter()
 	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetActive(false);
+
+	//Niagara spawn scene comps
 	
 	
 }
@@ -54,7 +53,8 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	EngineCheck();
+	TurretRingCheck();
 }
 
 // Called to bind functionality to input
@@ -69,10 +69,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UE_LOG(LogTemp,Warning,TEXT("EIC loaded"));
 		UEnhancedInputComponent* Ei = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 		Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&APlayerCharacter::Move);
-	    //Ei->BindAction(InputMove,ETriggerEvent::Ongoing,this,&APlayerCharacter::UpdateSpeed);
+	    
 		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::Look);
 		Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&APlayerCharacter::PrimaryFire);
-	    Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&APlayerCharacter::CameraSwap);
+	   
 		Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&APlayerCharacter::DefaultView);
 		Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&APlayerCharacter::CommanderView);
 		Ei->BindAction(InputGunnerCam,ETriggerEvent::Started,this,&APlayerCharacter::GunnerView);
@@ -84,11 +84,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	//movement code
-	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
+	
 	const FVector2d MoveValue = Value.Get<FVector2d>();
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
 	if(MoveValue.Y != 0.0f)//Forward/Backwards
 	{
+		UE_LOG(LogTemp,Warning,TEXT("SASD"));
 		const FVector Direction = MoveRot.RotateVector(FVector::ForwardVector);
 		AddMovementInput(Direction,MoveValue.Y);
 	}
@@ -99,13 +100,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void APlayerCharacter::UpdateSpeed(const FInputActionValue& Value)
-{
-	const FVector2d MoveValue = Value.Get<FVector2d>();
-	float val = MoveValue.Y;
-	TankSpeed += val;
-	TankSpeed = std::clamp(TankSpeed,-5.f,35.f);
-}
+
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
@@ -127,6 +122,11 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 {
 	if(const bool FireValue = Value.Get<bool>())
 	{
+		if(FireEffectMuzzle)
+		{
+			UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle,MuzzleFlashComponent,NAME_None,FVector(0.f),FRotator(0.f),EAttachLocation::Type::KeepRelativeOffset, true);
+			//NiagaraComp->SetNiagaraVariableFloat(FString("MuzzleCoefStrength"),MuzzleCoefStrength);
+		}
 		if(!ProjectileClass)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!(Primary)"));
@@ -188,10 +188,7 @@ void APlayerCharacter::SecondaryFire(const FInputActionValue& Value)
 	}
 }
 
-void APlayerCharacter::CameraSwap(const FInputActionValue& Value)
-{
-	
-}
+
 
 void APlayerCharacter::DefaultView(const FInputActionValue& Value)
 {
@@ -242,5 +239,15 @@ void APlayerCharacter::GunnerView(const FInputActionValue& Value)
 		GunnerCamera->SetActive(true);
 		CamEnum = ECamType::EGUNNERCAM;
 	}
+}
+
+void APlayerCharacter::EngineCheck()
+{
+	
+}
+
+void APlayerCharacter::TurretRingCheck()
+{
+	
 }
 

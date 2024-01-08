@@ -4,6 +4,7 @@
 #include "BaseProjectile.h"
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 UENUM(BlueprintType)
@@ -58,6 +59,9 @@ public:
 	UInputAction* InputGunnerCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TEnumAsByte<ECamType> CamEnum;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	class UBoxComponent* EngineBlockCollider;
+	
 	 //=============Turret Controls=========
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float TurretTraverse;
@@ -86,11 +90,30 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	FVector ProjectileSpawnOffset;
+	//==============Niagara==================
+	/** Muzzle flash effect, leave empty if none is desired */
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	class UNiagaraSystem* FireEffectMuzzle;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	USceneComponent* MuzzleFlashComponent; //Where the MuzzleFlash will be spawned
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	float MuzzleCoefStrength;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	class UNiagaraSystem* EngineEffectExhaust;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	USceneComponent* EngineExhaustComponent; 
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	float ExhaustCoefStrength;
+	//=================Damage===========
+	UPROPERTY(EditAnywhere, Category = "Tank Components")
+	uint8 bEngineDestroyed:1;
+	UPROPERTY(EditAnywhere, Category = "Tank Components")
+	uint8 bTurretRingDestroyed:1;
 	//=================Input Functions=============
+private:
 	UFUNCTION()
 	void Move(const FInputActionValue &Value);
-	UFUNCTION()
-	void UpdateSpeed(const FInputActionValue &Value);
+	
 	UFUNCTION()
 	void Look(const FInputActionValue &Value);
 	UFUNCTION()
@@ -98,13 +121,15 @@ public:
 	UFUNCTION()
 	void SecondaryFire(const FInputActionValue &Value);
 	UFUNCTION()
-	void CameraSwap(const FInputActionValue &Value);
-	UFUNCTION()
 	void DefaultView(const FInputActionValue &Value);
 	UFUNCTION()
 	void CommanderView(const FInputActionValue &Value);
 	UFUNCTION()
 	void GunnerView(const FInputActionValue &Value);
+	UFUNCTION()
+	void EngineCheck();
+	UFUNCTION()
+	void TurretRingCheck();
 	
 	
 };
