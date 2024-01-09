@@ -37,6 +37,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	class UProjectileMovementComponent* ProjectileMovementComponent;
 UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UStaticMeshComponent* Shell;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
@@ -118,7 +120,7 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	//prints a string for penetration calcs
 	bool bPenDebug;
 	UFUNCTION()
-	void Move();
+	void Move(FVector MoveDirection);
 private:
 	float InitialForce;
 protected:

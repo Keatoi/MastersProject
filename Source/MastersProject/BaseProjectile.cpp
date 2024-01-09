@@ -10,19 +10,30 @@
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 ABaseProjectile::ABaseProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	rootComp = CreateDefaultSubobject<USceneComponent>("Root");
-	SetRootComponent(rootComp);
-	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
-	Shell->SetupAttachment(rootComp);
+	if(!RootComponent){RootComponent = CreateDefaultSubobject<USceneComponent>("Root");}
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->InitSphereRadius(15.f);
-	Sphere->SetupAttachment(RootComponent);
+	RootComponent = Sphere;
+	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
+	Shell->SetupAttachment(Sphere);
+	if(!ProjectileMovementComponent)
+	{
+		
+		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+		ProjectileMovementComponent->SetUpdatedComponent(Sphere);
+		ProjectileMovementComponent->InitialSpeed = 30.0f;
+		ProjectileMovementComponent->MaxSpeed = 3000.0f;
+		ProjectileMovementComponent->bRotationFollowsVelocity = true;
+		ProjectileMovementComponent->bShouldBounce = false;
+		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	}
 	
 }
 
@@ -41,9 +52,7 @@ void ABaseProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	DeltaT = DeltaTime;
-	Move();
-	ApplyGravity();
-	ForceLossFunc();
+	
 	ForceLookForward();
 
 }
@@ -60,10 +69,10 @@ void ABaseProjectile::SetInitialVelocity()
 	Velocity = GetActorForwardVector() * Force;
 }
 
-void ABaseProjectile::Move()
+void ABaseProjectile::Move(FVector MoveDirection)
 {
 	//Offset actor each tick, BSweep = true to check for blocking collisions
-	AddActorWorldOffset(Velocity * Force,false);
+	ProjectileMovementComponent->Velocity = GetActorForwardVector() * ProjectileMovementComponent->InitialSpeed;
 	
 	CheckCollision();
 	

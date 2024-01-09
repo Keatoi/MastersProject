@@ -89,7 +89,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
 	if(MoveValue.Y != 0.0f)//Forward/Backwards
 	{
-		UE_LOG(LogTemp,Warning,TEXT("SASD"));
+		
 		const FVector Direction = MoveRot.RotateVector(FVector::ForwardVector);
 		AddMovementInput(Direction,MoveValue.Y);
 	}
@@ -145,6 +145,7 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
+				if(Projectile){FVector LaunchDirection = SpawnRotation.Vector(); Projectile->Move(LaunchDirection);}
 				
 			}
 		}
