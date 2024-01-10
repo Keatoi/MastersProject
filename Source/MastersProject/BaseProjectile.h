@@ -33,6 +33,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame
@@ -82,18 +83,18 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float MinRange;
 	/*====Decals====*/
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Decals")
 	UMaterialInterface* PenDecal;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Decals")
 	UMaterialInterface* NonPenDecal;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Decals")
 	UMaterialInterface* GenericDecal;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
-	UMaterialInterface* PreviousDecal;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Decals")
 	float DetectRadii;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Decals")
 	uint8 bPenetrated:1;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Decals")
+	float DecalLifespan;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decals", meta = (ExposeOnSpawn = true))
 	FVector DecalSize;//Decal for successful pen
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decals", meta = (ExposeOnSpawn = true))
@@ -123,8 +124,11 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bPenDebug;
 	UFUNCTION()
 	void Launch(FVector MoveDirection);
+	UFUNCTION()    
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 private:
 	float InitialForce;
+	uint8 bDoOnce:1;
 protected:
 	void SetInitialPosition();
 	void SetInitialVelocity();

@@ -11,6 +11,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseProjectile::ABaseProjectile()
@@ -23,6 +24,7 @@ ABaseProjectile::ABaseProjectile()
 	RootComponent = Sphere;
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	Shell->SetupAttachment(Sphere);
+	
 	if(!ProjectileMovementComponent)
 	{
 		
@@ -36,7 +38,7 @@ ABaseProjectile::ABaseProjectile()
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
-	
+	bDoOnce = true;
 }
 
 // Called when the game starts or when spawned
@@ -49,12 +51,18 @@ void ABaseProjectile::BeginPlay()
 	
 }
 
+void ABaseProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	Sphere->OnComponentHit.AddDynamic(this,&ABaseProjectile::OnHit);
+}
+
 // Called every frame
 void ABaseProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	DeltaT = DeltaTime;
-	CheckCollision();
+	//CheckCollision();
 	ForceLookForward();
 
 }
@@ -76,6 +84,18 @@ void ABaseProjectile::Launch(FVector MoveDirection)
 	//Offset actor each tick, BSweep = true to check for blocking collisions
 	ProjectileMovementComponent->Velocity = GetActorForwardVector() * ProjectileMovementComponent->InitialSpeed;
 	
+}
+
+void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	if(bDoOnce)
+	{
+		FRotator HitRotationFromX = UKismetMathLibrary::MakeRotFromX(Hit.Normal);
+		UGameplayStatics::SpawnDecalAttached(GenericDecal,DecalSize,OtherComp,NAME_None,Hit.Location,HitRotationFromX,EAttachLocation::KeepWorldPosition,DecalLifespan);
+		bDoOnce = false;
+	}
+	Destroy();
 }
 
 void ABaseProjectile::ApplyGravity()
@@ -146,16 +166,28 @@ void ABaseProjectile::CheckCollision()
 			AArmourActor* HitArmour = Cast<AArmourActor>(HitResult.GetActor());
 			float Platethickness  = HitArmour->Thickness;//Assumes homogenous steel, will make adjustments for composite later
 			float EffectiveThickness = MathHelper::CalculateRelativeArmourThickness(Platethickness,Angle);// Get actual amount of armour we need the round to pen
+			UE_LOG(LogTemp, Log, TEXT("Thickness: %f"), EffectiveThickness);
 			if (EffectiveThickness < PenetrationAmount)
 			{
 				//projectile penetrates
 				bPenetrated = true;
+				UE_LOG(LogTemp,Warning,TEXT("Penetrated"));
+			}
+			else
+			{
+				bPenetrated = false;
+				UE_LOG(LogTemp,Warning,TEXT("NOT Penetrated"));
 			}
 			
 		}
+		/*if (bDoOnce)
+        {
+            FRotator RandomDecalRotation=HitResult.ImpactNormal.Rotation();  
+            		RandomDecalRotation.Roll = FMath::FRandRange(-180.0f, 180.0f); 
+            		UGameplayStatics::SpawnDecalAttached(GenericDecal,DecalSize,HitResult.GetComponent(),NAME_None,HitResult.ImpactPoint,RandomDecalRotation,EAttachLocation::KeepWorldPosition,DecalLifespan);
+            bDoOnce = false;
+        }*/
 		
-		Decal->SetLifeSpan(10.0f);
-		Decal->GetDecal()->DecalSize = DecalSize;
 		
 		
 		
