@@ -111,6 +111,7 @@ void ABaseProjectile::CheckCollision()
 	FVector StartLocation = Sphere->GetComponentLocation();
 	FVector ForwardVector = GetActorForwardVector();
 	FVector EndLocation  = (ForwardVector * 500.f) + StartLocation;
+	const FVector DirectionUnitVector = UKismetMathLibrary::GetDirectionUnitVector(StartLocation,EndLocation);
 	
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
@@ -127,7 +128,18 @@ void ABaseProjectile::CheckCollision()
 		
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 		ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location,FRotator());
-		
+		if(Angle > RicochetAngle)
+		{
+			StartLocation = HitResult.Location;
+			EndLocation = (1000.f * FMath::GetReflectionVector(DirectionUnitVector,HitResult.Normal)) + StartLocation;
+			if(bMarkPath) {
+				FHitResult RicochetHit;
+				UKismetSystemLibrary::DrawDebugLine(GetWorld(),StartLocation,RicochetHit.Location,FColor::Green,5.f);
+			}
+			FRotator NewRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(),EndLocation);
+			FRotator InterpedRot = FMath::RInterpTo(Sphere->GetComponentRotation(),NewRot,DeltaT,1.f);
+			SetActorRotation(InterpedRot);
+		}
 		if(HitResult.GetActor()->IsA<AArmourActor>())
 		{
 			UE_LOG(LogTemp,Log,TEXT("Actor is an armour panel"));

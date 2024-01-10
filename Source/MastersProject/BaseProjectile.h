@@ -94,12 +94,14 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float DetectRadii;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	uint8 bPenetrated:1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decals", meta = (ExposeOnSpawn = true))
 	FVector DecalSize;//Decal for successful pen
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decals", meta = (ExposeOnSpawn = true))
 	FVector DecalSizeNonPen;//Decal for Unsuccessful pen
 	UPROPERTY(EditAnywhere, Category="Collision")
 	TEnumAsByte<ECollisionChannel> TraceChannelProperty = ECC_Vehicle;
+	UPROPERTY(EditAnywhere, Category="Collision")
+	float RicochetAngle;
 	
 	/*==================================DEBUG VARS================================================*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
