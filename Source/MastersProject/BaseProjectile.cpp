@@ -28,7 +28,9 @@ ABaseProjectile::ABaseProjectile()
 		
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(Sphere);
-		ProjectileMovementComponent->InitialSpeed = 30.0f;
+		if(bSloMoMode){ProjectileMovementComponent->InitialSpeed = 30.0f;}
+		else{ProjectileMovementComponent->InitialSpeed = 300.0f;}
+		
 		ProjectileMovementComponent->MaxSpeed = 3000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = false;
@@ -52,7 +54,7 @@ void ABaseProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	DeltaT = DeltaTime;
-	
+	CheckCollision();
 	ForceLookForward();
 
 }
@@ -69,12 +71,10 @@ void ABaseProjectile::SetInitialVelocity()
 	Velocity = GetActorForwardVector() * Force;
 }
 
-void ABaseProjectile::Move(FVector MoveDirection)
+void ABaseProjectile::Launch(FVector MoveDirection)
 {
 	//Offset actor each tick, BSweep = true to check for blocking collisions
 	ProjectileMovementComponent->Velocity = GetActorForwardVector() * ProjectileMovementComponent->InitialSpeed;
-	
-	CheckCollision();
 	
 }
 
@@ -108,9 +108,10 @@ void ABaseProjectile::ForceLookForward()
 void ABaseProjectile::CheckCollision()
 {
 	FHitResult HitResult;
-	FVector StartLocation = GetActorLocation();
-	FVector EndLocation  = StartLocation + Velocity * DeltaT;
-	const FVector DirectionUnitVector = UKismetMathLibrary::GetDirectionUnitVector(StartLocation,EndLocation);
+	FVector StartLocation = Sphere->GetComponentLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector EndLocation  = (ForwardVector * 500.f) + StartLocation;
+	
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
 	
@@ -120,18 +121,10 @@ void ABaseProjectile::CheckCollision()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *HitResult.GetActor()->GetName());
 		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
-		float Angle = MathHelper::CalculateAngleofImpact(HitResult.Normal,NormalFWD);
+		float DotP = FVector::DotProduct(HitResult.Normal,NormalFWD);
+		float Angle = FMath::RadiansToDegrees(acosf(-DotP));
 		
-		if (Angle >= 60.f)
-		{
-			FHitResult RicochetHit;
-			StartLocation = HitResult.Location;
-			EndLocation = (1000.f * FMath::GetReflectionVector(DirectionUnitVector,HitResult.Normal)) + StartLocation;
-			if(bMarkPath){UKismetSystemLibrary::DrawDebugLine(GetWorld(),StartLocation,RicochetHit.Location,FColor::Green,5.f);}
-			FRotator NewRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(),EndLocation);
-			FRotator InterpedRot = FMath::RInterpTo(Shell->GetComponentRotation(),NewRot,DeltaT,1.f);
-			SetActorRotation(InterpedRot);
-		}
+		
 		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 		ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location,FRotator());
 		

@@ -96,7 +96,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	if(MoveValue.X != 0.0f)
 	{
 		
-		AddControllerYawInput(-MoveValue.X  * TankRotationSpeed);
+		AddControllerYawInput(MoveValue.X  * TankRotationSpeed);
 	}
 }
 
@@ -145,7 +145,7 @@ void APlayerCharacter::PrimaryFire(const FInputActionValue& Value)
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
-				if(Projectile){FVector LaunchDirection = SpawnRotation.Vector(); Projectile->Move(LaunchDirection);}
+				if(Projectile){FVector LaunchDirection = SpawnRotation.Vector(); Projectile->Launch(LaunchDirection);}
 				
 			}
 		}

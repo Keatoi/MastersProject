@@ -120,7 +120,7 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	//prints a string for penetration calcs
 	bool bPenDebug;
 	UFUNCTION()
-	void Move(FVector MoveDirection);
+	void Launch(FVector MoveDirection);
 private:
 	float InitialForce;
 protected:
