@@ -14,6 +14,13 @@ enum ECamType
 	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
 	EGUNNERCAM UMETA(DisplayName = "Gunner Camera")
 };
+UENUM(BlueprintType)
+enum EEngineStatus
+{
+	EIDLE UMETA(DisplayName = "idle"),
+	ERUNNING UMETA(DisplayName = "Running"),
+	EDESTROYED UMETA(DisplayName = "Destroyed")
+};
 UCLASS()
 class MASTERSPROJECT_API APlayerCharacter : public ACharacter
 {
@@ -105,8 +112,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float ExhaustCoefStrength;
 	//=================Damage===========
-	UPROPERTY(EditAnywhere, Category = "Tank Components")
-	uint8 bEngineDestroyed:1;
+	UPROPERTY(EditAnywhere, Category = "Engine")
+	TEnumAsByte<EEngineStatus> EngineEnum;
 	UPROPERTY(EditAnywhere, Category = "Tank Components")
 	uint8 bTurretRingDestroyed:1;
 	//=================Input Functions=============

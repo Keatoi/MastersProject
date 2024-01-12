@@ -21,9 +21,11 @@ ABaseProjectile::ABaseProjectile()
 	if(!RootComponent){RootComponent = CreateDefaultSubobject<USceneComponent>("Root");}
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->InitSphereRadius(15.f);
+	
 	RootComponent = Sphere;
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	Shell->SetupAttachment(Sphere);
+	
 	
 	if(!ProjectileMovementComponent)
 	{
@@ -48,13 +50,14 @@ void ABaseProjectile::BeginPlay()
 	InitialForce = Force;
 	SetInitialPosition();
 	SetInitialVelocity();
+	Sphere->OnComponentHit.AddDynamic(this,&ABaseProjectile::OnHit);
 	
 }
 
 void ABaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	Sphere->OnComponentHit.AddDynamic(this,&ABaseProjectile::OnHit);
+	
 }
 
 // Called every frame
@@ -89,12 +92,19 @@ void ABaseProjectile::Launch(FVector MoveDirection)
 void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *Hit.GetActor()->GetName());
 	if(bDoOnce)
 	{
 		FRotator HitRotationFromX = UKismetMathLibrary::MakeRotFromX(Hit.Normal);
 		UGameplayStatics::SpawnDecalAttached(GenericDecal,DecalSize,OtherComp,NAME_None,Hit.Location,HitRotationFromX,EAttachLocation::KeepWorldPosition,DecalLifespan);
 		bDoOnce = false;
 	}
+	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
+	float Angle = MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
+		
+	bDoOnce = true;	
+	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
+	
 	Destroy();
 }
 
@@ -127,7 +137,7 @@ void ABaseProjectile::ForceLookForward()
 
 void ABaseProjectile::CheckCollision()
 {
-	FHitResult HitResult;
+	/*FHitResult HitResult;
 	FVector StartLocation = Sphere->GetComponentLocation();
 	FVector ForwardVector = GetActorForwardVector();
 	FVector EndLocation  = (ForwardVector * 500.f) + StartLocation;
@@ -140,14 +150,7 @@ void ABaseProjectile::CheckCollision()
 	if(bMarkPath){UKismetSystemLibrary::DrawDebugLine(GetWorld(),StartLocation,HitResult.Location,FColor::Red,5.f);}
 	if (HitResult.bBlockingHit && IsValid(HitResult.GetActor()))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *HitResult.GetActor()->GetName());
-		FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
-		float DotP = FVector::DotProduct(HitResult.Normal,NormalFWD);
-		float Angle = FMath::RadiansToDegrees(acosf(-DotP));
 		
-		
-		UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
-		ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location,FRotator());
 		if(Angle > RicochetAngle)
 		{
 			StartLocation = HitResult.Location;
@@ -179,7 +182,7 @@ void ABaseProjectile::CheckCollision()
 				UE_LOG(LogTemp,Warning,TEXT("NOT Penetrated"));
 			}
 			
-		}
+		}*/
 		/*if (bDoOnce)
         {
             FRotator RandomDecalRotation=HitResult.ImpactNormal.Rotation();  
@@ -191,7 +194,7 @@ void ABaseProjectile::CheckCollision()
 		
 		
 		
-	}
+	
 	
 }
 

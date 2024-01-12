@@ -13,6 +13,7 @@
 #include "Math/Vector.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -36,7 +37,7 @@ APlayerCharacter::APlayerCharacter()
 	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetActive(false);
-
+	EngineEnum = EEngineStatus::EIDLE;
 	//Niagara spawn scene comps
 	
 	
@@ -87,16 +88,20 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	
 	const FVector2d MoveValue = Value.Get<FVector2d>();
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
-	if(MoveValue.Y != 0.0f)//Forward/Backwards
+	if(MoveValue.Y != 0.0f && EngineEnum != EEngineStatus::EDESTROYED)//Forward/Backwards
 	{
-		
+		EngineEnum = EEngineStatus::ERUNNING;
 		const FVector Direction = MoveRot.RotateVector(FVector::ForwardVector);
 		AddMovementInput(Direction,MoveValue.Y);
 	}
-	if(MoveValue.X != 0.0f)
+	if(MoveValue.X != 0.0f && EngineEnum != EEngineStatus::EDESTROYED)
 	{
-		
+		EngineEnum = EEngineStatus::ERUNNING;
 		AddControllerYawInput(MoveValue.X  * TankRotationSpeed);
+	}
+	else
+	{
+		EngineEnum = EEngineStatus::EIDLE;
 	}
 }
 
@@ -244,7 +249,20 @@ void APlayerCharacter::GunnerView(const FInputActionValue& Value)
 
 void APlayerCharacter::EngineCheck()
 {
-	
+	if(EngineEnum == EEngineStatus::EDESTROYED)
+	{
+		//SetMaxSpeed to 0.f Spawn effects (not yet made)
+		GetCharacterMovement()->MaxWalkSpeed = 0.f;
+	}
+	else if(EngineEnum == EEngineStatus::EIDLE)
+	{
+		//Play idle sound, emit exhaust
+	}
+	else
+	{
+		//play running sound, emit exhaust, set max speed
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	}
 }
 
 void APlayerCharacter::TurretRingCheck()
