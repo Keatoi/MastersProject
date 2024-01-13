@@ -18,7 +18,8 @@ AChaosTankPawn::AChaosTankPawn()
 	TestPlayerCamera = CreateDefaultSubobject<UCameraComponent>("Cam");
 	TestPlayerCamera->SetupAttachment(GetMesh());
 	ZoomCamera = CreateDefaultSubobject<UCameraComponent>("Commander Cam");
-	ZoomCamera->SetupAttachment(GetMesh());
+	ZoomCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
+	ZoomCamera->SetupAttachment(GetMesh(),"CommanderCamSocket");
 	ZoomCamera->SetActive(false);
 	GunnerCamera = CreateDefaultSubobject<UCameraComponent>("Gunner Cam");
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
