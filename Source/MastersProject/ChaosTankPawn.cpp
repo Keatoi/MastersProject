@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "MathHelper.h"
 #include "Camera/CameraComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 #include "Math/Vector.h"
 
 AChaosTankPawn::AChaosTankPawn()
@@ -18,8 +19,8 @@ AChaosTankPawn::AChaosTankPawn()
 	TestPlayerCamera = CreateDefaultSubobject<UCameraComponent>("Cam");
 	TestPlayerCamera->SetupAttachment(GetMesh());
 	ZoomCamera = CreateDefaultSubobject<UCameraComponent>("Commander Cam");
-	ZoomCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	ZoomCamera->SetupAttachment(GetMesh(),"CommanderCamSocket");
+	ZoomCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	ZoomCamera->SetActive(false);
 	GunnerCamera = CreateDefaultSubobject<UCameraComponent>("Gunner Cam");
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
@@ -47,7 +48,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	eiSubsystem->AddMappingContext(InputMapping, 0);
 	UE_LOG(LogTemp,Warning,TEXT("EIC loaded"));
 	UEnhancedInputComponent* Ei = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&AChaosTankPawn::Move);
+	//Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&AChaosTankPawn::Move);
 	Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&AChaosTankPawn::Look);
 	Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&AChaosTankPawn::PrimaryFire);
 	Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&AChaosTankPawn::CameraSwap);
@@ -64,17 +65,17 @@ void AChaosTankPawn::Move(const FInputActionValue& Value)
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
 	if(MoveValue.Y != 0.0f)
 	{
-		if(MoveValue.Y > 0.0f)
-		{
-			
-		}
+		
+			GetVehicleMovement()->SetThrottleInput(MoveValue.Y);
+			GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
+		
 	}
 	
 	
 	if(MoveValue.X != 0.0f)
 	{
 		
-		AddControllerYawInput(MoveValue.X);
+		
 	}
 }
 
