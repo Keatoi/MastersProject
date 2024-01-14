@@ -10,7 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "Math/Vector.h"
-
+/*Tank Values Based on T-72 Soviet MBT, may need tweaking if changing Skeleton Mesh to better reflect their real life counter part*/
 AChaosTankPawn::AChaosTankPawn()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -91,7 +91,7 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 	if (LookValue.Y != 0.f)
 	{
 		TurretElevation += LookValue.Y * 10.f;
-		TurretElevation = FMath::Clamp(TurretElevation,-10.f,10.f);
+		TurretElevation = FMath::Clamp(TurretElevation,-6.f,14.f);
 	}
 }
 
