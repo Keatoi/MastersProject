@@ -39,10 +39,14 @@ public:
 	 UCameraComponent* ZoomCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* GunnerCamera;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	class USpringArmComponent* SpringArmComp;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InputMove;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InputTurn;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputFirePrimary;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -74,16 +78,37 @@ public:
 	float MGElevation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float MGElevationSpeed;
+	//==================Projectiles================
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> MachineGunProjectileClass;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
-	FVector ProjectileSpawnOffset;
+	//=================Misc. Variables===========
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	float TurnLimit = 30.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	float TurnRate;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	uint8 bStopTurn:1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	uint8 bFreeLookEnabled:1;
 	//=================Input Functions=============
 	UFUNCTION()
-	void Move(const FInputActionValue &Value);
+	void MoveTriggered(const FInputActionValue &Value);
+	UFUNCTION()
+	void MoveCompleted(const FInputActionValue &Value);
+	UFUNCTION()
+	void MoveStarted(const FInputActionValue &Value);
+	UFUNCTION()
+	void MoveCancelled(const FInputActionValue &Value);
+	UFUNCTION()
+	void TurnTriggered(const FInputActionValue &Value);
+	UFUNCTION()
+	void TurnStarted(const FInputActionValue &Value);
+	UFUNCTION()
+	void TurnCancelled(const FInputActionValue &Value);
+	UFUNCTION()
+	void TurnCompleted(const FInputActionValue &Value);
 	UFUNCTION()
 	void Look(const FInputActionValue &Value);
 	UFUNCTION()
