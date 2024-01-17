@@ -105,7 +105,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	bDoOnce = true;	
 	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 	
-	Destroy();
+	//Destroy();
 }
 
 void ABaseProjectile::ApplyGravity()
