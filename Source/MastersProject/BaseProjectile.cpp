@@ -101,9 +101,16 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 	float Angle = MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
-		
-	bDoOnce = true;	
 	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
+	if(Hit.PhysMaterial->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Is Valid"));
+		float HitArmourThickness = Hit.PhysMaterial->Density;
+		UE_LOG(LogTemp, Log, TEXT("Armour: %f"), HitArmourThickness);
+	}
+	bDoOnce = true;	
+	
+	
 	
 	//Destroy();
 }
