@@ -1,6 +1,7 @@
 // Masters Project - Owen S Atkinson
 
 #pragma once
+#include "DamageInterface.h"
 #include "BaseProjectile.h"
 #include "InputActionValue.h"
 #include "CoreMinimal.h"
@@ -17,7 +18,7 @@ enum ECameraType
  * 
  */
 UCLASS()
-class MASTERSPROJECT_API AChaosTankPawn : public AWheeledVehiclePawn
+class MASTERSPROJECT_API AChaosTankPawn : public AWheeledVehiclePawn, public IDamageInterface
 {
 	GENERATED_BODY()
 public:
@@ -158,4 +159,5 @@ public:
 	void GunnerView(const FInputActionValue &Value);
 	UFUNCTION()
 	void OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	
 };

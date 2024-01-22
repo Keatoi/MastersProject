@@ -323,3 +323,5 @@ void AChaosTankPawn::OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector No
 {
 	UE_LOG(LogTemp,Warning,TEXT("Tank Hit"));
 }
+
+

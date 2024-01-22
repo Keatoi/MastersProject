@@ -129,12 +129,17 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		TArray<FHitResult> InteriorHit;
 		FVector StartLocation = Sphere->GetComponentLocation();
 		FVector ForwardVector = GetActorForwardVector();
-		FVector EndLocation  = (ForwardVector * PenetrationAmount) + StartLocation;
+		FVector EndLocation  = (ForwardVector * 1000.f) + StartLocation;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
 		GetWorld()->LineTraceMultiByProfile(InteriorHit,StartLocation,EndLocation,FName("Interior"),QueryParams);
-		FString HitCompName = OtherComp->GetName();
-		UE_LOG(LogTemp, Log, TEXT("Hit Interior Comp: %s"), *HitCompName);
+		for(int i = 0; i <= InteriorHit.Num() - 1; i++)
+		{
+			
+			FString HitCompName = InteriorHit[i].GetComponent()->GetName();
+			UE_LOG(LogTemp, Log, TEXT("Hit Interior Comp: %s"), *HitCompName);
+		}
+		
 	}
 	bDoOnce = true;	
 	
