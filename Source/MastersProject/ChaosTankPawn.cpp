@@ -34,12 +34,33 @@ AChaosTankPawn::AChaosTankPawn()
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetActive(false);
+	/*Interior Damage Mesh Set Up
+	 * Each Component needs a Static Mesh, a Socket to attach to and an Tag,
+	 * The projectile will MultiTrace upon impact and if it hits an component it will have the appropriate effect here,
+	 * likely with an Interface
+	 */
+	EngineBlock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Engine Block"));
+	EngineBlock->ComponentTags.Add(FName("Engine"));
+	EngineBlock->SetupAttachment(GetMesh(),"EngineBlockSocket");
+
+	GunBreech = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Gun Breech"));
+	GunBreech->ComponentTags.Add(FName("GunBreech"));
+	GunBreech->SetupAttachment(GetMesh(),"GunBreechSocket");
+
+	AmmoStowage = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ammo Stowage"));
+	AmmoStowage->ComponentTags.Add(FName("AmmoStowage"));
+	AmmoStowage->SetupAttachment(GetMesh(),"AmmoStowageSocket");
+
+	FuelTank = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Fuel Tank"));
+	FuelTank->ComponentTags.Add(FName("FuelTank"));
+	FuelTank->SetupAttachment(GetMesh(),"FuelTankSocket");
 }
 
 void AChaosTankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	bStopTurn = false;
+	OnActorHit.AddDynamic(this,&AChaosTankPawn::OnTankHit);
 }
 
 void AChaosTankPawn::Tick(float DeltaTime)
@@ -296,4 +317,9 @@ void AChaosTankPawn::GunnerView(const FInputActionValue& Value)
 		GunnerCamera->SetActive(true);
 		CamEnum = ECameraType::EGUNNERCAM;
 	}
+}
+
+void AChaosTankPawn::OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp,Warning,TEXT("Tank Hit"));
 }

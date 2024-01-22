@@ -61,6 +61,17 @@ public:
 	UInputAction* InputGunnerCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TEnumAsByte<ECameraType> CamEnum;
+	//==================Interior Components==============================
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interior Components")
+	UStaticMeshComponent* EngineBlock;//If Hit Engine Dies
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interior Components")
+	class UBoxComponent* EngineBlockCollider;//Back up incase SniperElite Style System does not work
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interior Components")
+	UStaticMeshComponent* GunBreech;//If Hit Cant Reload
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interior Components")
+	UStaticMeshComponent* AmmoStowage;//If Hit explode
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interior Components")
+	UStaticMeshComponent* FuelTank;//If Hit explode
 	 //=============Turret Controls=========
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float TurretTraverse;
@@ -83,6 +94,28 @@ public:
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> MachineGunProjectileClass;
+	//=================Sound Variables===========
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	USoundBase* SB_Engine;
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	USoundBase* SB_MainGun;
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	USoundBase* SB_MachineGun;
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	USoundBase* SB_Turret;
+	//================Visual Effects============
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	class UNiagaraSystem* FireEffectMuzzle;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	USceneComponent* MuzzleFlashComponent; //Where the MuzzleFlash will be spawned
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	float MuzzleCoefStrength;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	class UNiagaraSystem* EngineEffectExhaust;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	USceneComponent* EngineExhaustComponent; 
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	float ExhaustCoefStrength;
 	//=================Misc. Variables===========
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
 	float TurnLimit = 30.f;
@@ -123,4 +156,6 @@ public:
 	void CommanderView(const FInputActionValue &Value);
 	UFUNCTION()
 	void GunnerView(const FInputActionValue &Value);
+	UFUNCTION()
+	void OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 };

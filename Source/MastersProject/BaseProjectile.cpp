@@ -6,6 +6,7 @@
 #include "ArmourInterface.h"
 #include "DrawDebugHelpers.h"
 #include "MathHelper.h"
+#include "Engine/DamageEvents.h"
 #include "Engine/DecalActor.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -107,12 +108,37 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		UE_LOG(LogTemp, Log, TEXT("Is Valid"));
 		float HitArmourThickness = Hit.PhysMaterial->Density;
 		UE_LOG(LogTemp, Log, TEXT("Armour: %f"), HitArmourThickness);
+		UE_LOG(LogTemp, Log, TEXT("Penetration: %f"), PenetrationAmount);
+		float RelativeArmourThickness = MathHelper::CalculateRelativeArmourThickness(HitArmourThickness,Angle);
+		UE_LOG(LogTemp, Log, TEXT("Relative Armour: %f"), RelativeArmourThickness);
+		if(PenetrationAmount > RelativeArmourThickness)
+		{
+			float Damage = PenetrationAmount - RelativeArmourThickness;
+			OtherActor->TakeDamage(Damage,FDamageEvent(),GetInstigatorController(),this);
+			float PostPenAmount = PenetrationAmount - RelativeArmourThickness;//Change Penetration amount
+			UE_LOG(LogTemp, Log, TEXT("Remaining Penetration: %f"), PostPenAmount);
+			bPenetrated = true;
+		}
+		else
+		{
+			bPenetrated = false;
+		}
+	}
+	if(bPenetrated)
+	{
+		TArray<FHitResult> InteriorHit;
+		FVector StartLocation = Sphere->GetComponentLocation();
+		FVector ForwardVector = GetActorForwardVector();
+		FVector EndLocation  = (ForwardVector * PenetrationAmount) + StartLocation;
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this);
+		GetWorld()->LineTraceMultiByProfile(InteriorHit,StartLocation,EndLocation,FName("Interior"),QueryParams);
 	}
 	bDoOnce = true;	
 	
 	
 	
-	//Destroy();
+	Destroy();
 }
 
 void ABaseProjectile::ApplyGravity()
