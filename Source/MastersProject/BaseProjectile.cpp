@@ -101,7 +101,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		bDoOnce = false;
 	}
 	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
-	float Angle = MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
+	float Angle = 180.f - MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
 	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 	if(Hit.PhysMaterial->IsValidLowLevel())
 	{
@@ -133,6 +133,8 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
 		GetWorld()->LineTraceMultiByProfile(InteriorHit,StartLocation,EndLocation,FName("Interior"),QueryParams);
+		FString HitCompName = OtherComp->GetName();
+		UE_LOG(LogTemp, Log, TEXT("Hit Interior Comp: %s"), *HitCompName);
 	}
 	bDoOnce = true;	
 	

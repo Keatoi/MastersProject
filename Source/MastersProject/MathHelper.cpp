@@ -66,6 +66,7 @@ float MathHelper::CalculateRelativeArmourThickness(float ActualThickness, float 
  * b = impact angle
  * c = relative armour thickness
  */
+	
 	return ActualThickness / cos(AttackAngle);
 }
 
