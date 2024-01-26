@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "Channels/MovieSceneDoubleChannel.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/Vector.h"
@@ -78,7 +79,7 @@ void AChaosTankPawn::Tick(float DeltaTime)
 	{
 		bStopTurn = false;
 	}
-	ScreenPosition = GetGunSightScreenPos();
+	ScreenVector = GetGunSightScreenPos();
 	
 }
 
@@ -108,7 +109,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 
 
-FVector2D AChaosTankPawn::GetGunSightScreenPos()
+FVector AChaosTankPawn::GetGunSightScreenPos()
 {
 	//Trace then project to screen for UI Location
 	FHitResult SightHit;
@@ -121,16 +122,13 @@ FVector2D AChaosTankPawn::GetGunSightScreenPos()
 	ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
 	//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_Destructible));
 	TArray<AActor*> IgnoredActorsArray;
-	bool bTraceSuccessful;
+	bool bTraceSuccessful = false;
 	if(UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(),GunLocation,TraceEnd,ObjectTypesArray,false,IgnoredActorsArray,EDrawDebugTrace::None,SightHit,true,FLinearColor::Red,FLinearColor::Blue,5.0f))
 	{
 		bTraceSuccessful = true;
 	}
 	FVector TraceLocation = bTraceSuccessful ? SightHit.Location : TraceEnd;
-	auto PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	FVector2D ScreenPos;
-	UGameplayStatics::ProjectWorldToScreen(PC,TraceLocation,ScreenPos,false);//(ScreenPos is an out param)
-	return ScreenPos;
+	return TraceLocation;
 }
 
 void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)

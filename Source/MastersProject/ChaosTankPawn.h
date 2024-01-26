@@ -140,9 +140,9 @@ public:
 	uint8 bFreeLookEnabled:1;
 	//==================UX Func/Var===================
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank UX", meta = (AllowPrivateAccess = "true"))
-	FVector2D ScreenPosition;
+	FVector ScreenVector;
 	UFUNCTION(Blueprintable)
-	FVector2D GetGunSightScreenPos();
+	FVector GetGunSightScreenPos();
 	
 	//=================Input Functions=============
 	UFUNCTION()
