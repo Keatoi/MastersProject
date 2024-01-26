@@ -14,6 +14,13 @@ enum ECameraType
 	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
 	EGUNNERCAM UMETA(DisplayName = "Gunner Camera")
 };
+UENUM(BlueprintType)
+enum EEngineEnum
+{
+	EENGINEIDLE,
+	EENGINENOTIDLE,
+	EENGINEBROKE
+};
 /**
  * 
  */
@@ -36,6 +43,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class UCameraComponent* TestPlayerCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	APlayerCameraManager* CamManager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	 UCameraComponent* ZoomCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -90,6 +99,9 @@ public:
 	float MGElevation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float MGElevationSpeed;
+	//==================DamageEnum================
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<EEngineEnum> EngineEnum;
 	//==================Projectiles================
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
@@ -126,6 +138,12 @@ public:
 	uint8 bStopTurn:1;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
 	uint8 bFreeLookEnabled:1;
+	//==================UX Func/Var===================
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank UX", meta = (AllowPrivateAccess = "true"))
+	FVector2D ScreenPosition;
+	UFUNCTION(Blueprintable)
+	FVector2D GetGunSightScreenPos();
+	
 	//=================Input Functions=============
 	UFUNCTION()
 	void MoveTriggered(const FInputActionValue &Value);

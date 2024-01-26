@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "Channels/MovieSceneDoubleChannel.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/Vector.h"
 /*Tank Values Based on T-72 Soviet MBT, may need tweaking if changing Skeleton Mesh to better reflect their real life counter part*/
@@ -18,6 +19,7 @@ AChaosTankPawn::AChaosTankPawn()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 	//=====Cam Setup======
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	SpringArmComp->SetupAttachment(GetMesh(),"TurretSocket");
@@ -34,6 +36,7 @@ AChaosTankPawn::AChaosTankPawn()
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetActive(false);
+	CamManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	/*Interior Damage Mesh Set Up
 	 * Each Component needs a Static Mesh, a Socket to attach to and an Tag,
 	 * The projectile will MultiTrace upon impact and if it hits an component it will have the appropriate effect here,
@@ -75,6 +78,7 @@ void AChaosTankPawn::Tick(float DeltaTime)
 	{
 		bStopTurn = false;
 	}
+	ScreenPosition = GetGunSightScreenPos();
 	
 }
 
@@ -99,6 +103,34 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&AChaosTankPawn::DefaultView);
 	Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&AChaosTankPawn::CommanderView);
 	Ei->BindAction(InputGunnerCam,ETriggerEvent::Started,this,&AChaosTankPawn::GunnerView);
+}
+
+
+
+
+FVector2D AChaosTankPawn::GetGunSightScreenPos()
+{
+	//Trace then project to screen for UI Location
+	FHitResult SightHit;
+	FVector GunLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
+	FVector GunFWD = GetMesh()->GetSocketRotation("Main_CaliberSocket").Vector() * 10000.f;
+	FVector TraceEnd = GunLocation + GunFWD;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesArray; // object types to trace
+	ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
+	//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_Destructible));
+	TArray<AActor*> IgnoredActorsArray;
+	bool bTraceSuccessful;
+	if(UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(),GunLocation,TraceEnd,ObjectTypesArray,false,IgnoredActorsArray,EDrawDebugTrace::None,SightHit,true,FLinearColor::Red,FLinearColor::Blue,5.0f))
+	{
+		bTraceSuccessful = true;
+	}
+	FVector TraceLocation = bTraceSuccessful ? SightHit.Location : TraceEnd;
+	auto PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
+	FVector2D ScreenPos;
+	UGameplayStatics::ProjectWorldToScreen(PC,TraceLocation,ScreenPos,false);//(ScreenPos is an out param)
+	return ScreenPos;
 }
 
 void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
