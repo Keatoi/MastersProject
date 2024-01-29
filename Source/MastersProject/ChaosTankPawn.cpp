@@ -58,6 +58,10 @@ AChaosTankPawn::AChaosTankPawn()
 	FuelTank = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Fuel Tank"));
 	FuelTank->ComponentTags.Add(FName("FuelTank"));
 	FuelTank->SetupAttachment(GetMesh(),"FuelTankSocket");
+	/*Timeline setup 
+	 */
+	TimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Detonation TimeLine"));
+	TimeLineUpdateEvent.BindUFunction(this,FName("TurretDetonationImpulse"));
 }
 
 void AChaosTankPawn::BeginPlay()
@@ -120,7 +124,7 @@ FVector AChaosTankPawn::GetGunSightScreenPos()
 	QueryParams.AddIgnoredActor(this);
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesArray; // object types to trace
 	ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
-	//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_Destructible));
+	ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECC_Destructible));
 	TArray<AActor*> IgnoredActorsArray;
 	bool bTraceSuccessful = false;
 	if(UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(),GunLocation,TraceEnd,ObjectTypesArray,false,IgnoredActorsArray,EDrawDebugTrace::None,SightHit,true,FLinearColor::Red,FLinearColor::Blue,5.0f))
@@ -134,9 +138,13 @@ FVector AChaosTankPawn::GetGunSightScreenPos()
 void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 {
 	//movement code
-	UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
 	const FVector2d MoveValue = Value.Get<FVector2d>();
-	if(MoveValue.Y >= 0.0f)
+	if(EngineEnum == EENGINEBROKE)
+	{
+		MoveCancelled(Value);
+	}
+	else if(MoveValue.Y >= 0.0f)
 	{
 		
 			GetVehicleMovement()->SetThrottleInput(MoveValue.Y);
@@ -152,7 +160,7 @@ void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 
 void AChaosTankPawn::MoveCompleted(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
 	const FVector2d MoveValue = Value.Get<FVector2d>();
 	if(MoveValue.Y >= 0.0f)
 	{
@@ -215,7 +223,7 @@ void AChaosTankPawn::TurnCompleted(const FInputActionValue& Value)
 void AChaosTankPawn::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookValue = Value.Get<FVector2D>();
-	UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
 	if (LookValue.X != 0.f)
 	{
 		TurretTraverse += LookValue.X * 10.f;
@@ -236,7 +244,7 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 
 void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 {
-	if(const bool FireValue = Value.Get<bool>())
+	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE))
 	{
 		if(!ProjectileClass)
 		{
@@ -351,7 +359,70 @@ void AChaosTankPawn::GunnerView(const FInputActionValue& Value)
 
 void AChaosTankPawn::OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp,Warning,TEXT("Tank Hit"));
+	UE_LOG(LogTemp,Warning,TEXT("Tank Health: %d"), TankHealth);
+	TankHealth -= 50;
 }
+
+void AChaosTankPawn::HealthCheck()
+{
+	//If tank is dead call detonate function and stop possession
+	
+	if (TankHealth <= 0){Detonate();}
+	UnPossessed();
+}
+
+void AChaosTankPawn::Detonate()
+{
+	const FVector TurretImpulse = {150000,100000,100000};
+	GetMesh()->BreakConstraint(TurretImpulse,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
+	TimeLine->SetTimelineLength(5.0f);
+	TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
+	TimeLine->PlayFromStart();
+	
+}
+
+void AChaosTankPawn::TurretDetonationImpulse()
+{
+	const FVector ImpulsetoAdd = {-250.f,0.f,-750.0f};
+	GetMesh()->AddImpulseAtLocation(ImpulsetoAdd,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
+}
+
+void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponent)
+{
+	UE_LOG(LogTemp,Warning,TEXT("Implementation Called"));
+	if(HitComponent == EngineBlock)
+	{
+		EngineEnum = EENGINEBROKE;
+		TankHealth -= 30;
+		UE_LOG(LogTemp,Warning,TEXT("Engine Damaged"));
+		
+	}
+	else if(HitComponent == GunBreech)
+	{
+		if(BreechEnum == EBREECHDAMAGED)
+		{
+			BreechEnum = EBREECHBROKE;
+			TankHealth -= 40;
+			UE_LOG(LogTemp,Warning,TEXT("Breech Destroyed"));
+		}
+		else
+		{
+			BreechEnum = EBREECHDAMAGED;
+			TankHealth -= 20;
+			UE_LOG(LogTemp,Warning,TEXT("Breech Damaged"));
+			
+		}
+	}
+	else if (HitComponent == AmmoStowage)
+	{
+		AmmoStowageEnum = EAMMODESTROYED;
+		TankHealth = 0;
+		Detonate();
+		UE_LOG(LogTemp,Warning,TEXT("Breech Destroyed"));
+	}
+	
+	//IDamageInterface::SetHitComponent_Implementation(HitComponent);
+}
+
 
 

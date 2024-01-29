@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "CoreMinimal.h"
 #include "WheeledVehiclePawn.h"
+#include "Components/TimelineComponent.h"
 #include "ChaosTankPawn.generated.h"
 UENUM(BlueprintType)
 enum ECameraType
@@ -17,9 +18,29 @@ enum ECameraType
 UENUM(BlueprintType)
 enum EEngineEnum
 {
-	EENGINEIDLE,
-	EENGINENOTIDLE,
-	EENGINEBROKE
+	EENGINEIDLE UMETA(DisplayName = "Idle Engine"),
+	EENGINENOTIDLE UMETA(DisplayName = "Active Engine"),
+	EENGINEBROKE UMETA(DisplayName = "Broken Engine")
+};
+UENUM(BlueprintType)
+enum EAmmoEnum
+{
+	EAMMONORMAL UMETA(DisplayName = "Ammo Normal"),
+	EAMMODESTROYED UMETA(DisplayName = "Ammo Detonation")
+};
+UENUM(BlueprintType)
+enum EGunBreechEnum
+{
+	EBREECHNORMAL UMETA(DisplayName = "Breech Normal"),
+	EBREECHDAMAGED UMETA(DisplayName = "Breech Damaged"),
+	EBREECHBROKE UMETA(DisplayName = "Breech Broke")
+};
+UENUM(BlueprintType)
+enum ECannonEnum
+{
+	ECANNONNORMAL UMETA(DisplayName = "Cannon Normal"),
+	ECANNONBROKE UMETA(DisplayName = "Cannon Broke")
+	
 };
 /**
  * 
@@ -100,8 +121,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	float MGElevationSpeed;
 	//==================DamageEnum================
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ENUMS", meta = (AllowPrivateAccess = "true"))
 	TEnumAsByte<EEngineEnum> EngineEnum;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ENUMS", meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<EAmmoEnum> AmmoStowageEnum;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ENUMS", meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<EGunBreechEnum> BreechEnum;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ENUMS", meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<ECannonEnum> CannonEnum;
 	//==================Projectiles================
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
@@ -131,6 +158,8 @@ public:
 	float ExhaustCoefStrength;
 	//=================Misc. Variables===========
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	FName TankName = "T-72(A)";
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
 	float TurnLimit = 30.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
 	float TurnRate;
@@ -138,11 +167,21 @@ public:
 	uint8 bStopTurn:1;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
 	uint8 bFreeLookEnabled:1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	int TankHealth = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
+	FName TurretBone = "turret_jnt";
 	//==================UX Func/Var===================
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank UX", meta = (AllowPrivateAccess = "true"))
 	FVector ScreenVector;
 	UFUNCTION(Blueprintable)
 	FVector GetGunSightScreenPos();
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTimelineComponent* TimeLine;
+	FOnTimelineEvent TimeLineUpdateEvent;
+	UPROPERTY()
+	UCurveFloat* DetonateCurve;
 	
 	//=================Input Functions=============
 	UFUNCTION()
@@ -177,5 +216,13 @@ public:
 	void GunnerView(const FInputActionValue &Value);
 	UFUNCTION()
 	void OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	void HealthCheck();
+	UFUNCTION()
+	void Detonate();
+	UFUNCTION()
+	void TurretDetonationImpulse();
+	UFUNCTION()
+	virtual void SetHitComponent_Implementation(USceneComponent* HitComponent) override;
 	
 };

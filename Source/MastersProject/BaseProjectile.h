@@ -47,6 +47,8 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USphereComponent* Sphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
+	FName ProjectileName = "Solid Shot";
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float ExplosiveFiller = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	float Mass = 0.f;

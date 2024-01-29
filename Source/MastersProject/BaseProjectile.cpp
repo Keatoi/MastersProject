@@ -4,6 +4,7 @@
 
 #include "ArmourActor.h"
 #include "ArmourInterface.h"
+#include "DamageInterface.h"
 #include "DrawDebugHelpers.h"
 #include "MathHelper.h"
 #include "Engine/DamageEvents.h"
@@ -124,7 +125,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			bPenetrated = false;
 		}
 	}
-	if(bPenetrated)
+	if(bPenetrated && Hit.GetActor()->GetClass()->ImplementsInterface(UDamageInterface::StaticClass()))
 	{
 		TArray<FHitResult> InteriorHit;
 		FVector StartLocation = Sphere->GetComponentLocation();
@@ -138,6 +139,8 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			
 			FString HitCompName = InteriorHit[i].GetComponent()->GetName();
 			UE_LOG(LogTemp, Log, TEXT("Hit Interior Comp: %s"), *HitCompName);
+			IDamageInterface::Execute_SetHitComponent(Hit.GetActor(),InteriorHit[i].GetComponent());
+			
 		}
 		
 	}
