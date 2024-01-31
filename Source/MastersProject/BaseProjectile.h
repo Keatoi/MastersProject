@@ -125,7 +125,7 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	//prints a string for penetration calcs
 	bool bPenDebug;
 	UFUNCTION()
-	void Launch(FVector MoveDirection);
+	virtual void Launch(FVector MoveDirection);
 	UFUNCTION()    
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 private:

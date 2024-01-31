@@ -102,6 +102,9 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Ei->BindAction(InputMove,ETriggerEvent::Canceled,this,&AChaosTankPawn::MoveCancelled);
 	Ei->BindAction(InputMove,ETriggerEvent::Started,this,&AChaosTankPawn::MoveStarted);
 	Ei->BindAction(InputTurn,ETriggerEvent::Triggered,this,&AChaosTankPawn::TurnTriggered);
+	Ei->BindAction(InputTurn,ETriggerEvent::Started,this,&AChaosTankPawn::TurnStarted);
+	Ei->BindAction(InputTurn,ETriggerEvent::Canceled,this,&AChaosTankPawn::TurnCancelled);
+	Ei->BindAction(InputTurn,ETriggerEvent::Completed,this,&AChaosTankPawn::TurnCompleted);
 	Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&AChaosTankPawn::Look);
 	Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&AChaosTankPawn::PrimaryFire);
 	Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&AChaosTankPawn::CameraSwap);
@@ -177,6 +180,7 @@ void AChaosTankPawn::MoveCompleted(const FInputActionValue& Value)
 
 void AChaosTankPawn::MoveStarted(const FInputActionValue& Value)
 {
+	
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
 }
@@ -204,8 +208,8 @@ void AChaosTankPawn::TurnTriggered(const FInputActionValue& Value)
 
 void AChaosTankPawn::TurnStarted(const FInputActionValue& Value)
 {
-	//Needs a tiny bit of throttle to turn
-	GetVehicleMovement()->SetThrottleInput(0.1f);
+	//Needs a tiny bit of throttle to turn, dont want to add to much in case the tank is moving
+	GetVehicleMovement()->SetThrottleInput(0.05f);
 }
 
 void AChaosTankPawn::TurnCancelled(const FInputActionValue& Value)
@@ -226,8 +230,8 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 	//UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
 	if (LookValue.X != 0.f)
 	{
-		TurretTraverse += LookValue.X * 10.f;
-		AddControllerYawInput(LookValue.X);
+		TurretTraverse += LookValue.X * 5.f;
+		AddControllerYawInput(LookValue.X * 0.5);
 	}
  
 	if (LookValue.Y != 0.f)
@@ -236,7 +240,7 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 		TurretElevation = FMath::Clamp(TurretElevation,-6.f,14.f);
 		if(bFreeLookEnabled)
 		{
-			AddControllerPitchInput(LookValue.Y);
+			AddControllerPitchInput(LookValue.Y * 0.5);
 		}
 		
 	}
@@ -373,17 +377,18 @@ void AChaosTankPawn::HealthCheck()
 
 void AChaosTankPawn::Detonate()
 {
-	const FVector TurretImpulse = {150000,100000,100000};
+	const FVector TurretImpulse = {-15000,100000,100000};
 	GetMesh()->BreakConstraint(TurretImpulse,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
 	TimeLine->SetTimelineLength(5.0f);
-	TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
-	TimeLine->PlayFromStart();
+	//TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
+	//TimeLine->PlayFromStart();
+	TurretDetonationImpulse();
 	
 }
 
 void AChaosTankPawn::TurretDetonationImpulse()
 {
-	const FVector ImpulsetoAdd = {-250.f,0.f,-750.0f};
+	const FVector ImpulsetoAdd = {0,0.f,-100.0f};
 	GetMesh()->AddImpulseAtLocation(ImpulsetoAdd,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
 }
 
