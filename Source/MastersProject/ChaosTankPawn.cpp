@@ -60,8 +60,9 @@ AChaosTankPawn::AChaosTankPawn()
 	FuelTank->SetupAttachment(GetMesh(),"FuelTankSocket");
 	/*Timeline setup 
 	 */
+	TimeLineUpdateEvent.BindDynamic(this, &AChaosTankPawn::TurretDetonationImpulse);
 	TimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Detonation TimeLine"));
-	TimeLineUpdateEvent.BindUFunction(this,FName("TurretDetonationImpulse"));
+	bCanShoot = true;//Ensure we can shoot at spawn
 }
 
 void AChaosTankPawn::BeginPlay()
@@ -69,6 +70,13 @@ void AChaosTankPawn::BeginPlay()
 	Super::BeginPlay();
 	bStopTurn = false;
 	OnActorHit.AddDynamic(this,&AChaosTankPawn::OnTankHit);
+}
+
+void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	//Clear Timer if actor removed from level
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
 void AChaosTankPawn::Tick(float DeltaTime)
@@ -248,7 +256,7 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 
 void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 {
-	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE))
+	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE) && bCanShoot)//If mouse pressed and there is no gun damage and we can shoot/arent reloading
 	{
 		if(!ProjectileClass)
 		{
@@ -268,6 +276,8 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
+				bCanShoot = false;
+				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
 				
 			}
 		}
@@ -377,19 +387,22 @@ void AChaosTankPawn::HealthCheck()
 
 void AChaosTankPawn::Detonate()
 {
-	const FVector TurretImpulse = {-15000,100000,100000};
+	const FVector TurretImpulse = {-15000.f,0.f,1000000.f};
 	GetMesh()->BreakConstraint(TurretImpulse,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
-	TimeLine->SetTimelineLength(5.0f);
-	//TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
-	//TimeLine->PlayFromStart();
-	TurretDetonationImpulse();
+	float FinishTime = 5.f;
+	TimeLine->SetPlayRate(1/FinishTime);
+	
+	TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
+	TimeLine->PlayFromStart();
+	
 	
 }
 
 void AChaosTankPawn::TurretDetonationImpulse()
 {
-	const FVector ImpulsetoAdd = {0,0.f,-100.0f};
-	GetMesh()->AddImpulseAtLocation(ImpulsetoAdd,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
+	//const FVector ImpulsetoAdd = {0,0.f,-100000.0f};
+	//GetMesh()->AddImpulseAtLocation(ImpulsetoAdd,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
+	UE_LOG(LogTemp,Warning,TEXT("Turret Detonation  Called"));
 }
 
 void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponent)
@@ -427,6 +440,12 @@ void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponen
 	}
 	
 	//IDamageInterface::SetHitComponent_Implementation(HitComponent);
+}
+
+void AChaosTankPawn::Reload()
+{
+	//Reset can shoot;
+	if(!bCanShoot){bCanShoot = true;}
 }
 
 

@@ -56,6 +56,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 	// Called every frame
@@ -134,6 +135,8 @@ public:
 	TSubclassOf<class ABaseProjectile> ProjectileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> MachineGunProjectileClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	float ReloadTime = 5.f;
 	//=================Sound Variables===========
 	UPROPERTY(EditAnywhere, Category="Sounds")
 	USoundBase* SB_Engine;
@@ -182,7 +185,10 @@ protected:
 	FOnTimelineEvent TimeLineUpdateEvent;
 	UPROPERTY()
 	UCurveFloat* DetonateCurve;
-	
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle ReloadTimerHandle;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	uint8 bCanShoot:1;
 	//=================Input Functions=============
 	UFUNCTION()
 	void MoveTriggered(const FInputActionValue &Value);
@@ -224,5 +230,7 @@ protected:
 	void TurretDetonationImpulse();
 	UFUNCTION()
 	virtual void SetHitComponent_Implementation(USceneComponent* HitComponent) override;
+	UFUNCTION()
+	void Reload();
 	
 };
