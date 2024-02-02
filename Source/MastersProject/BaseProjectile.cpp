@@ -8,6 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "MathHelper.h"
 #include "Engine/DamageEvents.h"
+#include "BombComponent.h"
 #include "Engine/DecalActor.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -27,7 +28,7 @@ ABaseProjectile::ABaseProjectile()
 	RootComponent = Sphere;
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	Shell->SetupAttachment(Sphere);
-	
+	BombComponent = CreateDefaultSubobject<UBombComponent>(TEXT("Bomb Component"));
 	
 	if(!ProjectileMovementComponent)
 	{
@@ -143,6 +144,10 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			
 		}
 		
+	}
+	if(ExplosiveFiller > 1.f)
+	{
+		BombComponent->CreateFireball(10000.f);
 	}
 	bDoOnce = true;	
 	
