@@ -115,6 +115,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Ei->BindAction(InputTurn,ETriggerEvent::Completed,this,&AChaosTankPawn::TurnCompleted);
 	Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&AChaosTankPawn::Look);
 	Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&AChaosTankPawn::PrimaryFire);
+	Ei->BindAction(InputFireSecondary,ETriggerEvent::Started,this,&AChaosTankPawn::SecondaryFireStart);
 	Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&AChaosTankPawn::CameraSwap);
 	Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&AChaosTankPawn::DefaultView);
 	Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&AChaosTankPawn::CommanderView);
@@ -288,32 +289,49 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 	}
 }
 
-void AChaosTankPawn::SecondaryFire(const FInputActionValue& Value)
+void AChaosTankPawn::SecondaryFireStart(const FInputActionValue& Value)
 {
 	if(const bool FireValue = Value.Get<bool>())
 	{
-		if(!MachineGunProjectileClass)
+		if(MGMagazine > 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
+			//If we have bullets left in magazine start the MGTimer
+			GetWorld()->GetTimerManager().SetTimer(MGFireRateHandle,this,&AChaosTankPawn::SecondaryFire,0.1f,true);
 		}
-		else
-		{
+		
+	}
+}
+
+void AChaosTankPawn::SecondaryFire()
+{
+	if(!MachineGunProjectileClass)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
+	}
+	else
+	{
 			
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
-			//Spawn Parameters
-			if(UWorld* World = GetWorld())
-			{
-				FActorSpawnParameters SParams;
-				SParams.Owner = this;
-				SParams.Instigator = GetInstigator();
-				//Spawn Projectile At location of the Main Barrels Socket
-				FVector SpawnLocation = GetMesh()->GetSocketLocation("MachineGunSocket");
-				FRotator SpawnRotation = GetMesh()->GetSocketRotation("MachineGunSocket");
-				ABaseProjectile* MachineGunProjectile= World->SpawnActor<ABaseProjectile>(MachineGunProjectileClass,SpawnLocation,SpawnRotation,SParams);
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
+		//Spawn Parameters
+		if(UWorld* World = GetWorld())
+		{
+			FActorSpawnParameters SParams;
+			SParams.Owner = this;
+			SParams.Instigator = GetInstigator();
+			//Spawn Projectile At location of the Main Barrels Socket
+			FVector SpawnLocation = GetMesh()->GetSocketLocation("MachineGunSocket");
+			FRotator SpawnRotation = GetMesh()->GetSocketRotation("MachineGunSocket");
+			ABaseProjectile* MachineGunProjectile= World->SpawnActor<ABaseProjectile>(MachineGunProjectileClass,SpawnLocation,SpawnRotation,SParams);
+			MGMagazine--;
 				
-			}
 		}
 	}
+}
+
+void AChaosTankPawn::SecondaryFireReleased(const FInputActionValue& Value)
+{
+	//Clear Timer on release to stop the gun firing
+	GetWorldTimerManager().ClearTimer(MGFireRateHandle);
 }
 
 void AChaosTankPawn::CameraSwap(const FInputActionValue& Value)
@@ -446,6 +464,20 @@ void AChaosTankPawn::Reload()
 {
 	//Reset can shoot;
 	if(!bCanShoot){bCanShoot = true;}
+	
+}
+
+void AChaosTankPawn::ReloadMG()
+{
+	if(MGMagazine <= 0)
+	{
+		MGMagazine = MGMagCapacity;
+	}
+	else if(MGMagazine > 0 )
+	{
+		//still need to add manual reload but this will simulate reloading with one bullet in the chamber
+		MGMagazine = MGMagCapacity + 1;
+	}
 }
 
 

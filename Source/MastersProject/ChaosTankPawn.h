@@ -82,6 +82,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputFirePrimary;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputFireSecondary;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputLook;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputCameraSwap;
@@ -137,6 +139,13 @@ public:
 	TSubclassOf<class ABaseProjectile> MachineGunProjectileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	float ReloadTime = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	int MGMagazine;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	int MGMagCapacity;//How much projectiles the MG should reload
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	float MGReload = 3.5f;//How many seconds to reload MG
 	//=================Sound Variables===========
 	UPROPERTY(EditAnywhere, Category="Sounds")
 	USoundBase* SB_Engine;
@@ -187,6 +196,8 @@ protected:
 	UCurveFloat* DetonateCurve;
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle ReloadTimerHandle;
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle MGFireRateHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 bCanShoot:1;
 	//=================Input Functions=============
@@ -211,7 +222,11 @@ protected:
 	UFUNCTION()
 	void PrimaryFire(const FInputActionValue &Value);
 	UFUNCTION()
-	void SecondaryFire(const FInputActionValue &Value);
+	void SecondaryFireStart(const FInputActionValue &Value);
+	UFUNCTION()
+	void SecondaryFire();
+	UFUNCTION()
+	void SecondaryFireReleased(const FInputActionValue &Value);
 	UFUNCTION()
 	void CameraSwap(const FInputActionValue &Value);
 	UFUNCTION()
@@ -232,5 +247,7 @@ protected:
 	virtual void SetHitComponent_Implementation(USceneComponent* HitComponent) override;
 	UFUNCTION()
 	void Reload();
+	UFUNCTION()
+	void ReloadMG();
 	
 };
