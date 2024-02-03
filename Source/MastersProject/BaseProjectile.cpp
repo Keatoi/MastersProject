@@ -147,7 +147,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	if(ExplosiveFiller > 1.f)
 	{
-		BombComponent->CreateFireball(10000.f);
+		BombComponent->CreateFireball(10000.f,500.f,GetActorLocation());
 	}
 	bDoOnce = true;	
 	

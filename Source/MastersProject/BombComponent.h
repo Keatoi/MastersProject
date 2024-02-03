@@ -31,7 +31,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float RadiusIncrement = 1.f;
 	UFUNCTION(BlueprintCallable)
-	void CreateFireball(float range);
+	void CreateFireball(float range,float strength,FVector Location);
 	
 		
 };

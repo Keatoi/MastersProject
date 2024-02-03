@@ -1,5 +1,6 @@
 // Masters Project - Owen S Atkinson
 #include  "ShrapnelComponent.h"
+#include "AddRadialForce.h"
 #include "Components/SphereComponent.h"
 #include "BombComponent.h"
 
@@ -37,7 +38,7 @@ void UBombComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// ...
 }
 
-void UBombComponent::CreateFireball(float range)
+void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 {
 	UE_LOG(LogTemp,Warning,TEXT("Creating Fireball"));
 	TArray<AActor*> OverlapArray;
@@ -46,6 +47,20 @@ void UBombComponent::CreateFireball(float range)
 	for(AActor* Actors : OverlapArray)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OverlappingActors: %d"), OverlapArray.Num());
+		UStaticMeshComponent* GetStaticMesh = Cast<UStaticMeshComponent>((Actors)->GetRootComponent());
+		
+		if(GetStaticMesh)
+		{
+			GetStaticMesh->AddRadialImpulse(Location,range,strength,RIF_Linear,true);
+		}
+		else
+		{
+			USkeletalMeshComponent* GetSKM = Cast<USkeletalMeshComponent>(Actors->GetRootComponent());
+			if(GetSKM)
+			{
+				GetSKM->AddRadialImpulse(Location,range,strength,RIF_Linear,true);
+			}
+		}
 	}
 	//Originally the bomb code had the sphere expand like an actual fireball before I realised how stupid it would be for optimisation purposes
 	/*while(FireBallCollision->GetUnscaledSphereRadius() <= range)
