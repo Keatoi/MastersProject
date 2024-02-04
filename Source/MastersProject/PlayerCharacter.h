@@ -8,7 +8,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 UENUM(BlueprintType)
-enum ECamType
+enum class ECamType
 {
 	EDEFAULTCAM UMETA(DisplayName = "Default Camera"),
 	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
