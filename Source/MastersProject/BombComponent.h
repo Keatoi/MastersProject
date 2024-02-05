@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "Components/ActorComponent.h"
 #include "BombComponent.generated.h"
 
@@ -30,6 +31,10 @@ public:
 	class UShrapnelComponent* ShrapnelComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float RadiusIncrement = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
+	UParticleSystem* FireballEmitter;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
+	UNiagaraSystem* NSFireball;
 	UFUNCTION(BlueprintCallable)
 	void CreateFireball(float range,float strength,FVector Location);
 	

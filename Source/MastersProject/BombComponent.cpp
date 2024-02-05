@@ -4,6 +4,8 @@
 #include "Components/SphereComponent.h"
 #include "BombComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
@@ -44,6 +46,8 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 	TArray<AActor*> OverlapArray;
 	FireBallCollision->SetSphereRadius(range);
 	FireBallCollision->GetOverlappingActors(OverlapArray);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),FireballEmitter,Location);
+	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),NSFireball,Location);
 	for(AActor* Actors : OverlapArray)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OverlappingActors: %d"), OverlapArray.Num());
@@ -62,6 +66,7 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 			}
 		}
 	}
+	
 	//Originally the bomb code had the sphere expand like an actual fireball before I realised how stupid it would be for optimisation purposes
 	/*while(FireBallCollision->GetUnscaledSphereRadius() <= range)
 	{

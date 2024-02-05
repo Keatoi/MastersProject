@@ -277,6 +277,8 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
+				GetMesh()->AddImpulse(FVector(-50.f,0.f,0.f),FName(NAME_None),true);
+				
 				bCanShoot = false;
 				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
 				

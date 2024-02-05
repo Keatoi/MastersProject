@@ -157,7 +157,9 @@ public:
 	USoundBase* SB_Turret;
 	//================Visual Effects============
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
-	class UNiagaraSystem* FireEffectMuzzle;
+	class UNiagaraSystem* NSFireMuzzle;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	UNiagaraSystem* NSDeath;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	USceneComponent* MuzzleFlashComponent; //Where the MuzzleFlash will be spawned
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
