@@ -33,8 +33,7 @@ public:
 	float RadiusIncrement = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
 	UParticleSystem* FireballEmitter;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
-	UNiagaraSystem* NSFireball;
+	
 	UFUNCTION(BlueprintCallable)
 	void CreateFireball(float range,float strength,FVector Location);
 	
