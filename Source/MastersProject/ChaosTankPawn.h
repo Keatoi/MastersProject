@@ -150,6 +150,8 @@ public:
 	UPROPERTY(EditAnywhere, Category="Sounds")
 	USoundBase* SB_Engine;
 	UPROPERTY(EditAnywhere, Category="Sounds")
+	USoundBase* SB_Engine_Idle;
+	UPROPERTY(EditAnywhere, Category="Sounds")
 	USoundBase* SB_MainGun;
 	UPROPERTY(EditAnywhere, Category="Sounds")
 	USoundBase* SB_MachineGun;

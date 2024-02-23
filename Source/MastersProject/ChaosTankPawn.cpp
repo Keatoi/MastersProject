@@ -92,7 +92,8 @@ void AChaosTankPawn::Tick(float DeltaTime)
 		bStopTurn = false;
 	}
 	ScreenVector = GetGunSightScreenPos();
-	
+	if(GetVehicleMovementComponent()->GetThrottleInput() == 0.f && SB_Engine_Idle){UGameplayStatics::PlaySoundAtLocation(GetWorld(),SB_Engine_Idle,EngineBlock->GetComponentLocation());}
+	else if(SB_Engine){UGameplayStatics::PlaySoundAtLocation(GetWorld(),SB_Engine_Idle,EngineBlock->GetComponentLocation());}
 }
 
 void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -266,7 +267,7 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 		else
 		{
 			
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
+			//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
 			//Spawn Parameters
 			if(UWorld* World = GetWorld())
 			{
@@ -276,11 +277,12 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				//Spawn Projectile At location of the Main Barrels Socket
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
-				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);
-				GetMesh()->AddImpulse(FVector(-50.f,0.f,0.f),FName(NAME_None),true);
+				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
+				GetMesh()->AddImpulse(FVector(-50.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
 				
-				bCanShoot = false;
+				bCanShoot = false;//Disable firing until reloaded
 				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
+				if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
 				
 			}
 		}

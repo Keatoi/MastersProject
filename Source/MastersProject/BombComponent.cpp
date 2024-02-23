@@ -46,7 +46,11 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 	TArray<AActor*> OverlapArray;
 	FireBallCollision->SetSphereRadius(range);
 	FireBallCollision->GetOverlappingActors(OverlapArray);
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),FireballEmitter,Location);
+	if(FireballEmitter)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),FireballEmitter,Location);
+	}
+	
 	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),NSFireball,Location);
 	for(AActor* Actors : OverlapArray)
 	{
