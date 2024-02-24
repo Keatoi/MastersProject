@@ -96,12 +96,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *Hit.GetActor()->GetName());
-	if(bDoOnce)
-	{
-		FRotator HitRotationFromX = UKismetMathLibrary::MakeRotFromX(Hit.Normal);
-		UGameplayStatics::SpawnDecalAttached(GenericDecal,DecalSize,OtherComp,NAME_None,Hit.Location,HitRotationFromX,EAttachLocation::KeepWorldPosition,DecalLifespan);
-		bDoOnce = false;
-	}
+	
 	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 	float Angle = 180.f - MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
 	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
@@ -147,9 +142,13 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	if(ExplosiveFiller > 1.f)
 	{
-		BombComponent->CreateFireball(100.f,5000.f,GetActorLocation());
+		if(BombComponent)
+		{
+			BombComponent->CreateFireball(100.f,5000.f,GetActorLocation());
+		}
+		
 	}
-	bDoOnce = true;	
+	
 	
 	
 	

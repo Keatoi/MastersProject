@@ -3,7 +3,7 @@
 
 #include "Components/SphereComponent.h"
 #include "BombComponent.h"
-
+#include "Components/SphereComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -15,7 +15,7 @@ UBombComponent::UBombComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	FireBallCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Fireball Collision"));
-	FireBallCollision->InitSphereRadius(0.1f);
+	FireBallCollision->InitSphereRadius(125.f);
 	
 	ShrapnelComponent = CreateDefaultSubobject<UShrapnelComponent>(TEXT("Shrapnel Component"));
 	// ...
@@ -44,8 +44,8 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 {
 	UE_LOG(LogTemp,Warning,TEXT("Creating Fireball"));
 	TArray<AActor*> OverlapArray;
-	FireBallCollision->SetSphereRadius(range);
-	FireBallCollision->GetOverlappingActors(OverlapArray);
+	//FireBallCollision->SetSphereRadius(range);
+	//FireBallCollision->GetOverlappingActors(OverlapArray);
 	if(FireballEmitter)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),FireballEmitter,Location);
