@@ -70,6 +70,10 @@ void AChaosTankPawn::BeginPlay()
 	Super::BeginPlay();
 	bStopTurn = false;
 	OnActorHit.AddDynamic(this,&AChaosTankPawn::OnTankHit);
+	//Set Dynamic Material Instances
+	DynamicLeftTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(1);
+	DynamicRightTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(2);
+	SetMatScalarSpeed(2,0.f);
 }
 
 void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -162,12 +166,14 @@ void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 		
 			GetVehicleMovement()->SetThrottleInput(MoveValue.Y);
 			GetVehicleMovement()->SetBrakeInput(0.f);
+		
 	}
 	else if (MoveValue.Y < 0.0f)
 	{
 		GetVehicleMovement()->SetThrottleInput(MoveValue.Y);
 		GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
 	}
+	SetMatScalarSpeed(2,MoveValue.Y);
 	
 }
 
@@ -186,6 +192,7 @@ void AChaosTankPawn::MoveCompleted(const FInputActionValue& Value)
 		GetVehicleMovement()->SetThrottleInput(MoveValue.Y );
 		GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
 	}
+	SetMatScalarSpeed(2,MoveValue.Y);
 }
 
 void AChaosTankPawn::MoveStarted(const FInputActionValue& Value)
@@ -193,12 +200,14 @@ void AChaosTankPawn::MoveStarted(const FInputActionValue& Value)
 	
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
+	SetMatScalarSpeed(2,0.f);
 }
 
 void AChaosTankPawn::MoveCancelled(const FInputActionValue& Value)
 {
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
+	SetMatScalarSpeed(2,0.f);
 }
 
 void AChaosTankPawn::TurnTriggered(const FInputActionValue& Value)
@@ -211,6 +220,8 @@ void AChaosTankPawn::TurnTriggered(const FInputActionValue& Value)
 	else
 	{
 		TurnRate = Value.Get<float>();
+		if(TurnRate > 0.f){SetMatScalarSpeed(1,TurnRate);}
+		else if(TurnRate < 0.f){SetMatScalarSpeed(0,-TurnRate);}
 		GetVehicleMovement()->SetYawInput(TurnRate);
 	}
 	
@@ -226,12 +237,14 @@ void AChaosTankPawn::TurnCancelled(const FInputActionValue& Value)
 {
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
+	SetMatScalarSpeed(2,0.f);
 }
 
 void AChaosTankPawn::TurnCompleted(const FInputActionValue& Value)
 {
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
+	SetMatScalarSpeed(2,0.f);
 }
 
 void AChaosTankPawn::Look(const FInputActionValue& Value)
@@ -258,7 +271,7 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 
 void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 {
-	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE) && bCanShoot)//If mouse pressed and there is no gun damage and we can shoot/arent reloading
+	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE) && bCanShoot && AmmoReserve > 0.f)//If mouse pressed and there is no gun damage and we can shoot/arent reloading/aren't out of ammo
 	{
 		if(!ProjectileClass)
 		{
@@ -271,6 +284,9 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 			//Spawn Parameters
 			if(UWorld* World = GetWorld())
 			{
+				//Remove Ammo from two-tier Magazine
+				AmmoReserve = FMath::Clamp(AmmoReserve--,0.f,6.f);
+				InteriorMagazine = FMath::Clamp(InteriorMagazine--,0.f,6.f);
 				FActorSpawnParameters SParams;
 				SParams.Owner = this;
 				SParams.Instigator = GetInstigator();
@@ -281,6 +297,7 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				GetMesh()->AddImpulse(FVector(-50.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
 				
 				bCanShoot = false;//Disable firing until reloaded
+				if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
 				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
 				if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
 				
@@ -482,6 +499,36 @@ void AChaosTankPawn::ReloadMG()
 		//still need to add manual reload but this will simulate reloading with one bullet in the chamber
 		MGMagazine = MGMagCapacity + 1;
 	}
+}
+
+void AChaosTankPawn::ReloadInteriorMagazine()
+{
+	if(InteriorMagazine < InteriorCapacity) InteriorMagazine++;GetWorld()->GetTimerManager().SetTimer(IMDelayHandle,this,&AChaosTankPawn::ReloadInteriorMagazine,InteriorReloadDelay,false);
+}
+
+void AChaosTankPawn::SetMatScalarSpeed(int Index, float Speed)
+{
+	//Changes the Speed Scalar Param in the Dynamic MIs to the provided speed, uses the Index param to determine which
+	//track is changed(0 = Left, 1 = Right, 2 = Both)
+	if(DynamicLeftTrack && DynamicRightTrack)
+	{
+		switch (Index)
+		{
+		case 0 :
+			DynamicLeftTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			break;
+		case 1:
+			DynamicRightTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			break;
+		case 2:
+			DynamicLeftTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			DynamicRightTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			break;
+		default:
+			break;
+		}
+	}
+	
 }
 
 

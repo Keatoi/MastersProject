@@ -95,6 +95,11 @@ public:
 	UInputAction* InputGunnerCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TEnumAsByte<ECameraType> CamEnum;
+	//==================Dynamic Materials================================
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialInstanceDynamic* DynamicLeftTrack;
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialInstanceDynamic* DynamicRightTrack;
 	//==================Interior Components==============================
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interior Components")
 	UStaticMeshComponent* EngineBlock;//If Hit Engine Dies
@@ -143,7 +148,14 @@ public:
 	int MGMagazine;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	int MGMagCapacity;//How much projectiles the MG should reload
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	float InteriorMagazine;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	float InteriorCapacity = 5.f;//Maximum amount of shells to store in the Interior Magazine
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	float InteriorReloadDelay;//How many seconds between adding each shell to interior magazine
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	float AmmoReserve;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	float MGReload = 3.5f;//How many seconds to reload MG
 	//=================Sound Variables===========
@@ -193,6 +205,7 @@ public:
 	UFUNCTION(Blueprintable)
 	FVector GetGunSightScreenPos();
 protected:
+	//==============Timers======================
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTimelineComponent* TimeLine;
 	FOnTimelineEvent TimeLineUpdateEvent;
@@ -202,6 +215,8 @@ protected:
 	FTimerHandle ReloadTimerHandle;
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle MGFireRateHandle;
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle IMDelayHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 bCanShoot:1;
 	//=================Input Functions=============
@@ -250,8 +265,13 @@ protected:
 	UFUNCTION()
 	virtual void SetHitComponent_Implementation(USceneComponent* HitComponent) override;
 	UFUNCTION()
-	void Reload();
+	void Reload();//Reload Gun after every shot
 	UFUNCTION()
 	void ReloadMG();
+	UFUNCTION()
+	void ReloadInteriorMagazine();//Reload the InteriorMagazine
+	//====Helper Functions===
+	UFUNCTION()
+	void SetMatScalarSpeed(int Index,float Speed);
 	
 };
