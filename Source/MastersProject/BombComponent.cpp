@@ -44,8 +44,8 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 {
 	UE_LOG(LogTemp,Warning,TEXT("Creating Fireball"));
 	TArray<AActor*> OverlapArray;
-	//FireBallCollision->SetSphereRadius(range);
-	//FireBallCollision->GetOverlappingActors(OverlapArray);
+	FireBallCollision->SetSphereRadius(range);
+	FireBallCollision->GetOverlappingActors(OverlapArray);
 	if(FireballEmitter)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),FireballEmitter,Location);

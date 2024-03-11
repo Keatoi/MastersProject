@@ -7,13 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
-UENUM(BlueprintType)
-enum class ECamType
-{
-	EDEFAULTCAM UMETA(DisplayName = "Default Camera"),
-	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
-	EGUNNERCAM UMETA(DisplayName = "Gunner Camera")
-};
+
 UENUM(BlueprintType)
 enum EEngineStatus
 {
@@ -64,8 +58,7 @@ public:
 	UInputAction* InputZoomCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputGunnerCam;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	TEnumAsByte<ECamType> CamEnum;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class UBoxComponent* EngineBlockCollider;
 	
@@ -127,12 +120,7 @@ private:
 	void PrimaryFire(const FInputActionValue &Value);
 	UFUNCTION()
 	void SecondaryFire(const FInputActionValue &Value);
-	UFUNCTION()
-	void DefaultView(const FInputActionValue &Value);
-	UFUNCTION()
-	void CommanderView(const FInputActionValue &Value);
-	UFUNCTION()
-	void GunnerView(const FInputActionValue &Value);
+	
 	UFUNCTION()
 	void EngineCheck();
 	UFUNCTION()

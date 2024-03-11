@@ -36,7 +36,7 @@ ABaseProjectile::ABaseProjectile()
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(Sphere);
 		if(bSloMoMode){ProjectileMovementComponent->InitialSpeed = 30.0f;}
-		else{ProjectileMovementComponent->InitialSpeed = 300.0f;}
+		else{ProjectileMovementComponent->InitialSpeed = 3000.0f;}
 		
 		ProjectileMovementComponent->MaxSpeed = 3000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
@@ -140,13 +140,12 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		}
 		
 	}
-	if(ExplosiveFiller > 1.f)
+	if(ExplosiveFiller > 1.f && BombComponent->IsValidLowLevelFast())
 	{
-		if(BombComponent)
-		{
-			BombComponent->CreateFireball(100.f,5000.f,GetActorLocation());
-		}
+		UE_LOG(LogTemp, Log, TEXT("Exploding"));
+		BombComponent->CreateFireball(100.f,5000.f,GetActorLocation());
 		
+	
 	}
 	
 	

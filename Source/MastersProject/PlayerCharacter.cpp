@@ -74,9 +74,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::Look);
 		Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&APlayerCharacter::PrimaryFire);
 	   
-		Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&APlayerCharacter::DefaultView);
-		Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&APlayerCharacter::CommanderView);
-		Ei->BindAction(InputGunnerCam,ETriggerEvent::Started,this,&APlayerCharacter::GunnerView);
+	
 	
 	
 
@@ -196,56 +194,7 @@ void APlayerCharacter::SecondaryFire(const FInputActionValue& Value)
 
 
 
-void APlayerCharacter::DefaultView(const FInputActionValue& Value)
-{
-	if(CamEnum == ECamType::EDEFAULTCAM)
-	{
-		
-	}
-	else
-	{
-		ZoomCamera->SetActive(false);
-		GunnerCamera->SetActive(false);
-		TestPlayerCamera->SetActive(true);
-		CamEnum = ECamType::EDEFAULTCAM;
-	}
-}
 
-void APlayerCharacter::CommanderView(const FInputActionValue& Value)
-{
-	if(CamEnum == ECamType::ECOMMANDERCAM)
-	{
-		ZoomCamera->SetActive(false);
-		GunnerCamera->SetActive(false);
-		TestPlayerCamera->SetActive(true);
-		CamEnum = ECamType::EDEFAULTCAM;
-	}
-	else
-	{
-		GunnerCamera->SetActive(false);
-		TestPlayerCamera->SetActive(false);
-		ZoomCamera->SetActive(true);
-		CamEnum = ECamType::ECOMMANDERCAM;
-	}
-}
-
-void APlayerCharacter::GunnerView(const FInputActionValue& Value)
-{
-	if(CamEnum == ECamType::EGUNNERCAM)
-	{
-		ZoomCamera->SetActive(false);
-		GunnerCamera->SetActive(false);
-		TestPlayerCamera->SetActive(true);
-		CamEnum = ECamType::EDEFAULTCAM;
-	}
-	else
-	{
-		TestPlayerCamera->SetActive(false);
-		ZoomCamera->SetActive(false);
-		GunnerCamera->SetActive(true);
-		CamEnum = ECamType::EGUNNERCAM;
-	}
-}
 
 void APlayerCharacter::EngineCheck()
 {
