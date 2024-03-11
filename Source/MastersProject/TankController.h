@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "InputAction.h"
+#include "ChaosTankPawn.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "TankController.generated.h"
@@ -88,5 +89,7 @@ public:
 	void ReloadMG();
 	UFUNCTION()
 	void ReloadInteriorMagazine(const FInputActionValue& Value);//Reload the InteriorMagazine
+	
+
 
 };

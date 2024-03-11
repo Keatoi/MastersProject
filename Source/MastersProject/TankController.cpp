@@ -5,6 +5,7 @@
 
 ATankController::ATankController()
 {
+	auto* PC = Cast<AChaosTankPawn>(GetPawn());
 }
 
 void ATankController::Tick(float DeltaTime)
