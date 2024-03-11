@@ -70,7 +70,7 @@ void AChaosTankPawn::BeginPlay()
 	Super::BeginPlay();
 	bStopTurn = false;
 	OnActorHit.AddDynamic(this,&AChaosTankPawn::OnTankHit);
-	//Set Dynamic Material Instances
+	//Set Dynamic Material Instances and start speed at 0.f so it isn't moving
 	DynamicLeftTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(1);
 	DynamicRightTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(2);
 	SetMatScalarSpeed(2,0.f);
@@ -79,7 +79,7 @@ void AChaosTankPawn::BeginPlay()
 void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	//Clear Timer if actor removed from level
+	//Clear Timers if actor removed from level (i.e destroyed or despawned)
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
@@ -109,6 +109,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	const auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
 	eiSubsystem->AddMappingContext(InputMapping, 0);
 	UE_LOG(LogTemp,Warning,TEXT("EIC loaded"));
+	//Bind Actions to functions
 	UEnhancedInputComponent* Ei = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	Ei->BindAction(InputMove,ETriggerEvent::Triggered,this,&AChaosTankPawn::MoveTriggered);
 	Ei->BindAction(InputMove,ETriggerEvent::Completed,this,&AChaosTankPawn::MoveCompleted);
@@ -121,6 +122,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&AChaosTankPawn::Look);
 	Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&AChaosTankPawn::PrimaryFire);
 	Ei->BindAction(InputFireSecondary,ETriggerEvent::Started,this,&AChaosTankPawn::SecondaryFireStart);
+	Ei->BindAction(InputReloadIM,ETriggerEvent::Started,this,&AChaosTankPawn::ReloadInteriorMagazine);
 	Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&AChaosTankPawn::CameraSwap);
 	Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&AChaosTankPawn::DefaultView);
 	Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&AChaosTankPawn::CommanderView);
@@ -148,6 +150,7 @@ FVector AChaosTankPawn::GetGunSightScreenPos()
 	{
 		bTraceSuccessful = true;
 	}
+	//if we hit a trace location then return the hit location else return the end of the trace
 	FVector TraceLocation = bTraceSuccessful ? SightHit.Location : TraceEnd;
 	return TraceLocation;
 }
@@ -280,13 +283,14 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 		else
 		{
 			
-			//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
 			//Spawn Parameters
 			if(UWorld* World = GetWorld())
 			{
-				//Remove Ammo from two-tier Magazine
-				AmmoReserve = FMath::Clamp(AmmoReserve--,0.f,6.f);
-				InteriorMagazine = FMath::Clamp(InteriorMagazine--,0.f,6.f);
+				//Remove Ammo from two-tier Magazines
+				AmmoReserve--;
+				if(InteriorMagazine > 0) InteriorMagazine--;//Ensure Interior Magazine does not go into the negatives
+				//Spawn Parameters
 				FActorSpawnParameters SParams;
 				SParams.Owner = this;
 				SParams.Instigator = GetInstigator();
@@ -501,9 +505,19 @@ void AChaosTankPawn::ReloadMG()
 	}
 }
 
-void AChaosTankPawn::ReloadInteriorMagazine()
+void AChaosTankPawn::ReloadInteriorMagazine(const FInputActionValue& Value)
 {
-	if(InteriorMagazine < InteriorCapacity) InteriorMagazine++;GetWorld()->GetTimerManager().SetTimer(IMDelayHandle,this,&AChaosTankPawn::ReloadInteriorMagazine,InteriorReloadDelay,false);
+	bool ReloadVal = Value.Get<bool>();
+	
+	if(ReloadVal)
+	{
+		if(InteriorMagazine < InteriorCapacity)
+		{
+			InteriorMagazine++;
+			
+		}
+	}
+	
 }
 
 void AChaosTankPawn::SetMatScalarSpeed(int Index, float Speed)

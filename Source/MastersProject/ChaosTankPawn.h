@@ -75,6 +75,7 @@ public:
 	class USpringArmComponent* SpringArmComp;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;//Input Mapping Context
+	//Input Maps
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InputMove;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -83,6 +84,8 @@ public:
 	 UInputAction* InputFirePrimary;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputFireSecondary;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputReloadIM;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputLook;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -269,7 +272,7 @@ protected:
 	UFUNCTION()
 	void ReloadMG();
 	UFUNCTION()
-	void ReloadInteriorMagazine();//Reload the InteriorMagazine
+	void ReloadInteriorMagazine(const FInputActionValue& Value);//Reload the InteriorMagazine
 	//====Helper Functions===
 	UFUNCTION()
 	void SetMatScalarSpeed(int Index,float Speed);
