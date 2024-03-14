@@ -1,7 +1,10 @@
 // Masters Project - Owen S Atkinson
-
-#include "Components/SphereComponent.h"
 #include "Objectiveactor.h"
+#include "Components/SphereComponent.h"
+#include "TankGameMode.h"
+
+
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AObjectiveactor::AObjectiveactor()
@@ -13,6 +16,7 @@ AObjectiveactor::AObjectiveactor()
 	CaptureZone = CreateDefaultSubobject<USphereComponent>(TEXT("CaptureZone"));
 	CaptureZone->SetSphereRadius(5000.f);
 	CaptureZone->SetupAttachment(ObjectiveRoot);
+	GM = Cast<ATankGameMode>(UGameplayStatics::GetGameMode(this));
 }
 
 // Called when the game starts or when spawned
@@ -32,18 +36,36 @@ void AObjectiveactor::Tick(float DeltaTime)
 void AObjectiveactor::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FTimerDelegate IncreaseDelegate = FTimerDelegate::CreateUObject(this,&AObjectiveactor::IncreaseTickets,OwningTeamEnum);
-	
-	if(OtherActor->ActorHasTag("Blue"))
+	FTimerDelegate IncreaseDelegate = FTimerDelegate::CreateUObject(this,&AObjectiveactor::IncreaseTickets,CaptureTeamEnum);
+	FTimerDelegate DecreaseDelegate = FTimerDelegate::CreateUObject(this,&AObjectiveactor::IncreaseTickets,CaptureTeamEnum);
+	if(OtherActor->ActorHasTag("Blue") && CaptureTeamEnum != EBLU)
 	{
-		GetWorld()->GetTimerManager().SetTimer(CaptureHandle,IncreaseDelegate,1.f,true);
-		IncreaseTickets(ECaptureEnum::EBLU);
-		DecreaseTickets(ECaptureEnum::ERED);
+		//Decrease Owning Time
+		GetWorld()->GetTimerManager().SetTimer(DecapHandle,DecreaseDelegate,1.f,true);
+	    CaptureTeamEnum = EBLU;
+		GetWorld()->GetTimerManager().SetTimer(CaptureHandle,IncreaseDelegate,2.f,true);
+		
+	}
+	else if(OtherActor->ActorHasTag("Blue"))
+	{
+		GetWorld()->GetTimerManager().SetTimer(CaptureHandle,IncreaseDelegate,2.f,true);
+	}
+	else if (OtherActor->ActorHasTag("Red") && CaptureTeamEnum != ERED)
+	{
+		GetWorld()->GetTimerManager().SetTimer(DecapHandle,DecreaseDelegate,1.f,true);
+		CaptureTeamEnum = ERED;
+		GetWorld()->GetTimerManager().SetTimer(CaptureHandle,IncreaseDelegate,2.f,true);
 	}
 	else if (OtherActor->ActorHasTag("Red"))
 	{
-		IncreaseTickets(ECaptureEnum::EBLU);
-		DecreaseTickets(ECaptureEnum::ERED);
+		CaptureTeamEnum = ERED;
+		GetWorld()->GetTimerManager().SetTimer(CaptureHandle,IncreaseDelegate,1.f,true);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimer(DecapHandle,DecreaseDelegate,1.f,true);
+		CaptureTeamEnum = ENON;
+		GetWorld()->GetTimerManager().SetTimer(CaptureHandle,IncreaseDelegate,1.f,true);
 	}
 }
 
@@ -55,15 +77,46 @@ void AObjectiveactor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 
 void AObjectiveactor::CompareCaptureScores()
 {
+	float RedScore = FMath::Clamp(RedCaptureScore,0.f,100.f);
+	float BlueScore = FMath::Clamp(BlueCaptureScore,0.f,100.f);
 	
 }
 
 void AObjectiveactor::IncreaseTickets(TEnumAsByte<ECaptureEnum> TickettoIncrease)
 {
-	
+	if(GM)
+	{
+		switch(TickettoIncrease)
+		{
+			case(EBLU):
+				GM->BlueTickets++;
+			break;
+			case(ERED):
+				GM->RedTickets++;
+			break;
+		default:
+			GM->NeutralTickets++;
+			break;
+		}
+	}
 }
 
 void AObjectiveactor::DecreaseTickets(TEnumAsByte<ECaptureEnum> TickettoDecrease)
 {
+	if(GM)
+	{
+		switch(TickettoDecrease)
+		{
+		case(EBLU):
+			GM->BlueTickets--;
+			break;
+		case(ERED):
+			GM->RedTickets--;
+			break;
+		default:
+			GM->NeutralTickets--;
+			break;
+		}
+	}
 }
 

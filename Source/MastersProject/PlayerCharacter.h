@@ -7,20 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
-UENUM(BlueprintType)
-enum class ECamType
-{
-	EDEFAULTCAM UMETA(DisplayName = "Default Camera"),
-	ECOMMANDERCAM UMETA(DisplayName = "Commander Camera"),
-	EGUNNERCAM UMETA(DisplayName = "Gunner Camera")
-};
-UENUM(BlueprintType)
-enum EEngineStatus
-{
-	EIDLE UMETA(DisplayName = "idle"),
-	ERUNNING UMETA(DisplayName = "Running"),
-	EDESTROYED UMETA(DisplayName = "Destroyed")
-};
+
 UCLASS()
 class MASTERSPROJECT_API APlayerCharacter : public ACharacter
 {
@@ -64,8 +51,7 @@ public:
 	UInputAction* InputZoomCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputGunnerCam;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	TEnumAsByte<ECamType> CamEnum;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class UBoxComponent* EngineBlockCollider;
 	
@@ -112,8 +98,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float ExhaustCoefStrength;
 	//=================Damage===========
-	UPROPERTY(EditAnywhere, Category = "Engine")
-	TEnumAsByte<EEngineStatus> EngineEnum;
+	
 	UPROPERTY(EditAnywhere, Category = "Tank Components")
 	uint8 bTurretRingDestroyed:1;
 	//=================Input Functions=============

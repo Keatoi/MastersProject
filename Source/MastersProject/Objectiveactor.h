@@ -32,14 +32,18 @@ UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	USceneComponent* ObjectiveRoot;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	class USphereComponent* CaptureZone;
+	UPROPERTY()
+	class ATankGameMode* GM;
     UPROPERTY()
 	FTimerHandle CaptureHandle;
+	UPROPERTY()
+	FTimerHandle DecapHandle;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Scoring")
 	int BlueCaptureScore = 0.f;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Scoring")
 	int RedCaptureScore = 0.f;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Scoring")
-	TEnumAsByte<ECaptureEnum> OwningTeamEnum = ECaptureEnum::ENON;// By Default zone is owned by none, but allow default team to be changed for greater flexibility in different game modes
+	TEnumAsByte<ECaptureEnum> CaptureTeamEnum = ECaptureEnum::ENON;// By Default zone is owned by none, but allow default team to be changed for greater flexibility in different game modes
 	UFUNCTION()
 	virtual void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
