@@ -16,6 +16,7 @@ class MASTERSPROJECT_API AAI_ChaosTank : public AChaosTankPawn
 	GENERATED_BODY()
 public:
 	AAI_ChaosTank();
+	virtual void BeginPlay() override;
 	UBehaviorTree* GetBehaviourTree() const;//BT getter for AI Controller
 	
 protected:

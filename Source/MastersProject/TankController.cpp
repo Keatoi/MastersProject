@@ -5,7 +5,8 @@
 
 ATankController::ATankController()
 {
-	auto* PC = Cast<AChaosTankPawn>(GetPawn());
+	AutoReceiveInput = EAutoReceiveInput::Player0;
+	PC = Cast<AChaosTankPawn>(GetPawn());
 }
 
 void ATankController::Tick(float DeltaTime)
@@ -41,54 +42,106 @@ void ATankController::SetupInputComponent()
 
 void ATankController::MoveTriggered(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->MoveTriggered(Value);
+	}
 }
 
 void ATankController::MoveCompleted(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->MoveCompleted(Value);
+	}
 }
 
 void ATankController::MoveStarted(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->MoveStarted(Value);
+	}
 }
 
 void ATankController::MoveCancelled(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->MoveCancelled(Value);
+	}
 }
 
 void ATankController::TurnTriggered(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->TurnTriggered(Value);
+	}
 }
 
 void ATankController::TurnStarted(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->TurnStarted(Value);
+	}
 }
 
 void ATankController::TurnCancelled(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->TurnCancelled(Value);
+	}
 }
 
 void ATankController::TurnCompleted(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->TurnCompleted(Value);
+	}
 }
 
 void ATankController::Look(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->Look(Value);
+	}
 }
 
 void ATankController::PrimaryFire(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->PrimaryFire(Value);
+	}
 }
 
 void ATankController::SecondaryFireStart(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->SecondaryFireStart(Value);
+	}
 }
 
 void ATankController::SecondaryFire()
 {
+	if(PC)
+	{
+		PC->SecondaryFire();
+	}
 }
 
 void ATankController::SecondaryFireReleased(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->SecondaryFireReleased(Value);
+	}
 }
 
 void ATankController::CameraSwap(const FInputActionValue& Value)
@@ -97,14 +150,26 @@ void ATankController::CameraSwap(const FInputActionValue& Value)
 
 void ATankController::DefaultView(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->DefaultView(Value);
+	}
 }
 
 void ATankController::CommanderView(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->CommanderView(Value);
+	}
 }
 
 void ATankController::GunnerView(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->GunnerView(Value);
+	}
 }
 
 void ATankController::ReloadMG()
@@ -113,4 +178,8 @@ void ATankController::ReloadMG()
 
 void ATankController::ReloadInteriorMagazine(const FInputActionValue& Value)
 {
+	if(PC)
+	{
+		PC->ReloadInteriorMagazine(Value);
+	}
 }

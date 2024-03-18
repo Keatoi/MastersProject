@@ -26,6 +26,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupInputComponent() override;
+	AChaosTankPawn* PC;
 	//InputMappingContext
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;

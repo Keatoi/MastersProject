@@ -176,6 +176,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	class UNiagaraSystem* NSFireMuzzle;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	class UNiagaraComponent* NCMuzzle;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	UNiagaraSystem* NSDeath;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	USceneComponent* MuzzleFlashComponent; //Where the MuzzleFlash will be spawned
@@ -222,6 +224,7 @@ protected:
 	FTimerHandle IMDelayHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 bCanShoot:1;
+public:
 	//=================Input Functions=============
 	UFUNCTION()
 	void MoveTriggered(const FInputActionValue &Value);

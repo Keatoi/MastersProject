@@ -12,10 +12,17 @@ AAI_ChaosTank::AAI_ChaosTank()
 	GunnerCamera->SetActive(false);
 	ZoomCamera->SetActive(false);
 	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Tank Vision"));
-	PawnSense->SetPeripheralVisionAngle(300.f);
+	PawnSense->SetPeripheralVisionAngle(125.f);
 	
 	PawnSense->SensingInterval = .25f;//Sense every 0.25 seconds
 	
+}
+
+void AAI_ChaosTank::BeginPlay()
+{
+	Super::BeginPlay();
+	PawnSense->OnSeePawn.AddDynamic(this,&AAI_ChaosTank::OnSeePawn);
+	PawnSense->OnHearNoise.AddDynamic(this,&AAI_ChaosTank::OnHearNoise);
 }
 
 UBehaviorTree* AAI_ChaosTank::GetBehaviourTree() const
