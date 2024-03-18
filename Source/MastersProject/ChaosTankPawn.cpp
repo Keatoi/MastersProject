@@ -170,6 +170,7 @@ void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 		
 			GetVehicleMovement()->SetThrottleInput(MoveValue.Y);
 			GetVehicleMovement()->SetBrakeInput(0.f);
+			
 		
 	}
 	else if (MoveValue.Y < 0.0f)

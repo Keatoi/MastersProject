@@ -26,10 +26,14 @@ protected:
 	class UPawnSensingComponent* PawnSense;
 	/////////////////////////////////////////////////////////////////////////
 	// UPawnSensingComponent Delegates
-
+public:
 	UFUNCTION()
 	void OnHearNoise(APawn *OtherActor, const FVector &Location, float Volume);
 
 	UFUNCTION()
 	void OnSeePawn(APawn *OtherPawn);
+	UFUNCTION()
+	void SetThrottle(float Throttle);
+	UFUNCTION()
+	void SetBrake(float Brake);
 };

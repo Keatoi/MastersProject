@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 
 AAI_ChaosTank::AAI_ChaosTank()
 {
@@ -41,4 +42,14 @@ void AAI_ChaosTank::OnSeePawn(APawn* OtherPawn)
 {
 	FString message = TEXT("Saw Actor ") + OtherPawn->GetName();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+}
+
+void AAI_ChaosTank::SetThrottle(float Throttle)
+{
+	GetVehicleMovement()->SetThrottleInput(Throttle);
+}
+
+void AAI_ChaosTank::SetBrake(float Brake)
+{
+	GetVehicleMovement()->SetBrakeInput(Brake);
 }

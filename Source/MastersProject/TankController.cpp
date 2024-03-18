@@ -2,11 +2,14 @@
 
 
 #include "TankController.h"
+#include "ChaosTankPawn.h"
 
 ATankController::ATankController()
 {
+
 	AutoReceiveInput = EAutoReceiveInput::Player0;
 	PC = Cast<AChaosTankPawn>(GetPawn());
+
 }
 
 void ATankController::Tick(float DeltaTime)
