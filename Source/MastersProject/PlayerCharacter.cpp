@@ -37,7 +37,7 @@ APlayerCharacter::APlayerCharacter()
 	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetupAttachment(GetMesh(),"GunCamSocket");
 	GunnerCamera->SetActive(false);
-	EngineEnum = EEngineStatus::EIDLE;
+
 	//Niagara spawn scene comps
 	
 	
@@ -74,7 +74,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&APlayerCharacter::Look);
 		Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&APlayerCharacter::PrimaryFire);
 	   
-	
+		Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&APlayerCharacter::DefaultView);
+		Ei->BindAction(InputZoomCam,ETriggerEvent::Started,this,&APlayerCharacter::CommanderView);
+		Ei->BindAction(InputGunnerCam,ETriggerEvent::Started,this,&APlayerCharacter::GunnerView);
 	
 	
 
@@ -84,7 +86,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	//movement code
 	
-	const FVector2d MoveValue = Value.Get<FVector2d>();
+	/*const FVector2d MoveValue = Value.Get<FVector2d>();
 	const FRotator MoveRot(0,Controller->GetControlRotation().Yaw,0);
 	if(MoveValue.Y != 0.0f && EngineEnum != EEngineStatus::EDESTROYED)//Forward/Backwards
 	{
@@ -92,15 +94,12 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 		const FVector Direction = MoveRot.RotateVector(FVector::ForwardVector);
 		AddMovementInput(Direction,MoveValue.Y);
 	}
-	if(MoveValue.X != 0.0f && EngineEnum != EEngineStatus::EDESTROYED)
+	if(MoveValue.X != 0.0f )
 	{
-		EngineEnum = EEngineStatus::ERUNNING;
+		
 		AddControllerYawInput(MoveValue.X  * TankRotationSpeed);
-	}
-	else
-	{
-		EngineEnum = EEngineStatus::EIDLE;
-	}
+	}*/
+
 }
 
 
@@ -194,11 +193,60 @@ void APlayerCharacter::SecondaryFire(const FInputActionValue& Value)
 
 
 
+void APlayerCharacter::DefaultView(const FInputActionValue& Value)
+{
+	/*if(CamEnum == ECamType::EDEFAULTCAM)
+	{
+		
+	}
+	else
+	{
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(true);
+		CamEnum = ECamType::EDEFAULTCAM;
+	}*/
+}
 
+void APlayerCharacter::CommanderView(const FInputActionValue& Value)
+{
+	/*if(CamEnum == ECamType::ECOMMANDERCAM)
+	{
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(true);
+		CamEnum = ECamType::EDEFAULTCAM;
+	}
+	else
+	{
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(false);
+		ZoomCamera->SetActive(true);
+		CamEnum = ECamType::ECOMMANDERCAM;
+	}*/
+}
+
+void APlayerCharacter::GunnerView(const FInputActionValue& Value)
+{
+	/*if(CamEnum == ECamType::EGUNNERCAM)
+	{
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(false);
+		TestPlayerCamera->SetActive(true);
+		CamEnum = ECamType::EDEFAULTCAM;
+	}
+	else
+	{
+		TestPlayerCamera->SetActive(false);
+		ZoomCamera->SetActive(false);
+		GunnerCamera->SetActive(true);
+		CamEnum = ECamType::EGUNNERCAM;
+	}*/
+}
 
 void APlayerCharacter::EngineCheck()
 {
-	if(EngineEnum == EEngineStatus::EDESTROYED)
+	/*if(EngineEnum == EEngineStatus::EDESTROYED)
 	{
 		//SetMaxSpeed to 0.f Spawn effects (not yet made)
 		GetCharacterMovement()->MaxWalkSpeed = 0.f;
@@ -211,7 +259,7 @@ void APlayerCharacter::EngineCheck()
 	{
 		//play running sound, emit exhaust, set max speed
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	}
+	}*/
 }
 
 void APlayerCharacter::TurretRingCheck()

@@ -10,6 +10,7 @@
 #include "MathHelper.h"
 #include "Camera/CameraComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Channels/MovieSceneDoubleChannel.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -20,7 +21,7 @@ AChaosTankPawn::AChaosTankPawn()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	//=====Cam Setup======
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	SpringArmComp->SetupAttachment(GetMesh(),"TurretSocket");
@@ -298,13 +299,16 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
 				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
-				GetMesh()->AddImpulse(FVector(-50.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
+				GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
 				
 				bCanShoot = false;//Disable firing until reloaded
 				if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
 				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
 				if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
-				
+				if (NSFireMuzzle)
+				{
+					//NCMuzzle = UNiagaraFunctionLibrary::SpawnSystemAttached(NSFireMuzzle,MuzzleFlashComponent,NAME_None,MuzzleFlashComponent->GetComponentLocation(),MuzzleFlashComponent->GetComponentRotation(),EAttachLocation::SnapToTarget,true,true);
+				}
 			}
 		}
 	}

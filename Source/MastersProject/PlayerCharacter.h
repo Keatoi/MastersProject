@@ -8,13 +8,6 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
-UENUM(BlueprintType)
-enum EEngineStatus
-{
-	EIDLE UMETA(DisplayName = "idle"),
-	ERUNNING UMETA(DisplayName = "Running"),
-	EDESTROYED UMETA(DisplayName = "Destroyed")
-};
 UCLASS()
 class MASTERSPROJECT_API APlayerCharacter : public ACharacter
 {
@@ -105,8 +98,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float ExhaustCoefStrength;
 	//=================Damage===========
-	UPROPERTY(EditAnywhere, Category = "Engine")
-	TEnumAsByte<EEngineStatus> EngineEnum;
+	
 	UPROPERTY(EditAnywhere, Category = "Tank Components")
 	uint8 bTurretRingDestroyed:1;
 	//=================Input Functions=============
@@ -120,7 +112,12 @@ private:
 	void PrimaryFire(const FInputActionValue &Value);
 	UFUNCTION()
 	void SecondaryFire(const FInputActionValue &Value);
-	
+	UFUNCTION()
+	void DefaultView(const FInputActionValue &Value);
+	UFUNCTION()
+	void CommanderView(const FInputActionValue &Value);
+	UFUNCTION()
+	void GunnerView(const FInputActionValue &Value);
 	UFUNCTION()
 	void EngineCheck();
 	UFUNCTION()
