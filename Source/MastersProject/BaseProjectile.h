@@ -126,6 +126,9 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	//prints a string for penetration calcs
 	bool bPenDebug;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	// Use Custom Movement Component
+	bool bUseCustomMove;
 	UFUNCTION()
 	virtual void Launch(FVector MoveDirection);
 	UFUNCTION()    
@@ -136,7 +139,7 @@ private:
 protected:
 	void SetInitialPosition();
 	void SetInitialVelocity();
-	
+	void Move();
 	void ApplyGravity();
 	void ForceLossFunc();
 	void ForceLookForward();

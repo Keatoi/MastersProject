@@ -29,7 +29,7 @@ ABaseProjectile::ABaseProjectile()
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	Shell->SetupAttachment(Sphere);
 	BombComponent = CreateDefaultSubobject<UBombComponent>(TEXT("Bomb Component"));
-	
+	Speed = 3000.f;//Used if the simple custom projectile movement is used
 	if(!ProjectileMovementComponent)
 	{
 		
@@ -70,7 +70,7 @@ void ABaseProjectile::Tick(float DeltaTime)
 	DeltaT = DeltaTime;
 	//CheckCollision();
 	ForceLookForward();
-
+	if(bApplyGravity){ApplyGravity();}
 }
 
 void ABaseProjectile::SetInitialPosition()
@@ -82,7 +82,16 @@ void ABaseProjectile::SetInitialPosition()
 void ABaseProjectile::SetInitialVelocity()
 {
 	//Push actor forward by a speed dependant on the force applied to it
-	Velocity = GetActorForwardVector() * Force;
+	Velocity = GetActorForwardVector() * Speed;
+}
+
+void ABaseProjectile::Move()
+{
+	//Custom Movement
+	if(bUseCustomMove)
+	{
+		AddActorLocalOffset(Velocity,true);
+	}
 }
 
 void ABaseProjectile::Launch(FVector MoveDirection)
