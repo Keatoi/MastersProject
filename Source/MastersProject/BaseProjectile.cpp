@@ -32,7 +32,7 @@ ABaseProjectile::ABaseProjectile()
 	Speed = 3000.f;//Used if the simple custom projectile movement is used
 	if(!ProjectileMovementComponent)
 	{
-		
+		//Projectile Move comp setup
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(Sphere);
 		if(bSloMoMode){ProjectileMovementComponent->InitialSpeed = 30.0f;}
@@ -68,9 +68,11 @@ void ABaseProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	DeltaT = DeltaTime;
-	//CheckCollision();
+	//CheckCollision(); DEPRECATED DUE TO UNRELIABILITY
 	ForceLookForward();
+	//usage of custom simplified movement methods (Gravity is separate so it can be used with Projectile Move Comp in projectiles that don't have physics enabled like this one)
 	if(bApplyGravity){ApplyGravity();}
+	if(bUseCustomMove){Move();}
 }
 
 void ABaseProjectile::SetInitialPosition()
@@ -90,13 +92,14 @@ void ABaseProjectile::Move()
 	//Custom Movement
 	if(bUseCustomMove)
 	{
+		//Offset actor each tick, BSweep = true to check for blocking collisions
 		AddActorLocalOffset(Velocity,true);
 	}
 }
 
 void ABaseProjectile::Launch(FVector MoveDirection)
 {
-	//Offset actor each tick, BSweep = true to check for blocking collisions
+	//Set ProjMoveComp Velocity
 	ProjectileMovementComponent->Velocity = GetActorForwardVector() * ProjectileMovementComponent->InitialSpeed;
 	
 }
@@ -105,18 +108,23 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *Hit.GetActor()->GetName());
-	
+	//Calculate the angle the projectile hits another actor and output to log
 	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 	float Angle = 180.f - MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
 	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
+	//check if hit object uses a physical material(this is what the tank armour relies upon)
 	if(Hit.PhysMaterial->IsValidLowLevel())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Is Valid"));
+		//Uses the density of the physical material as the armour thickness (in mm)
 		float HitArmourThickness = Hit.PhysMaterial->Density;
 		UE_LOG(LogTemp, Log, TEXT("Armour: %f"), HitArmourThickness);
+		//The projectiles base penetration
 		UE_LOG(LogTemp, Log, TEXT("Penetration: %f"), PenetrationAmount);
+		//Calculate the effective amount of armour using the actual armour thickness and hit angle
 		float RelativeArmourThickness = MathHelper::CalculateRelativeArmourThickness(HitArmourThickness,Angle);
 		UE_LOG(LogTemp, Log, TEXT("Relative Armour: %f"), RelativeArmourThickness);
+		//If the projectile can penetrate proceed with damage implementation
 		if(PenetrationAmount > RelativeArmourThickness)
 		{
 			float Damage = PenetrationAmount - RelativeArmourThickness;
@@ -130,6 +138,8 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			bPenetrated = false;
 		}
 	}
+	//if projectile penetrated and the hit actor implements the damage interface, for each hit component call the interface func,
+	//which adds the component to an array accessible by the Hit Actor allowing for mechanics such as component based damage models
 	if(bPenetrated && Hit.GetActor()->GetClass()->ImplementsInterface(UDamageInterface::StaticClass()))
 	{
 		TArray<FHitResult> InteriorHit;
@@ -149,17 +159,23 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		}
 		
 	}
+	//check if bomb component is valid and there is explosive filler in the projectile
+	//if so detonate
+	if(!BombComponent->IsValidLowLevelFast())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Bomb not valid"));
+	}
 	if(ExplosiveFiller > 1.f && BombComponent->IsValidLowLevelFast())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Exploding"));
-		BombComponent->CreateFireball(100.f,5000.f,GetActorLocation());
+		BombComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
 		
 	
 	}
 	
 	
 	
-	
+	//destroy actor
 	Destroy();
 }
 
@@ -262,7 +278,7 @@ void ABaseProjectile::NullVelocity()
 
 void ABaseProjectile::ProxCheck()
 {
-	//checks if a actor with a certain surface type is in radius. Requires a Minimum Range Fuse and radius and a projectile with explosive filler
+	//checks if a vehicle actor  is in radius. Requires a Minimum Range Fuse and radius and a projectile with explosive filler.
 	if(DistanceTravelled() > MinRange)
 	{
 		// if the minimum range is surpassed check for collisions
@@ -275,7 +291,12 @@ void ABaseProjectile::ProxCheck()
 		bool isHit = GetWorld()->SweepMultiByChannel(Hits,StartSweep,EndSweep,FQuat::Identity,ECC_Vehicle,CollisionSphere);
 		if(isHit)
 		{
-			//Explosion code stuff here
+			//Explosion code stuff here- see onHit.
+			if(ExplosiveFiller > 1.f && BombComponent->IsValidLowLevelFast())
+			{
+				UE_LOG(LogTemp, Log, TEXT("Exploding(PROX)"));
+				BombComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
+			}
 		}
 			
 	}
@@ -283,6 +304,7 @@ void ABaseProjectile::ProxCheck()
 
 float ABaseProjectile::DistanceTravelled()
 {
+	//gets the distance travelled by the actor since spawn, used for Proximity check
 	FVector DistanceVector =  GetActorLocation() - InitialLocation;
 	return DistanceVector.Length();
 }
