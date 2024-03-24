@@ -161,10 +161,12 @@ void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 	//movement code
 	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
 	const FVector2d MoveValue = Value.Get<FVector2d>();
+	//If Engine broke cancel move
 	if(EngineEnum == EENGINEBROKE)
 	{
 		MoveCancelled(Value);
 	}
+	//if engine functional, adjust throttle and brake input to get desired movement
 	else if(MoveValue.Y >= 0.0f)
 	{
 		
@@ -178,7 +180,8 @@ void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 		GetVehicleMovement()->SetThrottleInput(MoveValue.Y);
 		GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
 	}
-	SetMatScalarSpeed(2,MoveValue.Y);
+	//Move tracks
+	SetMatScalarSpeed(2,MoveValue.Y * 50.f);
 	
 }
 
@@ -197,7 +200,7 @@ void AChaosTankPawn::MoveCompleted(const FInputActionValue& Value)
 		GetVehicleMovement()->SetThrottleInput(MoveValue.Y );
 		GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
 	}
-	SetMatScalarSpeed(2,MoveValue.Y);
+	SetMatScalarSpeed(2,MoveValue.Y*50.f);
 }
 
 void AChaosTankPawn::MoveStarted(const FInputActionValue& Value)
@@ -205,11 +208,12 @@ void AChaosTankPawn::MoveStarted(const FInputActionValue& Value)
 	
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
-	SetMatScalarSpeed(2,0.f);
+	//SetMatScalarSpeed(2,0.f);
 }
 
 void AChaosTankPawn::MoveCancelled(const FInputActionValue& Value)
 {
+	//set everything to 0.f;
 	GetVehicleMovement()->SetYawInput(0.f);
 	GetVehicleMovement()->SetThrottleInput(0.f);
 	SetMatScalarSpeed(2,0.f);
@@ -219,14 +223,16 @@ void AChaosTankPawn::TurnTriggered(const FInputActionValue& Value)
 {
 	if(bStopTurn)
 	{
+		//come to smooth stop if turn threshold hit
 		TurnRate = UKismetMathLibrary::Lerp(TurnRate,0.f,0.1f);
 		GetVehicleMovement()->SetYawInput(TurnRate);
 	}
 	else
 	{
+		//turn right or left
 		TurnRate = Value.Get<float>();
-		if(TurnRate > 0.f){SetMatScalarSpeed(1,TurnRate);}
-		else if(TurnRate < 0.f){SetMatScalarSpeed(0,-TurnRate);}
+		if(TurnRate > 0.f){SetMatScalarSpeed(1,TurnRate * 25.f);}
+		else if(TurnRate < 0.f){SetMatScalarSpeed(0,TurnRate * 25.f);}
 		GetVehicleMovement()->SetYawInput(TurnRate);
 	}
 	
@@ -234,7 +240,7 @@ void AChaosTankPawn::TurnTriggered(const FInputActionValue& Value)
 
 void AChaosTankPawn::TurnStarted(const FInputActionValue& Value)
 {
-	//Needs a tiny bit of throttle to turn, dont want to add to much in case the tank is moving
+	//Needs a tiny bit of throttle to turn, dont want to add too much in case the tank is moving(this could cause the tank to roll/flip/spin out of control)
 	GetVehicleMovement()->SetThrottleInput(0.05f);
 }
 
@@ -254,10 +260,12 @@ void AChaosTankPawn::TurnCompleted(const FInputActionValue& Value)
 
 void AChaosTankPawn::Look(const FInputActionValue& Value)
 {
+	//look around with mouse and turn turret to match mouse movement
 	const FVector2D LookValue = Value.Get<FVector2D>();
 	//UE_LOG(LogTemp, Display, TEXT("look value: %f"), Value.Get<float>());
 	if (LookValue.X != 0.f)
 	{
+		//Turret traverse is different to camera control speed to ensure the turret movement isn't too fast/looks unnatural
 		TurretTraverse += LookValue.X * 5.f;
 		AddControllerYawInput(LookValue.X * 0.5);
 	}
@@ -265,7 +273,8 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 	if (LookValue.Y != 0.f)
 	{
 		TurretElevation += LookValue.Y * 10.f;
-		TurretElevation = FMath::Clamp(TurretElevation,-6.f,14.f);
+		//clamp Turret elevation so cannon doesnt clip through mesh, values taken from real world and slightly tweaked to prevent as much clipping as possible
+		TurretElevation = FMath::Clamp(TurretElevation,-5.f,14.f);
 		if(bFreeLookEnabled)
 		{
 			AddControllerPitchInput(LookValue.Y * 0.5);
@@ -276,10 +285,12 @@ void AChaosTankPawn::Look(const FInputActionValue& Value)
 
 void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 {
-	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE) && bCanShoot && AmmoReserve > 0.f)//If mouse pressed and there is no gun damage and we can shoot/arent reloading/aren't out of ammo
+	//If mouse pressed and there is no gun damage and we can shoot/arent reloading/aren't out of ammo
+	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE) && bCanShoot && AmmoReserve > 0.f)
 	{
 		if(!ProjectileClass)
 		{
+			// no projectile class set error prevention + on screen debug message
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
 		}
 		else
@@ -313,19 +324,17 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 			}
 		}
 	}
-	else
-	{
-		return;
-	}
+	
 }
 
 void AChaosTankPawn::SecondaryFireStart(const FInputActionValue& Value)
 {
+	//Machine gun is an automatic weapon so works a little differently, we are using a timer to give us control over the Rate of Fire (ROF) of the gun.
 	if(const bool FireValue = Value.Get<bool>())
 	{
 		if(MGMagazine > 0)
 		{
-			//If we have bullets left in magazine start the MGTimer
+			//If we have bullets left in magazine start the MGTimer to fire every 0.1 sec
 			GetWorld()->GetTimerManager().SetTimer(MGFireRateHandle,this,&AChaosTankPawn::SecondaryFire,0.1f,true);
 		}
 		
@@ -422,7 +431,7 @@ void AChaosTankPawn::GunnerView(const FInputActionValue& Value)
 void AChaosTankPawn::OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp,Warning,TEXT("Tank Health: %d"), TankHealth);
-	TankHealth -= 50;
+	TankHealth -= 25.f;
 }
 
 void AChaosTankPawn::HealthCheck()

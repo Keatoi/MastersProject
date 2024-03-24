@@ -34,6 +34,8 @@ UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	class USphereComponent* CaptureZone;
 	UPROPERTY()
 	class ATankGameMode* GM;
+	UPROPERTY()
+	class ATankGameState* GS;
     UPROPERTY()
 	FTimerHandle CaptureHandle;
 	UPROPERTY()

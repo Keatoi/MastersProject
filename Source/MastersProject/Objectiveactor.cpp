@@ -2,6 +2,7 @@
 #include "Objectiveactor.h"
 #include "Components/SphereComponent.h"
 #include "TankGameMode.h"
+#include "TankGameState.h"
 
 
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +18,7 @@ AObjectiveactor::AObjectiveactor()
 	CaptureZone->SetSphereRadius(5000.f);
 	CaptureZone->SetupAttachment(ObjectiveRoot);
 	GM = Cast<ATankGameMode>(UGameplayStatics::GetGameMode(this));
+	GS = Cast<ATankGameState>(UGameplayStatics::GetGameState(this));
 }
 
 // Called when the game starts or when spawned
@@ -84,18 +86,18 @@ void AObjectiveactor::CompareCaptureScores()
 
 void AObjectiveactor::IncreaseTickets(TEnumAsByte<ECaptureEnum> TickettoIncrease)
 {
-	if(GM)
+	if(GS)
 	{
 		switch(TickettoIncrease)
 		{
 			case(EBLU):
-				GM->BlueTickets++;
+				GS->BlueTickets++;
 			break;
 			case(ERED):
-				GM->RedTickets++;
+				GS->RedTickets++;
 			break;
 		default:
-			GM->NeutralTickets++;
+			GS->NeutralTickets++;
 			break;
 		}
 	}
@@ -108,13 +110,13 @@ void AObjectiveactor::DecreaseTickets(TEnumAsByte<ECaptureEnum> TickettoDecrease
 		switch(TickettoDecrease)
 		{
 		case(EBLU):
-			GM->BlueTickets--;
+			GS->BlueTickets--;
 			break;
 		case(ERED):
-			GM->RedTickets--;
+			GS->RedTickets--;
 			break;
 		default:
-			GM->NeutralTickets--;
+			GS->NeutralTickets--;
 			break;
 		}
 	}

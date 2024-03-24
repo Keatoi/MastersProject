@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "TankController.generated.h"
 
+class AChaosTankPawn;
 /**
  * 
  */
@@ -25,7 +26,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupInputComponent() override;
-	AChaosTankPawn* PC;
+	class AChaosTankPawn* PC;
 	//InputMappingContext
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;
