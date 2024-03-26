@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "TankGameMode.h"
 #include "TankGameState.h"
+#include "TankStateBase.h"
 
 
 #include "Kismet/GameplayStatics.h"
@@ -18,7 +19,7 @@ AObjectiveactor::AObjectiveactor()
 	CaptureZone->SetSphereRadius(5000.f);
 	CaptureZone->SetupAttachment(ObjectiveRoot);
 	GM = Cast<ATankGameMode>(UGameplayStatics::GetGameMode(this));
-	GS = Cast<ATankGameState>(UGameplayStatics::GetGameState(this));
+	GS = Cast<ATankStateBase>(UGameplayStatics::GetGameState(this));
 }
 
 // Called when the game starts or when spawned

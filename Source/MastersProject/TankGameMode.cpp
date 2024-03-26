@@ -4,15 +4,16 @@
 #include "TankGameMode.h"
 #include "TankController.h"
 #include "TankAIController.h"
-#include "TankGameState.h"
+
+#include "TankStateBase.h"
 #include "Kismet/GameplayStatics.h"
 
 ATankGameMode::ATankGameMode()
 {
 	//Set Defaults
 	PlayerControllerClass = ATankAIController::StaticClass();
-	GameStateClass = ATankGameState::StaticClass();
-	GS = Cast<ATankGameState>(UGameplayStatics::GetGameState(this));
+	GameStateClass = ATankStateBase::StaticClass();
+	GS = Cast<ATankStateBase>(UGameplayStatics::GetGameState(this));
 }
 
 void ATankGameMode::GameOverCheck()

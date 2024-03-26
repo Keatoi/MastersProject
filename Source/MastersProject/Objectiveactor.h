@@ -35,7 +35,7 @@ UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	UPROPERTY()
 	class ATankGameMode* GM;
 	UPROPERTY()
-	class ATankGameState* GS;
+	class ATankStateBase* GS;
     UPROPERTY()
 	FTimerHandle CaptureHandle;
 	UPROPERTY()

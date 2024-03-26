@@ -21,5 +21,5 @@ public:
 	void HandleGameOver();
 protected:
 	UPROPERTY()
-	class ATankGameState* GS;
+	class ATankStateBase* GS;
 };
