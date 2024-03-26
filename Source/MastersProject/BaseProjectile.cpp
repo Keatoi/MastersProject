@@ -28,7 +28,7 @@ ABaseProjectile::ABaseProjectile()
 	RootComponent = Sphere;
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	Shell->SetupAttachment(Sphere);
-	BombComponent = CreateDefaultSubobject<UBombComponent>(TEXT("Bomb Component"));
+	HEComponent = CreateDefaultSubobject<UBombComponent>(TEXT("Bomb Component"));
 	Speed = 3000.f;//Used if the simple custom projectile movement is used
 	if(!ProjectileMovementComponent)
 	{
@@ -161,14 +161,14 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	//check if bomb component is valid and there is explosive filler in the projectile
 	//if so detonate
-	if(!BombComponent->IsValidLowLevelFast())
+	if(!HEComponent->IsValidLowLevelFast())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Bomb not valid"));
 	}
-	if(ExplosiveFiller > 1.f && BombComponent->IsValidLowLevelFast())
+	if(ExplosiveFiller > 1.f && HEComponent->IsValidLowLevelFast())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Exploding"));
-		BombComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
+		HEComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
 		
 	
 	}
@@ -292,10 +292,10 @@ void ABaseProjectile::ProxCheck()
 		if(isHit)
 		{
 			//Explosion code stuff here- see onHit.
-			if(ExplosiveFiller > 1.f && BombComponent->IsValidLowLevelFast())
+			if(ExplosiveFiller > 1.f && HEComponent->IsValidLowLevelFast())
 			{
 				UE_LOG(LogTemp, Log, TEXT("Exploding(PROX)"));
-				BombComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
+				HEComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
 			}
 		}
 			

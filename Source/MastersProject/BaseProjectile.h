@@ -47,7 +47,7 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USphereComponent* Sphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	class UBombComponent* BombComponent;
+	class UBombComponent* HEComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	FName ProjectileName = "Solid Shot";
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
