@@ -6,6 +6,7 @@
 
 #include "Components/SphereComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -61,6 +62,7 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 		if(GetStaticMesh)
 		{
 			GetStaticMesh->AddRadialImpulse(Location,range,strength,RIF_Linear,true);
+			
 		}
 		else
 		{
@@ -70,6 +72,7 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 				GetSKM->AddRadialImpulse(Location,range,strength,RIF_Linear,true);
 			}
 		}
+		Actors->TakeDamage(strength,FDamageEvent(),GetOwner()->GetInstigatorController(),GetOwner());
 	}
 	
 	//Originally the bomb code had the sphere expand like an actual fireball before I realised how stupid it would be for optimisation purposes

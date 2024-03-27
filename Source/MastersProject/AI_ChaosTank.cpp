@@ -16,7 +16,7 @@ AAI_ChaosTank::AAI_ChaosTank()
 	PawnSense->SetPeripheralVisionAngle(125.f);
 	
 	PawnSense->SensingInterval = .25f;//Sense every 0.25 seconds
-	
+	GetVehicleMovement()->SetThrottleInput(1.f);
 }
 
 void AAI_ChaosTank::BeginPlay()
