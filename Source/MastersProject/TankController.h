@@ -9,6 +9,7 @@
 #include "InputAction.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GenericTeamAgentInterface.h"
 #include "TankController.generated.h"
 
 class AChaosTankPawn;
@@ -16,7 +17,7 @@ class AChaosTankPawn;
  * 
  */
 UCLASS()
-class MASTERSPROJECT_API ATankController : public APlayerController
+class MASTERSPROJECT_API ATankController : public APlayerController,public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 	
@@ -26,7 +27,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupInputComponent() override;
-	class AChaosTankPawn* PC;
+	FGenericTeamId TeamID = FGenericTeamId(1);
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	UPROPERTY()
+	TObjectPtr<class AChaosTankPawn> PC;
 	//InputMappingContext
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* InputMapping;

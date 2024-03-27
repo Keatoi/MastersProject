@@ -43,6 +43,11 @@ void ATankController::SetupInputComponent()
 	Ei->BindAction(InputGunnerCam, ETriggerEvent::Started, this, &ATankController::GunnerView);
 }
 
+FGenericTeamId ATankController::GetGenericTeamId() const
+{
+	return TeamID;
+}
+
 void ATankController::MoveTriggered(const FInputActionValue& Value)
 {
 	if(PC)
