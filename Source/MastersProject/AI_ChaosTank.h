@@ -24,6 +24,8 @@ protected:
 	UBehaviorTree* Tree;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
 	class UPawnSensingComponent* PawnSense;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<class USplineComponent> Spline;
 	/////////////////////////////////////////////////////////////////////////
 	// UPawnSensingComponent Delegates
 public:
@@ -36,4 +38,6 @@ public:
 	void SetThrottle(float Throttle);
 	UFUNCTION()
 	void SetBrake(float Brake);
+	UFUNCTION()
+	void Pathfinding();
 };

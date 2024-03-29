@@ -29,14 +29,14 @@ EBTNodeResult::Type UBTTask_VehicleMoveTo::ExecuteTask(UBehaviorTreeComponent& O
 			FRotator InterpRot = FMath::RInterpTo(Npc->GetActorRotation(), LookAtRotation, DeltaTime, InterpSpeed);
 			
 			Npc->SetActorRotation(InterpRot,ETeleportType::TeleportPhysics);
-			//if (Npc->IsA<AAI_ChaosTank>())
-			//{
-			//	//Movement Code
-			//	//Cast To AITank
-			//	//AAI_ChaosTank* ChaosTank = Cast<AAI_ChaosTank>(GetWorld());
-			//	//ChaosTank->SetThrottle(1.f);
+			if (Npc->IsA<AAI_ChaosTank>())
+			{
+				//Movement Code
+				//Cast To AITank
+				Controller->MoveToLocation(TargetLocation,AcceptanceRadius,true,true,false,false);
+				UE_LOG(LogTemp,Warning,TEXT("Moving To: %s"),*TargetLocation.ToString());
 
-			//}
+			}
 			//Finish successfully
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return EBTNodeResult::Succeeded;

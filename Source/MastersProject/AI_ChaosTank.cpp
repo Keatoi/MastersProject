@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "Components/SplineComponent.h"
 
 AAI_ChaosTank::AAI_ChaosTank()
 {
@@ -17,6 +18,7 @@ AAI_ChaosTank::AAI_ChaosTank()
 	
 	PawnSense->SensingInterval = .25f;//Sense every 0.25 seconds
 	GetVehicleMovement()->SetThrottleInput(1.f);
+	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Path"));
 }
 
 void AAI_ChaosTank::BeginPlay()
@@ -52,4 +54,9 @@ void AAI_ChaosTank::SetThrottle(float Throttle)
 void AAI_ChaosTank::SetBrake(float Brake)
 {
 	GetVehicleMovement()->SetBrakeInput(Brake);
+}
+
+void AAI_ChaosTank::Pathfinding()
+{
+	
 }
