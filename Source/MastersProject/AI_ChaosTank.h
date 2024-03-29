@@ -17,6 +17,7 @@ class MASTERSPROJECT_API AAI_ChaosTank : public AChaosTankPawn
 public:
 	AAI_ChaosTank();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	UBehaviorTree* GetBehaviourTree() const;//BT getter for AI Controller
 	
 protected:
@@ -26,6 +27,10 @@ protected:
 	class UPawnSensingComponent* PawnSense;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<class USplineComponent> Spline;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
+	float SplineDetection = 2500.f;//Distance at which the Vehicle can detect the next spine point
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
+	FVector TargetLoc;
 	/////////////////////////////////////////////////////////////////////////
 	// UPawnSensingComponent Delegates
 public:
@@ -39,5 +44,5 @@ public:
 	UFUNCTION()
 	void SetBrake(float Brake);
 	UFUNCTION()
-	void Pathfinding();
+	float Pathfinding();//returns the amount of steering/rotation needed to traverse spline
 };

@@ -6,7 +6,11 @@
 #include "Camera/CameraComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "Components/SplineComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AAI_ChaosTank::AAI_ChaosTank()
 {
@@ -26,6 +30,22 @@ void AAI_ChaosTank::BeginPlay()
 	Super::BeginPlay();
 	PawnSense->OnSeePawn.AddDynamic(this,&AAI_ChaosTank::OnSeePawn);
 	PawnSense->OnHearNoise.AddDynamic(this,&AAI_ChaosTank::OnHearNoise);
+	GetVehicleMovementComponent()->SetThrottleInput(1.f);
+}
+
+void AAI_ChaosTank::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	Spline->ClearSplinePoints();
+	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this,0);
+	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this,GetActorLocation(),TargetLoc);
+	TArray<FVector> Paths  = NavPath->PathPoints;
+	for (auto Path : Paths)
+	{
+		Spline->AddSplinePoint(Path,ESplineCoordinateSpace::World,true);
+		
+	}
+	GetVehicleMovementComponent()->SetYawInput(Pathfinding());
 }
 
 UBehaviorTree* AAI_ChaosTank::GetBehaviourTree() const
@@ -56,7 +76,17 @@ void AAI_ChaosTank::SetBrake(float Brake)
 	GetVehicleMovement()->SetBrakeInput(Brake);
 }
 
-void AAI_ChaosTank::Pathfinding()
+float AAI_ChaosTank::Pathfinding()
 {
-	
+	FVector ClosestTangent = Spline->FindTangentClosestToWorldLocation(GetActorLocation(),ESplineCoordinateSpace::World);
+	FVector TangentNormal = ClosestTangent.GetSafeNormal(0.001) * SplineDetection;
+	FVector ClosestLocation = Spline->FindLocationClosestToWorldLocation((GetActorLocation()+TangentNormal),ESplineCoordinateSpace::World);
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),ClosestLocation);
+	FRotator DeltaRotator = UKismetMathLibrary::NormalizedDeltaRotator(GetActorRotation(),LookAtRotation);
+	//return a clamped yaw value to use in turning
+	FVector2D InRange(45.f,-45.f);
+	FVector2D OutRange(-1.f,1.f);
+	float DeltaYaw = DeltaRotator.Yaw;
+	float Steering =  FMath::GetMappedRangeValueClamped(InRange,OutRange,DeltaYaw);
+	return Steering;
 }
