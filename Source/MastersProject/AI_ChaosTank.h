@@ -19,6 +19,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	UBehaviorTree* GetBehaviourTree() const;//BT getter for AI Controller
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
+	FVector TargetLoc;
 	
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
@@ -29,8 +31,7 @@ protected:
 	TObjectPtr<class USplineComponent> Spline;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
 	float SplineDetection = 2500.f;//Distance at which the Vehicle can detect the next spine point
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
-	FVector TargetLoc;
+	
 	/////////////////////////////////////////////////////////////////////////
 	// UPawnSensingComponent Delegates
 public:

@@ -32,10 +32,11 @@ EBTNodeResult::Type UBTTask_RandomPatrol::ExecuteTask(UBehaviorTreeComponent& Ow
 					OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
 					UE_LOG(LogTemp,Warning,TEXT("Location Saved"));
 					UE_LOG(LogTemp,Warning,TEXT("Target Location: %s"),*TargetLocation.ToString());
+					FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
+					return EBTNodeResult::Succeeded;
 				}
 				//Finish successfully
-				FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
-				return EBTNodeResult::Succeeded;
+				
 			}
 			
 		}

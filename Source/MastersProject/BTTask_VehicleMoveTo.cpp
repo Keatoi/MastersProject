@@ -33,9 +33,11 @@ EBTNodeResult::Type UBTTask_VehicleMoveTo::ExecuteTask(UBehaviorTreeComponent& O
 			{
 				//Movement Code
 				//Cast To AITank
-				Controller->MoveToLocation(TargetLocation,AcceptanceRadius,true,true,false,false);
+				AAI_ChaosTank* tank = Cast<AAI_ChaosTank>(Npc);
+				tank->TargetLoc = TargetLocation;
+				
 				UE_LOG(LogTemp,Warning,TEXT("Moving To: %s"),*TargetLocation.ToString());
-
+				return EBTNodeResult::Failed;
 			}
 			//Finish successfully
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
