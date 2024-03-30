@@ -64,6 +64,7 @@ AChaosTankPawn::AChaosTankPawn()
 	TimeLineUpdateEvent.BindDynamic(this, &AChaosTankPawn::TurretDetonationImpulse);
 	TimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Detonation TimeLine"));
 	bCanShoot = true;//Ensure we can shoot at spawn
+	Tags.Add(Team);//Add actor Tag for team detection purposes
 }
 
 void AChaosTankPawn::BeginPlay()

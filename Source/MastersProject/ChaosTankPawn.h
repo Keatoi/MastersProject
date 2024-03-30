@@ -98,6 +98,8 @@ public:
 	UInputAction* InputGunnerCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TEnumAsByte<ECameraType> CamEnum;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Teams")
+	FName Team = "Blue";
 	//==================Dynamic Materials================================
 	UPROPERTY(EditAnywhere, Category = "Materials")
 	UMaterialInstanceDynamic* DynamicLeftTrack;

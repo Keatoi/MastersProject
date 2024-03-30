@@ -23,6 +23,7 @@ AAI_ChaosTank::AAI_ChaosTank()
 	PawnSense->SensingInterval = .25f;//Sense every 0.25 seconds
 	GetVehicleMovement()->SetThrottleInput(1.f);
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Path"));
+	Tags.Add(Team);
 }
 
 void AAI_ChaosTank::BeginPlay()
@@ -31,6 +32,8 @@ void AAI_ChaosTank::BeginPlay()
 	PawnSense->OnSeePawn.AddDynamic(this,&AAI_ChaosTank::OnSeePawn);
 	PawnSense->OnHearNoise.AddDynamic(this,&AAI_ChaosTank::OnHearNoise);
 	GetVehicleMovementComponent()->SetThrottleInput(1.f);
+	if(Team == "Blue"){EnemyTeam = "Red";}
+	else{EnemyTeam == "Blue";}
 }
 
 void AAI_ChaosTank::Tick(float DeltaTime)
@@ -64,6 +67,11 @@ void AAI_ChaosTank::OnSeePawn(APawn* OtherPawn)
 {
 	FString message = TEXT("Saw Actor ") + OtherPawn->GetName();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+	if(OtherPawn->ActorHasTag(EnemyTeam))
+	{
+		EnemyLoc = OtherPawn->GetActorLocation();
+		UE_LOG(LogTemp,Warning,TEXT("Enemy Location: %s"),*EnemyLoc.ToString())
+	}
 }
 
 void AAI_ChaosTank::SetThrottle(float Throttle)
@@ -89,4 +97,14 @@ float AAI_ChaosTank::Pathfinding()
 	float DeltaYaw = DeltaRotator.Yaw;
 	float Steering =  FMath::GetMappedRangeValueClamped(InRange,OutRange,DeltaYaw);
 	return Steering;
+}
+
+void AAI_ChaosTank::AimAtEnemy()
+{
+	//Find LookAtRotation and Delta Rotator - Note that GetSocketLocation/Rotation can recieve the name of a Bone instead of a socket,
+	//we will use this to ensure the LookAtRotation is based on the turret not the hull
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(FName()),EnemyLoc);
+	FRotator DeltaRotator = UKismetMathLibrary::NormalizedDeltaRotator(GetMesh()->GetSocketRotation(FName()),LookAtRotation);
+	TurretRot = DeltaRotator;
+	
 }

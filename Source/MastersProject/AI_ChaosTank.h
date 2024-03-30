@@ -20,13 +20,23 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	UBehaviorTree* GetBehaviourTree() const;//BT getter for AI Controller
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
-	FVector TargetLoc;
+	FVector TargetLoc;//Used for pathing, use EnemyLoc for opposing team
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Bones", meta=(AllowPrivateAccess="true"))
+	FName TurretBoneName= "turret_jnt";//declare this hear instead of hard coding, in case we add new skeletons for the AI later.
 	
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
 	UBehaviorTree* Tree;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
 	class UPawnSensingComponent* PawnSense;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
+	FName EnemyTeam;//Player does not require an EnemyTeam Tag so we put it in the AI child instead, This Actors Team var is declared in the parent
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Bones", meta=(AllowPrivateAccess="true"))
+	FRotator TurretRot; // Used in Anim BP to set turret rotation
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
+	FVector EnemyLoc;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
+	uint8 bEnemySpotted:1;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<class USplineComponent> Spline;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
@@ -46,4 +56,6 @@ public:
 	void SetBrake(float Brake);
 	UFUNCTION()
 	float Pathfinding();//returns the amount of steering/rotation needed to traverse spline
+	UFUNCTION()
+	void AimAtEnemy();
 };
