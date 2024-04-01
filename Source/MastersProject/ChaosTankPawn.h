@@ -191,6 +191,10 @@ public:
 	USceneComponent* EngineExhaustComponent; 
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float ExhaustCoefStrength;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners")
+	UAudioComponent* MS_Engine;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners")
+	float EngineRPM;
 	//=================Misc. Variables===========
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tank Statistics", meta = (AllowPrivateAccess = "true"))
 	FName TankName = "T-72(A)";

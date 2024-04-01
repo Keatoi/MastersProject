@@ -13,6 +13,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Channels/MovieSceneDoubleChannel.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/Vector.h"
@@ -59,6 +60,8 @@ AChaosTankPawn::AChaosTankPawn()
 	FuelTank = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Fuel Tank"));
 	FuelTank->ComponentTags.Add(FName("FuelTank"));
 	FuelTank->SetupAttachment(GetMesh(),"FuelTankSocket");
+	//MetaSounds Audio
+	MS_Engine = CreateDefaultSubobject<UAudioComponent>(TEXT("MS_Engine"));
 	/*Timeline setup 
 	 */
 	TimeLineUpdateEvent.BindDynamic(this, &AChaosTankPawn::TurretDetonationImpulse);
@@ -76,6 +79,7 @@ void AChaosTankPawn::BeginPlay()
 	DynamicLeftTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(1);
 	DynamicRightTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(2);
 	SetMatScalarSpeed(2,0.f);
+	MS_Engine->Play();
 }
 
 void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -98,8 +102,16 @@ void AChaosTankPawn::Tick(float DeltaTime)
 		bStopTurn = false;
 	}
 	ScreenVector = GetGunSightScreenPos();
-	if(GetVehicleMovementComponent()->GetThrottleInput() == 0.f && SB_Engine_Idle){UGameplayStatics::PlaySoundAtLocation(GetWorld(),SB_Engine_Idle,EngineBlock->GetComponentLocation());}
-	else if(SB_Engine){UGameplayStatics::PlaySoundAtLocation(GetWorld(),SB_Engine_Idle,EngineBlock->GetComponentLocation());}
+	//Apply parameter to Metasound graph to change pitch and mix between idle and move soundcues
+	if(MS_Engine)
+	{
+		FVector2D InRange(-30.f,30.f);
+		FVector2D OutRange(0.f,1.f);
+		EngineRPM = FMath::GetMappedRangeValueClamped(InRange,OutRange,UKismetMathLibrary::Abs(GetVehicleMovement()->GetForwardSpeedMPH()));
+		
+		MS_Engine->SetFloatParameter("input",EngineRPM);
+		//UE_LOG(LogTemp, Display, TEXT("look value: %f"), EngineRPM);
+	}
 }
 
 void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -160,7 +172,7 @@ FVector AChaosTankPawn::GetGunSightScreenPos()
 void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 {
 	//movement code
-	//UE_LOG(LogTemp, Display, TEXT("move value: %f"), Value.Get<float>());
+	
 	const FVector2d MoveValue = Value.Get<FVector2d>();
 	//If Engine broke cancel move
 	if(EngineEnum == EENGINEBROKE)
