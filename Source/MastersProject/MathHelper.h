@@ -28,6 +28,8 @@ public:
 	                                   float thickness) -> float;
 	UFUNCTION(BlueprintCallable)
 	static float LineOfSightThickness(float L, float a);
+	UFUNCTION(BlueprintCallable)
+	static float GetDistance(AActor* ActorA, AActor* ActorB);
 	/*================Explosion Functions============================================*/
 	static float CalculateBlastRadius(float BombMass);
 	

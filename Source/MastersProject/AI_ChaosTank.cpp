@@ -70,8 +70,15 @@ void AAI_ChaosTank::OnSeePawn(APawn* OtherPawn)
 	if(OtherPawn->ActorHasTag(EnemyTeam))
 	{
 		EnemyLoc = OtherPawn->GetActorLocation();
+		bEnemySpotted = true;
 		UE_LOG(LogTemp,Warning,TEXT("Enemy Location: %s"),*EnemyLoc.ToString())
 	}
+	else
+	{
+		bEnemySpotted = false;
+	}
+	//print enemyspotted result
+	UE_LOG(LogTemp,Warning,TEXT("bEnemySpotted: %s"), bEnemySpotted ? TEXT("True"):TEXT("False"));
 }
 
 void AAI_ChaosTank::SetThrottle(float Throttle)
@@ -107,4 +114,9 @@ void AAI_ChaosTank::AimAtEnemy()
 	FRotator DeltaRotator = UKismetMathLibrary::NormalizedDeltaRotator(GetMesh()->GetSocketRotation(FName()),LookAtRotation);
 	TurretRot = DeltaRotator;
 	
+}
+
+void AAI_ChaosTank::Attack()
+{
+	//Attack Code here
 }

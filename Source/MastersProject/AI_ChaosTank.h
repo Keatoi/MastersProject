@@ -23,6 +23,8 @@ public:
 	FVector TargetLoc;//Used for pathing, use EnemyLoc for opposing team
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Bones", meta=(AllowPrivateAccess="true"))
 	FName TurretBoneName= "turret_jnt";//declare this hear instead of hard coding, in case we add new skeletons for the AI later.
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
+	uint8 bEnemySpotted:1;
 	
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
@@ -35,8 +37,7 @@ protected:
 	FRotator TurretRot; // Used in Anim BP to set turret rotation
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
 	FVector EnemyLoc;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
-	uint8 bEnemySpotted:1;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<class USplineComponent> Spline;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
@@ -58,4 +59,6 @@ public:
 	float Pathfinding();//returns the amount of steering/rotation needed to traverse spline
 	UFUNCTION()
 	void AimAtEnemy();
+	UFUNCTION()
+	void Attack();
 };

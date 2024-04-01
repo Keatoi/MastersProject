@@ -106,6 +106,11 @@ float MathHelper::LineOfSightThickness(float L, float a)
 	return L/cos(a);
 }
 
+float MathHelper::GetDistance(AActor* ActorA, AActor* ActorB)
+{
+	return (ActorA->GetActorLocation()-ActorB->GetActorLocation()).Size();
+}
+
 float MathHelper::CalculateBlastRadius(float BombMass)
 {
 	//Based on Hopkinson-Cranz Scaling law and assumes an Bare explosion. Can be checked against https://unsaferguard.org/un-saferguard/explosion-danger-area. Should be accurate within 1 or 2 metres
