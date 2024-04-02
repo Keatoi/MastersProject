@@ -100,7 +100,8 @@ void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 	//Clear Timers if actor removed from level (i.e destroyed or despawned)
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-	ExhaustInstance->Deactivate();
+	if(ExhaustInstance){ExhaustInstance->Deactivate();}
+	
 }
 
 void AChaosTankPawn::Tick(float DeltaTime)
