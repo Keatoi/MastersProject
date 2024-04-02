@@ -10,6 +10,7 @@
 #include "MathHelper.h"
 #include "Camera/CameraComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Channels/MovieSceneDoubleChannel.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -61,7 +62,7 @@ AChaosTankPawn::AChaosTankPawn()
 	FuelTank->ComponentTags.Add(FName("FuelTank"));
 	FuelTank->SetupAttachment(GetMesh(),"FuelTankSocket");
 	//MetaSounds Audio
-	MS_Engine = CreateDefaultSubobject<UAudioComponent>(TEXT("MS_Engine"));
+	MS_Turbine = CreateDefaultSubobject<UAudioComponent>(TEXT("MS_Engine"));
 	/*Timeline setup 
 	 */
 	TimeLineUpdateEvent.BindDynamic(this, &AChaosTankPawn::TurretDetonationImpulse);
@@ -79,11 +80,19 @@ void AChaosTankPawn::BeginPlay()
 	DynamicLeftTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(1);
 	DynamicRightTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(2);
 	SetMatScalarSpeed(2,0.f);
-	if(MS_Engine)
+	if(MS_Turbine)
 	{
-		MS_Engine->Play();
+		MS_Turbine->Activate();
+		MS_Turbine->Play();
+		
 	}
-	
+	if(ExhaustSystem)
+	{
+		//Engine Exhaust.Doesn't auto destroy since we want this to be on until tank is destroyed
+		FVector Scale = {1,1,1};
+		ExhaustInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),ExhaustSystem,EngineBlock->GetComponentLocation(),FRotator::ZeroRotator,Scale,false);
+		ExhaustInstance->Activate();
+	}
 }
 
 void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -91,6 +100,7 @@ void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 	//Clear Timers if actor removed from level (i.e destroyed or despawned)
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	ExhaustInstance->Deactivate();
 }
 
 void AChaosTankPawn::Tick(float DeltaTime)
@@ -107,13 +117,14 @@ void AChaosTankPawn::Tick(float DeltaTime)
 	}
 	ScreenVector = GetGunSightScreenPos();
 	//Apply parameter to Metasound graph to change pitch and mix between idle and move soundcues
-	if(MS_Engine)
+	if(MS_Turbine)
 	{
 		FVector2D InRange(-30.f,30.f);
 		FVector2D OutRange(0.f,1.f);
 		EngineRPM = FMath::GetMappedRangeValueClamped(InRange,OutRange,UKismetMathLibrary::Abs(GetVehicleMovement()->GetForwardSpeedMPH()));
 		
-		MS_Engine->SetFloatParameter("input",EngineRPM);
+		//MS_Turbine->SetFloatParameter("input",EngineRPM);
+		MS_Turbine->SetIntParameter("input",EngineRPM);
 		//UE_LOG(LogTemp, Display, TEXT("look value: %f"), EngineRPM);
 	}
 }
@@ -334,9 +345,11 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
 				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
 				if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
-				if (NSFireMuzzle)
+				if (MuzzleSystem)
 				{
-					//NCMuzzle = UNiagaraFunctionLibrary::SpawnSystemAttached(NSFireMuzzle,MuzzleFlashComponent,NAME_None,MuzzleFlashComponent->GetComponentLocation(),MuzzleFlashComponent->GetComponentRotation(),EAttachLocation::SnapToTarget,true,true);
+					FVector Scale = {1,1,1};
+					MuzzleInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),MuzzleSystem,SpawnLocation,FRotator::ZeroRotator,Scale);
+					MuzzleInstance->Activate();
 				}
 			}
 		}
@@ -468,15 +481,18 @@ void AChaosTankPawn::Detonate()
 	
 	TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
 	TimeLine->PlayFromStart();
-	
+	if(DeathSystem)
+	{
+		FVector Scale = {1,1,1};
+		DeathInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),DeathSystem,GetMesh()->GetSocketLocation(TurretBone),FRotator::ZeroRotator,Scale);
+		DeathInstance->Activate();
+	}
 	
 }
 
 void AChaosTankPawn::TurretDetonationImpulse()
 {
-	//const FVector ImpulsetoAdd = {0,0.f,-100000.0f};
-	//GetMesh()->AddImpulseAtLocation(ImpulsetoAdd,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
-	UE_LOG(LogTemp,Warning,TEXT("Turret Detonation  Called"));
+	
 }
 
 void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponent)

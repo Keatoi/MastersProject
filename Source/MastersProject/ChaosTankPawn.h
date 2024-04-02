@@ -176,23 +176,27 @@ public:
 	USoundBase* SB_Turret;
 	//================Visual Effects============
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
-	class UNiagaraSystem* NSFireMuzzle;
+	class UNiagaraSystem* MuzzleSystem;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
-	class UNiagaraComponent* NCMuzzle;
+	class UNiagaraComponent* MuzzleInstance;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
-	UNiagaraSystem* NSDeath;
+	UNiagaraSystem* DeathSystem;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	 UNiagaraComponent* DeathInstance;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	USceneComponent* MuzzleFlashComponent; //Where the MuzzleFlash will be spawned
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float MuzzleCoefStrength;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
-	class UNiagaraSystem* EngineEffectExhaust;
+	UNiagaraSystem* ExhaustSystem;
+	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
+	UNiagaraComponent* ExhaustInstance;
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	USceneComponent* EngineExhaustComponent; 
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float ExhaustCoefStrength;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners", meta = (AllowPrivateAccess = "true"))
-	UAudioComponent* MS_Engine;
+	UAudioComponent* MS_Turbine;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners")
 	float EngineRPM;
 	//=================Misc. Variables===========
