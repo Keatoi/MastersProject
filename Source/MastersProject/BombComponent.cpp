@@ -1,5 +1,7 @@
 // Masters Project - Owen S Atkinson
 #include "BombComponent.h"
+
+#include "NiagaraComponent.h"
 #include  "ShrapnelComponent.h"
 
 #include "Components/SphereComponent.h"
@@ -48,11 +50,17 @@ void UBombComponent::CreateFireball(float range,float strength,FVector Location)
 	TArray<AActor*> OverlapArray;
 	FireBallCollision->SetSphereRadius(range);
 	FireBallCollision->GetOverlappingActors(OverlapArray);
+	//Use the Emmitter for the center of the fireball and the NS for the sparks/smoke
 	if(FireballEmitter)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),FireballEmitter,Location);
 	}
-	
+	if(BombSystem)
+	{
+		FVector Scale = {1,1,1};
+		BombInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),BombSystem,Location,FRotator::ZeroRotator,Scale);
+		BombInstance->Activate();
+	}
 	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),NSFireball,Location);
 	for(AActor* Actors : OverlapArray)
 	{

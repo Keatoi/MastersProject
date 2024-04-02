@@ -24,6 +24,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	class USphereComponent* FireBallCollision;
 	
@@ -33,6 +34,11 @@ public:
 	float RadiusIncrement = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
 	UParticleSystem* FireballEmitter;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
+	UNiagaraSystem* BombSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* BombInstance;
 	
 	UFUNCTION(BlueprintCallable)
 	void CreateFireball(float range,float strength,FVector Location);

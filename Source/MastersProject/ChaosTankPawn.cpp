@@ -79,7 +79,11 @@ void AChaosTankPawn::BeginPlay()
 	DynamicLeftTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(1);
 	DynamicRightTrack = GetMesh()->CreateAndSetMaterialInstanceDynamic(2);
 	SetMatScalarSpeed(2,0.f);
-	MS_Engine->Play();
+	if(MS_Engine)
+	{
+		MS_Engine->Play();
+	}
+	
 }
 
 void AChaosTankPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)

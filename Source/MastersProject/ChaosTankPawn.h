@@ -191,7 +191,7 @@ public:
 	USceneComponent* EngineExhaustComponent; 
 	UPROPERTY(EditAnywhere, Category = "Effects and Spawners")
 	float ExhaustCoefStrength;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners", meta = (AllowPrivateAccess = "true"))
 	UAudioComponent* MS_Engine;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Effects and Spawners")
 	float EngineRPM;
