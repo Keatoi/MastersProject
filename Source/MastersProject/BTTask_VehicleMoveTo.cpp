@@ -37,11 +37,9 @@ EBTNodeResult::Type UBTTask_VehicleMoveTo::ExecuteTask(UBehaviorTreeComponent& O
 				tank->TargetLoc = TargetLocation;
 				
 				UE_LOG(LogTemp,Warning,TEXT("Moving To: %s"),*TargetLocation.ToString());
-				return EBTNodeResult::Failed;
-			}
-			//Finish successfully
-				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return EBTNodeResult::Succeeded;
+			}
+			
 			
 
 		}

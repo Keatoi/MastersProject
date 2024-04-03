@@ -42,7 +42,7 @@ float MathHelper::DeMarresEquation(float RP, float V, float RV, float D, float R
 	 *will try to make one that does not later on. Useful for only AP/APCBC shells, rods and missiles need a different equation.
 	 *Equation is:
 	 * Armour Penetration = RefPen * (V/Ref V)^1.4283 * (D/Ref D)^1.0714 * (M/D^3)^0.7143 / (Ref W/Ref D)
-	 * R prefix = Reference
+	 * Ref prefix = Reference
 	 * RP = Reference Penetration
 	 * V = velocity
 	 * D = Diameter of Shell

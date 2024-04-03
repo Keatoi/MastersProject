@@ -16,5 +16,5 @@ class MASTERSPROJECT_API UMyBTTask_CheckObj : public UBTTask_BlackboardBase
 public:
 	explicit UMyBTTask_CheckObj(FObjectInitializer const& ObjectInitializer);
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-	float AcceptableDistance = 10000.f;
+	float AcceptableDistance = 50000.f;
 };

@@ -44,7 +44,7 @@ void UBombComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// ...
 }
 
-void UBombComponent::CreateFireball(float range,float strength,FVector Location)
+void UBombComponent::CreateFireball(FVector Location,float range,float strength)
 {
 	UE_LOG(LogTemp,Warning,TEXT("Creating Fireball"));
 	TArray<AActor*> OverlapArray;

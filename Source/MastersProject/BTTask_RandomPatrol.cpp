@@ -28,14 +28,15 @@ EBTNodeResult::Type UBTTask_RandomPatrol::ExecuteTask(UBehaviorTreeComponent& Ow
 				FNavLocation Location;
 				if(NavSys->GetRandomReachablePointInRadius(Origin,PatrolRadii,Location))
 				{
-					FVector TargetLocation = {Location.Location.X,Location.Location.Y,0.f};
+					FVector TargetLocation = {Location.Location.X + 3000.f,Location.Location.Y + 3000.f,0.f};
 					OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
 					UE_LOG(LogTemp,Warning,TEXT("Location Saved"));
 					UE_LOG(LogTemp,Warning,TEXT("Target Location: %s"),*TargetLocation.ToString());
+					//Finish successfully
 					FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 					return EBTNodeResult::Succeeded;
+					
 				}
-				//Finish successfully
 				
 			}
 			

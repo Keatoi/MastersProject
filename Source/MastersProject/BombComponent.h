@@ -41,7 +41,7 @@ public:
 	UNiagaraComponent* BombInstance;
 	
 	UFUNCTION(BlueprintCallable)
-	void CreateFireball(float range,float strength,FVector Location);
+	void CreateFireball(FVector Location, float range = 50.f,float strength = 250.f);
 	
 		
 };

@@ -124,7 +124,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		//The projectiles base penetration
 		UE_LOG(LogTemp, Log, TEXT("Penetration: %f"), PenetrationAmount);
 		//Calculate the effective amount of armour using the actual armour thickness and hit angle
-		float RelativeArmourThickness = MathHelper::CalculateRelativeArmourThickness(HitArmourThickness,Angle);
+		float RelativeArmourThickness = MathHelper::LineOfSightThickness(HitArmourThickness,Angle);
 		UE_LOG(LogTemp, Log, TEXT("Relative Armour: %f"), RelativeArmourThickness);
 		//If the projectile can penetrate proceed with damage implementation
 		if(PenetrationAmount > RelativeArmourThickness)
@@ -139,6 +139,24 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		{
 			bPenetrated = false;
 		}
+	}
+	else
+	{
+		//If no physical material attempt calculation of pen estimates
+		float ArmourPen = MathHelper::KruppsEquation(ProjectileMovementComponent->GetMaxSpeed(),Mass,Calibre);
+		if(PenetrationAmount > ArmourPen)
+		{
+			float Damage = PenetrationAmount - ArmourPen;
+			OtherActor->TakeDamage(Damage,FDamageEvent(),GetInstigatorController(),this);
+			float PostPenAmount = PenetrationAmount - ArmourPen;//Change Penetration amount
+			UE_LOG(LogTemp, Log, TEXT("Remaining Pen (Krupps): %f"), PostPenAmount);
+			bPenetrated = true;
+		}
+		else
+		{
+			bPenetrated = false;
+		}
+		
 	}
 	//if projectile penetrated and the hit actor implements the damage interface, for each hit component call the interface func,
 	//which adds the component to an array accessible by the Hit Actor allowing for mechanics such as component based damage models
@@ -170,7 +188,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	if(ExplosiveFiller > 1.f && HEComponent->IsValidLowLevelFast())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Exploding"));
-		HEComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
+		HEComponent->CreateFireball(GetActorLocation(),ExplosiveFiller,500.f);
 		
 	
 	}
@@ -312,7 +330,7 @@ void ABaseProjectile::ProxCheck()
 			if(ExplosiveFiller > 1.f && HEComponent->IsValidLowLevelFast())
 			{
 				UE_LOG(LogTemp, Log, TEXT("Exploding(PROX)"));
-				HEComponent->CreateFireball(100.f,ExplosiveFiller,GetActorLocation());
+				HEComponent->CreateFireball(GetActorLocation(),ExplosiveFiller,500.f);
 			}
 		}
 			
