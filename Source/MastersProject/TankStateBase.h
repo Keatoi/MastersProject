@@ -20,11 +20,11 @@ class MASTERSPROJECT_API ATankStateBase : public AGameStateBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
-	int BlueTickets = 0.f;
+	float BlueTickets = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
-	int RedTickets = 0.f;
+	float RedTickets = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
-	int NeutralTickets = 0.f;
+	float NeutralTickets = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
 	TEnumAsByte<EGameState> GameEnum;
 };

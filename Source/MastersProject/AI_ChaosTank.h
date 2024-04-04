@@ -46,6 +46,8 @@ protected:
 	/////////////////////////////////////////////////////////////////////////
 	// UPawnSensingComponent Delegates
 public:
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle AimDelayHandle;
 	UFUNCTION()
 	void OnHearNoise(APawn *OtherActor, const FVector &Location, float Volume);
 

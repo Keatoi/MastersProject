@@ -23,6 +23,7 @@ AAI_ChaosTank::AAI_ChaosTank()
 	PawnSense->SensingInterval = .25f;//Sense every 0.25 seconds
 	GetVehicleMovement()->SetThrottleInput(1.f);
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Path"));
+	//Spline->SetupAttachment(GetMesh());
 	Tags.Add(Team);
 }
 
@@ -32,6 +33,8 @@ void AAI_ChaosTank::BeginPlay()
 	PawnSense->OnSeePawn.AddDynamic(this,&AAI_ChaosTank::OnSeePawn);
 	PawnSense->OnHearNoise.AddDynamic(this,&AAI_ChaosTank::OnHearNoise);
 	GetVehicleMovementComponent()->SetThrottleInput(1.f);
+	//Set Target Location now, if left to default at origin the spline can get stuck under the mountains at the centre of the map
+	TargetLoc = GetActorForwardVector() * 1000.f;
 	if(Team == "Blue"){EnemyTeam = "Red";}
 	else{EnemyTeam == "Blue";}
 }
@@ -72,6 +75,7 @@ void AAI_ChaosTank::OnSeePawn(APawn* OtherPawn)
 		EnemyLoc = OtherPawn->GetActorLocation();
 		bEnemySpotted = true;
 		UE_LOG(LogTemp,Warning,TEXT("Enemy Location: %s"),*EnemyLoc.ToString())
+		GetWorld()->GetTimerManager().SetTimer(AimDelayHandle,this,&AAI_ChaosTank::Attack,1.f,false);
 	}
 	else
 	{
