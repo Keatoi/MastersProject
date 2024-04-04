@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "MathHelper.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "Components/SplineComponent.h"
@@ -52,6 +53,22 @@ void AAI_ChaosTank::Tick(float DeltaTime)
 		
 	}
 	GetVehicleMovementComponent()->SetYawInput(Pathfinding());
+	
+	if(MathHelper::GetDistance(GetActorLocation(),TargetLoc) < BrakingDistance)
+	{
+		GetVehicleMovement()->SetThrottleInput(0.f);
+		GetVehicleMovement()->SetBrakeInput(0.5f);
+	}
+	else if(MathHelper::GetDistance(GetActorLocation(),TargetLoc) < MaxSpeedDistance)
+	{
+		GetVehicleMovement()->SetThrottleInput(1.f);
+		GetVehicleMovement()->SetBrakeInput(0.f);
+	}
+	else
+	{
+		GetVehicleMovement()->SetThrottleInput(0.5f);
+		GetVehicleMovement()->SetBrakeInput(0.f);
+	}
 }
 
 UBehaviorTree* AAI_ChaosTank::GetBehaviourTree() const

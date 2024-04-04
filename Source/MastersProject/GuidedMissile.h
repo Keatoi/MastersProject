@@ -14,8 +14,8 @@ class MASTERSPROJECT_API AGuidedMissile : public ABaseProjectile
 {
 	GENERATED_BODY()
 protected:
-	
-	void Launch(FVector MoveDirection);
+	AGuidedMissile();
+	virtual void Launch(FVector MoveDirection) override;
 	UPROPERTY()
 	uint8 bHasTarget:1 = false;
 public:

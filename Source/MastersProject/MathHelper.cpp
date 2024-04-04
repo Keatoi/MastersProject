@@ -111,6 +111,11 @@ float MathHelper::GetDistance(AActor* ActorA, AActor* ActorB)
 	return (ActorA->GetActorLocation()-ActorB->GetActorLocation()).Size();
 }
 
+float MathHelper::GetDistance(FVector LocationA, FVector LocationB)
+{
+	return (LocationA - LocationB).Size();
+}
+
 float MathHelper::CalculateBlastRadius(float BombMass)
 {
 	//Based on Hopkinson-Cranz Scaling law and assumes an Bare explosion. Can be checked against https://unsaferguard.org/un-saferguard/explosion-danger-area. Should be accurate within 1 or 2 metres

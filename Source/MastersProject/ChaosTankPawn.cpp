@@ -12,6 +12,7 @@
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Blueprint/UserWidget.h"
 #include "Channels/MovieSceneDoubleChannel.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/AudioComponent.h"
@@ -74,6 +75,7 @@ AChaosTankPawn::AChaosTankPawn()
 void AChaosTankPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	bStopTurn = false;
 	OnActorHit.AddDynamic(this,&AChaosTankPawn::OnTankHit);
 	//Set Dynamic Material Instances and start speed at 0.f so it isn't moving
@@ -406,6 +408,16 @@ void AChaosTankPawn::SecondaryFireReleased(const FInputActionValue& Value)
 
 void AChaosTankPawn::CameraSwap(const FInputActionValue& Value)
 {
+	if(!bUseClearMesh)
+	{
+		GetMesh()->SetMaterial(0,BaseMat);
+		bUseClearMesh = true;
+	}
+	else
+	{
+		GetMesh()->SetMaterial(0,ClearMat);
+		bUseClearMesh = false;
+	}
 }
 
 void AChaosTankPawn::DefaultView(const FInputActionValue& Value)

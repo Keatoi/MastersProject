@@ -100,6 +100,12 @@ public:
 	TEnumAsByte<ECameraType> CamEnum;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Teams")
 	FName Team = "Blue";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
+	UMaterial* BaseMat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
+	UMaterial* ClearMat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
+	uint8 bUseClearMesh:1;
 	//==================Dynamic Materials================================
 	UPROPERTY(EditAnywhere, Category = "Materials")
 	UMaterialInstanceDynamic* DynamicLeftTrack;

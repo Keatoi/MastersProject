@@ -37,11 +37,14 @@ protected:
 	FRotator TurretRot; // Used in Anim BP to set turret rotation
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
 	FVector EnemyLoc;
-	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
+	float BrakingDistance = 500.f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI", meta=(AllowPrivateAccess="true"))
+	float MaxSpeedDistance = 5000.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<class USplineComponent> Spline;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Pathing", meta=(AllowPrivateAccess="true"))
-	float SplineDetection = 2500.f;//Distance at which the Vehicle can detect the next spine point
+	float SplineDetection = 15000.f;//Distance at which the Vehicle can detect the next spine point
 	
 	/////////////////////////////////////////////////////////////////////////
 	// UPawnSensingComponent Delegates
