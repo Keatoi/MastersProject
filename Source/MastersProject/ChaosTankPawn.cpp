@@ -514,22 +514,25 @@ void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponen
 	if(HitComponent == EngineBlock)
 	{
 		EngineEnum = EENGINEBROKE;
+		GetVehicleMovement()->SetThrottleInput(0.f);
+		GetVehicleMovementComponent()->SetBrakeInput(1.f);
 		TankHealth -= 30;
 		UE_LOG(LogTemp,Warning,TEXT("Engine Damaged"));
-		
 	}
 	else if(HitComponent == GunBreech)
 	{
 		if(BreechEnum == EBREECHDAMAGED)
 		{
 			BreechEnum = EBREECHBROKE;
-			TankHealth -= 40;
+			TankHealth -= 25.f;
+			bCanShoot = false;
 			UE_LOG(LogTemp,Warning,TEXT("Breech Destroyed"));
 		}
 		else
 		{
 			BreechEnum = EBREECHDAMAGED;
-			TankHealth -= 20;
+			TankHealth -= 20.f;
+			ReloadTime = 12.f;
 			UE_LOG(LogTemp,Warning,TEXT("Breech Damaged"));
 			
 		}

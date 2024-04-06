@@ -35,7 +35,7 @@ void AAI_ChaosTank::BeginPlay()
 	PawnSense->OnHearNoise.AddDynamic(this,&AAI_ChaosTank::OnHearNoise);
 	GetVehicleMovementComponent()->SetThrottleInput(1.f);
 	//Set Target Location now, if left to default at origin the spline can get stuck under the mountains at the centre of the map
-	TargetLoc = GetActorForwardVector() * 1000.f;
+	TargetLoc = GetActorLocation() + FVector{1000.f,0.f,0.f};
 	if(Team == "Blue"){EnemyTeam = "Red";}
 	else{EnemyTeam == "Blue";}
 }
