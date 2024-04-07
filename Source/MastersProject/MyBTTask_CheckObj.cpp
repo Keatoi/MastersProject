@@ -35,8 +35,10 @@ EBTNodeResult::Type UMyBTTask_CheckObj::ExecuteTask(UBehaviorTreeComponent& Owne
 				else
 				{
 					UE_LOG(LogTemp,Warning,TEXT("Objective Invalid"));
-					FVector TargetLocation = npc-> GetActorForwardVector() + FVector {5000.f,0.f,0.f};
-					OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
+					//FVector TargetLocation = npc-> GetActorForwardVector() + FVector {5000.f,0.f,0.f};
+					//OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
+					FinishLatentTask(OwnerComp,EBTNodeResult::Failed);
+					return EBTNodeResult::Failed;
 				}
 				FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 				return EBTNodeResult::Succeeded;
