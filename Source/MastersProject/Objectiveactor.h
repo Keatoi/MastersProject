@@ -37,9 +37,13 @@ UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	UPROPERTY()
 	class ATankStateBase* GS;
     UPROPERTY()
-	FTimerHandle CaptureHandle;
+	FTimerHandle RedCaptureHandle;
 	UPROPERTY()
-	FTimerHandle DecapHandle;
+	FTimerHandle BlueCaptureHandle;
+	UPROPERTY()
+	FTimerHandle RedDecapHandle;
+	UPROPERTY()
+	FTimerHandle BlueDecapHandle;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Scoring")
 	int BlueCaptureScore = 0.f;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Scoring")
@@ -53,7 +57,11 @@ UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	UFUNCTION()
 	void CompareCaptureScores();
 	UFUNCTION()
-	void IncreaseTickets(TEnumAsByte<ECaptureEnum> TickettoIncrease);
+	void IncreaseBlueScore();
 	UFUNCTION()
-	void DecreaseTickets(TEnumAsByte<ECaptureEnum> TickettoDecrease);
+	void DecreaseBlueScore();
+	UFUNCTION()
+	void IncreaseRedScore();
+	UFUNCTION()
+	void DecreaseRedScore();
 };
