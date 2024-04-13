@@ -127,6 +127,7 @@ void AChaosTankPawn::Tick(float DeltaTime)
 		bStopTurn = false;
 	}
 	ScreenVector = GetGunSightScreenPos();
+	Execute_SetTargetLocation(this,ScreenVector);
 	//Apply parameter to Metasound graph to change pitch and mix between idle and move soundcues
 	if(MS_Turbine)
 	{
@@ -177,7 +178,7 @@ FVector AChaosTankPawn::GetGunSightScreenPos()
 	//Trace then project to screen for UI Location
 	FHitResult SightHit;
 	FVector GunLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
-	FVector GunFWD = GetMesh()->GetSocketRotation("Main_CaliberSocket").Vector() * 10000.f;
+	FVector GunFWD = GetMesh()->GetSocketRotation("Main_CaliberSocket").Vector() * 25000.f;
 	FVector TraceEnd = GunLocation + GunFWD;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
@@ -524,7 +525,7 @@ void AChaosTankPawn::TurretDetonationImpulse()
 
 void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponent)
 {
-	UE_LOG(LogTemp,Warning,TEXT("Implementation Called"));
+	//UE_LOG(LogTemp,Warning,TEXT("Implementation Called"));
 	if(HitComponent == EngineBlock)
 	{
 		EngineEnum = EENGINEBROKE;
@@ -621,6 +622,8 @@ void AChaosTankPawn::SetMatScalarSpeed(int Index, float Speed)
 	}
 	
 }
+
+
 
 
 

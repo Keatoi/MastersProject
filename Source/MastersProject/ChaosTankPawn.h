@@ -5,6 +5,7 @@
 #include "BaseProjectile.h"
 #include "InputActionValue.h"
 #include "CoreMinimal.h"
+#include "GuidedInterface.h"
 #include "WheeledVehiclePawn.h"
 #include "Components/TimelineComponent.h"
 #include "ChaosTankPawn.generated.h"
@@ -46,7 +47,7 @@ enum ECannonEnum
  * 
  */
 UCLASS()
-class MASTERSPROJECT_API AChaosTankPawn : public AWheeledVehiclePawn, public IDamageInterface
+class MASTERSPROJECT_API AChaosTankPawn : public AWheeledVehiclePawn, public IDamageInterface, public IGuidedInterface
 {
 	GENERATED_BODY()
 public:
@@ -307,5 +308,6 @@ public:
 	//====Helper Functions===
 	UFUNCTION()
 	void SetMatScalarSpeed(int Index,float Speed);
+	
 	
 };
