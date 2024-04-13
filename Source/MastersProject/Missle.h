@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	AMissle();
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
-	UStaticMeshComponent* SM;
+	USkeletalMeshComponent* SM;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
 	USphereComponent* CollisionSphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Niagara")

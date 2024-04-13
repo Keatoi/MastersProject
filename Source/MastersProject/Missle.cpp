@@ -14,7 +14,7 @@ AMissle::AMissle()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//Actor Component Initialisation
-	SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	SM = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	RootComponent = SM;
 	SM->SetSimulatePhysics(true);
 	SM->SetEnableGravity(false);//Gravity disabled since the missile has no fuel system so will be eternally propelled
