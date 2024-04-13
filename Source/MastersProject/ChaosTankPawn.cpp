@@ -2,20 +2,22 @@
 
 
 #include "ChaosTankPawn.h"
-#include "InputMappingContext.h"
-#include "InputAction.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "MathHelper.h"
-#include "Camera/CameraComponent.h"
+
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
+#include "MathHelper.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Blueprint/UserWidget.h"
-#include "Channels/MovieSceneDoubleChannel.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Camera/CameraComponent.h"
+#include "Channels/MovieSceneDoubleChannel.h"
 #include "Components/AudioComponent.h"
+#include "Components/PostProcessComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/Vector.h"
@@ -42,6 +44,10 @@ AChaosTankPawn::AChaosTankPawn()
 	GunnerCamera->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator::ZeroRotator);
 	GunnerCamera->SetActive(false);
 	CamManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	PostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>("PPComp");
+	PostProcessComponent->SetupAttachment(GetMesh());
+	
+	
 	/*Interior Damage Mesh Set Up
 	 * Each Component needs a Static Mesh, a Socket to attach to and an Tag,
 	 * The projectile will MultiTrace upon impact and if it hits an component it will have the appropriate effect here,
@@ -70,6 +76,8 @@ AChaosTankPawn::AChaosTankPawn()
 	TimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Detonation TimeLine"));
 	bCanShoot = true;//Ensure we can shoot at spawn
 	Tags.Add(Team);//Add actor Tag for team detection purposes
+	
+	
 }
 
 void AChaosTankPawn::BeginPlay()
@@ -469,6 +477,12 @@ void AChaosTankPawn::GunnerView(const FInputActionValue& Value)
 		GunnerCamera->SetActive(true);
 		CamEnum = ECameraType::EGUNNERCAM;
 	}
+}
+
+void AChaosTankPawn::ThermalCam(const FInputActionValue& Value)
+{
+	//apply post processing settings to give a thermal effect to the camera
+	
 }
 
 void AChaosTankPawn::OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

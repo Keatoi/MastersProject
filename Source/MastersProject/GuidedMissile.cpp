@@ -7,14 +7,17 @@
 
 AGuidedMissile::AGuidedMissile()
 {
-	ProjectileMovementComponent->bIsHomingProjectile = true;
+	
+}
+
+void AGuidedMissile::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
 }
 
 void AGuidedMissile::Launch(FVector MoveDirection)
 {
-	if(!bHasTarget)
-	{
-		ProjectileMovementComponent->Velocity = GetActorUpVector() * MissileLaunchDistance;
-	}
+	ProjectileMovementComponent->Velocity = GetActorForwardVector() * ProjectileMovementComponent->InitialSpeed;
 	
 }

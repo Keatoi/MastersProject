@@ -1,0 +1,35 @@
+Begin Object Class=/Script/Engine.Skeleton Name="SKEL_East_IFV_Type86" ExportPath="/Script/Engine.Skeleton'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86'"
+   Begin Object Class=/Script/Engine.SkeletalMeshSocket Name="SkeletalMeshSocket_0" ExportPath="/Script/Engine.SkeletalMeshSocket'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:SkeletalMeshSocket_0'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalMeshSocket Name="SkeletalMeshSocket_1" ExportPath="/Script/Engine.SkeletalMeshSocket'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:SkeletalMeshSocket_1'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalMeshSocket Name="SkeletalMeshSocket_3" ExportPath="/Script/Engine.SkeletalMeshSocket'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:SkeletalMeshSocket_3'"
+   End Object
+   Begin Object Class=/Script/Engine.AnimCurveMetaData Name="AnimCurveMetaData_0" ExportPath="/Script/Engine.AnimCurveMetaData'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:AnimCurveMetaData_0'"
+   End Object
+   Begin Object Name="SkeletalMeshSocket_0" ExportPath="/Script/Engine.SkeletalMeshSocket'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:SkeletalMeshSocket_0'"
+      SocketName="main_cannon"
+      BoneName="gun_jnt"
+      RelativeLocation=(X=158.147227,Y=0.037096,Z=-0.000001)
+   End Object
+   Begin Object Name="SkeletalMeshSocket_1" ExportPath="/Script/Engine.SkeletalMeshSocket'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:SkeletalMeshSocket_1'"
+      SocketName="coax_gun"
+      BoneName="gun_jnt"
+      RelativeLocation=(X=34.533038,Y=15.416182,Z=0.365698)
+   End Object
+   Begin Object Name="SkeletalMeshSocket_3" ExportPath="/Script/Engine.SkeletalMeshSocket'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:SkeletalMeshSocket_3'"
+      SocketName="missile"
+      BoneName="gun_jnt"
+      RelativeLocation=(X=63.000000,Y=0.000004,Z=30.000000)
+      RelativeRotation=(Pitch=8.000000,Yaw=-0.000033,Roll=-0.000191)
+   End Object
+   Begin Object Name="AnimCurveMetaData_0" ExportPath="/Script/Engine.AnimCurveMetaData'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SKEL_East_IFV_Type86.SKEL_East_IFV_Type86:AnimCurveMetaData_0'"
+   End Object
+   BoneTree(143)=()
+   VirtualBoneGuid=983814074CD8117AA0324486A5778B50
+   Sockets(0)="/Script/Engine.SkeletalMeshSocket'SkeletalMeshSocket_0'"
+   Sockets(1)="/Script/Engine.SkeletalMeshSocket'SkeletalMeshSocket_1'"
+   Sockets(2)="/Script/Engine.SkeletalMeshSocket'SkeletalMeshSocket_3'"
+   PreviewSkeletalMesh="/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SK_East_IFV_Type86.SK_East_IFV_Type86"
+   AssetUserData(0)="/Script/Engine.AnimCurveMetaData'AnimCurveMetaData_0'"
+End Object

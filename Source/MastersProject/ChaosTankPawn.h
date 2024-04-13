@@ -97,6 +97,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputGunnerCam;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputThermalCam;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TEnumAsByte<ECameraType> CamEnum;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Teams")
 	FName Team = "Blue";
@@ -106,6 +108,14 @@ public:
 	UMaterial* ClearMat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
 	uint8 bUseClearMesh:1;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Post-Processing")
+	struct FPostProcessSettings ThermalPP;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Post-Processing")
+	struct FPostProcessSettings NormalPP;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Post-Processing")
+	class UPostProcessComponent* PostProcessComponent;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Post-Processing")
+	UMaterialInstance* MI_Thermal;
 	//==================Dynamic Materials================================
 	UPROPERTY(EditAnywhere, Category = "Materials")
 	UMaterialInstanceDynamic* DynamicLeftTrack;
@@ -276,6 +286,8 @@ public:
 	void CommanderView(const FInputActionValue &Value);
 	UFUNCTION()
 	void GunnerView(const FInputActionValue &Value);
+	UFUNCTION()
+	void ThermalCam(const FInputActionValue &Value);
 	UFUNCTION()
 	void OnTankHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()

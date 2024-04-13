@@ -1,0 +1,162 @@
+Begin Object Class=/Script/Engine.PhysicsAsset Name="PHYS_East_IFV_Type86" ExportPath="/Script/Engine.PhysicsAsset'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86'"
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_1" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_1'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_45" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_45'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_46" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_46'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_47" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_47'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_48" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_48'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_49" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_49'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_50" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_50'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_51" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_51'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_52" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_52'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_53" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_53'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_54" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_54'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_55" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_55'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_56" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_56'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_57" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_57'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_58" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_58'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_59" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_59'"
+   End Object
+   Begin Object Class=/Script/Engine.SkeletalBodySetup Name="SkeletalBodySetup_60" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_60'"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfo Name="SceneThumbnailInfo_0" ExportPath="/Script/UnrealEd.SceneThumbnailInfo'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SceneThumbnailInfo_0'"
+   End Object
+   Begin Object Name="SkeletalBodySetup_1" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_1'"
+      AggGeom=(BoxElems=((Center=(X=22.832678,Y=-0.000000,Z=30.228189),X=670.000000,Y=300.000000,Z=110.000000,Name="cog_jnt_box")))
+      BoneName="cog_jnt"
+      PhysicsType=PhysType_Simulated
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_45" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_45'"
+      AggGeom=(SphereElems=((Radius=33.000000,Name="lf_wheel_1_fake_jnt_sphere")))
+      BoneName="lf_wheel_1_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_46" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_46'"
+      AggGeom=(SphereElems=((Radius=33.000000,Name="lf_wheel_8_fake_jnt_sphere")))
+      BoneName="lf_wheel_8_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_47" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_47'"
+      AggGeom=(SphereElems=((Radius=33.000000,Name="rt_wheel_1_fake_jnt_sphere")))
+      BoneName="rt_wheel_1_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_48" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_48'"
+      AggGeom=(SphereElems=((Radius=33.000000,Name="rt_wheel_8_fake_jnt_sphere")))
+      BoneName="rt_wheel_8_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_49" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_49'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="lf_wheel_2_fake_jnt_sphere")))
+      BoneName="lf_wheel_2_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_50" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_50'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="lf_wheel_3_fake_jnt_sphere")))
+      BoneName="lf_wheel_3_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_51" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_51'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="lf_wheel_4_fake_jnt_sphere")))
+      BoneName="lf_wheel_4_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_52" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_52'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="lf_wheel_5_fake_jnt_sphere")))
+      BoneName="lf_wheel_5_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_53" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_53'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="lf_wheel_6_fake_jnt_sphere")))
+      BoneName="lf_wheel_6_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_54" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_54'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="lf_wheel_7_fake_jnt_sphere")))
+      BoneName="lf_wheel_7_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_55" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_55'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="rt_wheel_2_fake_jnt_sphere")))
+      BoneName="rt_wheel_2_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_56" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_56'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="rt_wheel_3_fake_jnt_sphere")))
+      BoneName="rt_wheel_3_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_57" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_57'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="rt_wheel_4_fake_jnt_sphere")))
+      BoneName="rt_wheel_4_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_58" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_58'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="rt_wheel_5_fake_jnt_sphere")))
+      BoneName="rt_wheel_5_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_59" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_59'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="rt_wheel_6_fake_jnt_sphere")))
+      BoneName="rt_wheel_6_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SkeletalBodySetup_60" ExportPath="/Script/Engine.SkeletalBodySetup'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SkeletalBodySetup_60'"
+      AggGeom=(SphereElems=((Radius=32.000000,Name="rt_wheel_7_fake_jnt_sphere")))
+      BoneName="rt_wheel_7_fake_jnt"
+      CollisionTraceFlag=CTF_UseSimpleAsComplex
+   End Object
+   Begin Object Name="SceneThumbnailInfo_0" ExportPath="/Script/UnrealEd.SceneThumbnailInfo'/Game/VigilanteMovement/Vehicles/East_IFV_Type86/PHYS_East_IFV_Type86.PHYS_East_IFV_Type86:SceneThumbnailInfo_0'"
+   End Object
+   PreviewSkeletalMesh="/Game/VigilanteMovement/Vehicles/East_IFV_Type86/SK_East_IFV_Type86.SK_East_IFV_Type86"
+   BoundsBodies(0)=0
+   BoundsBodies(1)=1
+   BoundsBodies(2)=2
+   BoundsBodies(3)=3
+   BoundsBodies(4)=4
+   BoundsBodies(5)=5
+   BoundsBodies(6)=6
+   BoundsBodies(7)=7
+   BoundsBodies(8)=8
+   BoundsBodies(9)=9
+   BoundsBodies(10)=10
+   BoundsBodies(11)=11
+   BoundsBodies(12)=12
+   BoundsBodies(13)=13
+   BoundsBodies(14)=14
+   BoundsBodies(15)=15
+   BoundsBodies(16)=16
+   SkeletalBodySetups(0)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_1'"
+   SkeletalBodySetups(1)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_45'"
+   SkeletalBodySetups(2)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_46'"
+   SkeletalBodySetups(3)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_47'"
+   SkeletalBodySetups(4)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_48'"
+   SkeletalBodySetups(5)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_49'"
+   SkeletalBodySetups(6)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_50'"
+   SkeletalBodySetups(7)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_51'"
+   SkeletalBodySetups(8)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_52'"
+   SkeletalBodySetups(9)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_53'"
+   SkeletalBodySetups(10)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_54'"
+   SkeletalBodySetups(11)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_55'"
+   SkeletalBodySetups(12)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_56'"
+   SkeletalBodySetups(13)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_57'"
+   SkeletalBodySetups(14)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_58'"
+   SkeletalBodySetups(15)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_59'"
+   SkeletalBodySetups(16)="/Script/Engine.SkeletalBodySetup'SkeletalBodySetup_60'"
+   ThumbnailInfo="/Script/UnrealEd.SceneThumbnailInfo'SceneThumbnailInfo_0'"
+End Object
