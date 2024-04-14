@@ -164,6 +164,7 @@ void AChaosTankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Ei->BindAction(InputLook,ETriggerEvent::Triggered,this,&AChaosTankPawn::Look);
 	Ei->BindAction(InputFirePrimary,ETriggerEvent::Started,this,&AChaosTankPawn::PrimaryFire);
 	Ei->BindAction(InputFireSecondary,ETriggerEvent::Started,this,&AChaosTankPawn::SecondaryFireStart);
+	Ei->BindAction(InputMissleToggle,ETriggerEvent::Started,this,&AChaosTankPawn::MissileToggle);
 	Ei->BindAction(InputReloadIM,ETriggerEvent::Started,this,&AChaosTankPawn::ReloadInteriorMagazine);
 	Ei->BindAction(InputCameraSwap,ETriggerEvent::Started,this,&AChaosTankPawn::CameraSwap);
 	Ei->BindAction(InputDefaultCam,ETriggerEvent::Started,this,&AChaosTankPawn::DefaultView);
@@ -361,15 +362,15 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 					if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
 					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
 				}
-				else
+				else if (MissleMagazine > 0.f)
 				{
-					AmmoReserve--;
-					if(InteriorMagazine > 0) InteriorMagazine--;//Ensure Interior Magazine does not go into the negatives
+					MissleMagazine--;
+					
 					AMissle* Missile = World->SpawnActor<AMissle>(MissileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
 					GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
 				
 					bCanShoot = false;//Disable firing until reloaded
-					if(InteriorMagazine > 0.f)ReloadTime = 5.f; else ReloadTime = 10.f;//Set ReloadTime based on Two-tier magazine ammo
+					ReloadTime = 10.f;//Set ReloadTime based on Two-tier magazine ammo
 					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
 				}
 				//Start reload sequence
@@ -430,6 +431,18 @@ void AChaosTankPawn::SecondaryFireReleased(const FInputActionValue& Value)
 {
 	//Clear Timer on release to stop the gun firing
 	GetWorldTimerManager().ClearTimer(MGFireRateHandle);
+}
+
+void AChaosTankPawn::MissileToggle(const FInputActionValue& Value)
+{
+	if(bUseMissile)
+	{
+		bUseMissile = false;
+	}
+	else
+	{
+		bUseMissile = true;
+	}
 }
 
 void AChaosTankPawn::CameraSwap(const FInputActionValue& Value)

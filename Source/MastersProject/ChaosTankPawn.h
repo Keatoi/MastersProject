@@ -86,6 +86,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputFireSecondary;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InputMissleToggle;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InputReloadIM;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	 UInputAction* InputLook;
@@ -168,6 +170,8 @@ public:
 	TSubclassOf<class AMissle> MissileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	uint8 bUseMissile:1 = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	int MissleMagazine = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	float ReloadTime = 5.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
@@ -283,6 +287,8 @@ public:
 	void SecondaryFire();
 	UFUNCTION()
 	void SecondaryFireReleased(const FInputActionValue &Value);
+	UFUNCTION()
+	void MissileToggle(const FInputActionValue &Value);
 	UFUNCTION()
 	void CameraSwap(const FInputActionValue &Value);
 	UFUNCTION()
