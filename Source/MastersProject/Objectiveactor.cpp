@@ -2,7 +2,7 @@
 #include "Objectiveactor.h"
 #include "Components/SphereComponent.h"
 #include "TankGameMode.h"
-#include "TankGameState.h"
+
 #include "TankStateBase.h"
 
 
@@ -78,11 +78,13 @@ void AObjectiveactor::CompareCaptureScores()
 	{
 		//Blue team has more points so set to blue
 		CaptureTeamEnum = EBLU;
+		GS->DecreaseRed(50.f);
 	}
 	else if (RedCaptureScore > BlueCaptureScore)
 	{
 		//Red team has more points than Blue so set to red
 		CaptureTeamEnum = ERED;
+		GS->DecreaseBlue(50.f);
 	}
 	else
 	{

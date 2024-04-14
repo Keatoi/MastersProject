@@ -165,6 +165,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ABaseProjectile> MachineGunProjectileClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AMissle> MissileClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
+	uint8 bUseMissile:1 = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	float ReloadTime = 5.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectiles", meta = (AllowPrivateAccess = "true"))
 	int MGMagazine;

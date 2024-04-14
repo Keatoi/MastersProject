@@ -9,6 +9,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "MathHelper.h"
+#include "Missle.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Blueprint/UserWidget.h"
@@ -328,7 +329,7 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 	//If mouse pressed and there is no gun damage and we can shoot/arent reloading/aren't out of ammo
 	if(const bool FireValue = Value.Get<bool>() &&(BreechEnum != EBREECHBROKE || CannonEnum != ECANNONBROKE) && bCanShoot && AmmoReserve > 0.f)
 	{
-		if(!ProjectileClass)
+		if(!ProjectileClass || !MissileClass)
 		{
 			// no projectile class set error prevention + on screen debug message
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("No Projectile Class Loaded!!!"));
@@ -340,9 +341,7 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 			//Spawn Parameters
 			if(UWorld* World = GetWorld())
 			{
-				//Remove Ammo from two-tier Magazines
-				AmmoReserve--;
-				if(InteriorMagazine > 0) InteriorMagazine--;//Ensure Interior Magazine does not go into the negatives
+				
 				//Spawn Parameters
 				FActorSpawnParameters SParams;
 				SParams.Owner = this;
@@ -350,12 +349,30 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 				//Spawn Projectile At location of the Main Barrels Socket
 				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
 				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
-				ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
-				GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
+				if(!bUseMissile)
+				{
+					//Remove Ammo from two-tier Magazines
+					AmmoReserve--;
+					if(InteriorMagazine > 0) InteriorMagazine--;//Ensure Interior Magazine does not go into the negatives
+					ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
+					GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
 				
-				bCanShoot = false;//Disable firing until reloaded
-				if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
-				World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);//Start reload sequence
+					bCanShoot = false;//Disable firing until reloaded
+					if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
+					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
+				}
+				else
+				{
+					AmmoReserve--;
+					if(InteriorMagazine > 0) InteriorMagazine--;//Ensure Interior Magazine does not go into the negatives
+					AMissle* Missile = World->SpawnActor<AMissle>(MissileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
+					GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
+				
+					bCanShoot = false;//Disable firing until reloaded
+					if(InteriorMagazine > 0.f)ReloadTime = 5.f; else ReloadTime = 10.f;//Set ReloadTime based on Two-tier magazine ammo
+					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
+				}
+				//Start reload sequence
 				if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
 				if (MuzzleSystem)
 				{

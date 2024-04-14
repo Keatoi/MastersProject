@@ -27,4 +27,12 @@ public:
 	float NeutralTickets = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
 	TEnumAsByte<EGameState> GameEnum;
+	UFUNCTION()
+	void DecreaseRed(float amount);
+	UFUNCTION()
+	void IncreaseRed(float amount);
+	UFUNCTION()
+	void DecreaseBlue(float amount);
+	UFUNCTION()
+	void IncreaseBlue(float amount);
 };

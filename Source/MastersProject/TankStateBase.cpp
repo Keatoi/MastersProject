@@ -15,3 +15,23 @@ void ATankStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME(ATankStateBase, NeutralTickets);
 	DOREPLIFETIME(ATankStateBase, GameEnum);
 }
+
+void ATankStateBase::DecreaseRed(float amount)
+{
+	RedTickets -= amount;
+}
+
+void ATankStateBase::IncreaseRed(float amount)
+{
+	RedTickets += amount;
+}
+
+void ATankStateBase::DecreaseBlue(float amount)
+{
+	BlueTickets -= amount;
+}
+
+void ATankStateBase::IncreaseBlue(float amount)
+{
+	BlueTickets += amount;
+}
