@@ -14,7 +14,7 @@ AMissle::AMissle()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//Actor Component Initialisation
-	SM = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+	SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = SM;
 	SM->SetSimulatePhysics(true);
 	SM->SetEnableGravity(false);//Gravity disabled since the missile has no fuel system so will be eternally propelled
@@ -56,6 +56,7 @@ void AMissle::ProximityCheck()
 			{
 				UE_LOG(LogTemp, Log, TEXT("Exploding(PROX)"));
 				HEComponent->CreateFireball(GetActorLocation(),ExplosiveFiller,500.f);
+				Destroy();
 			}
 		}
 			
@@ -91,6 +92,7 @@ void AMissle::Detonate()
 void AMissle::SetTargetLocation_Implementation(FVector TargetLocation)
 {
 	TargetLoc = TargetLocation;
+	UE_LOG(LogTemp,Warning,TEXT("Implementation Called"));
 	//IGuidedInterface::SetTargetLocation_Implementation(TargetLocation);
 }
 

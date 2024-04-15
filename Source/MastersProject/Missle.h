@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	AMissle();
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
-	USkeletalMeshComponent* SM;
+	UStaticMeshComponent* SM;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
 	USphereComponent* CollisionSphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Niagara")
@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
 	float MaxRange = 40000.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
-	float MinRange = 2000.f;
+	float MinRange = 20000.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
 	float ExplosiveFiller = 12000.f;//in grams
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")

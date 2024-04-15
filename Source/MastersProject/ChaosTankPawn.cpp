@@ -128,7 +128,15 @@ void AChaosTankPawn::Tick(float DeltaTime)
 		bStopTurn = false;
 	}
 	ScreenVector = GetGunSightScreenPos();
-	Execute_SetTargetLocation(this,ScreenVector);
+	if(Missile != nullptr)
+	{
+		if(Missile->GetClass()->ImplementsInterface(UGuidedInterface::StaticClass()))
+		{
+			Execute_SetTargetLocation(Missile,ScreenVector);
+		}
+		
+	}
+	
 	//Apply parameter to Metasound graph to change pitch and mix between idle and move soundcues
 	if(MS_Turbine)
 	{
@@ -361,20 +369,22 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 					bCanShoot = false;//Disable firing until reloaded
 					if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
 					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
+					if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
 				}
 				else if (MissleMagazine > 0.f)
 				{
 					MissleMagazine--;
 					
-					AMissle* Missile = World->SpawnActor<AMissle>(MissileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
+					Missile = World->SpawnActor<AMissle>(MissileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
 					GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
 				
 					bCanShoot = false;//Disable firing until reloaded
 					ReloadTime = 10.f;//Set ReloadTime based on Two-tier magazine ammo
 					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
+					if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//TODO: Replace with missile sound
 				}
 				//Start reload sequence
-				if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
+				
 				if (MuzzleSystem)
 				{
 					FVector Scale = {1,1,1};
