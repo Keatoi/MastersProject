@@ -52,6 +52,10 @@ void AObjectiveactor::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* Other
 		GetWorld()->GetTimerManager().SetTimer(RedCaptureHandle,this,&AObjectiveactor::IncreaseRedScore,3.f,true,1.f);
 		GetWorld()->GetTimerManager().SetTimer(BlueDecapHandle,this,&AObjectiveactor::DecreaseBlueScore,2.5f,true,2.f);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s : Has no team tag"), *OtherActor->GetName());
+	}
 }
 
 void AObjectiveactor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -78,13 +82,13 @@ void AObjectiveactor::CompareCaptureScores()
 	{
 		//Blue team has more points so set to blue
 		CaptureTeamEnum = EBLU;
-		GS->DecreaseRed(50.f);
+		//GS->DecreaseRed(50.f);
 	}
 	else if (RedCaptureScore > BlueCaptureScore)
 	{
 		//Red team has more points than Blue so set to red
 		CaptureTeamEnum = ERED;
-		GS->DecreaseBlue(50.f);
+		//GS->DecreaseBlue(50.f);
 	}
 	else
 	{
