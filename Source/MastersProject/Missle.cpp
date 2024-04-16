@@ -6,6 +6,8 @@
 #include "MathHelper.h"
 #include "Engine/DamageEvents.h"
 #include "BombComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -108,6 +110,12 @@ void AMissle::BeginPlay()
 	{
 		GetWorld()->GetTimerManager().SetTimer(MissleHandle,FuseTimer,false);
 	}
+	if(PlumeSystem)
+	{
+		FVector Scale = {1,1,1};
+		PlumeInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(PlumeSystem,SM,FName("Exhaust"),GetActorLocation(),-GetActorRotation(),EAttachLocation::SnapToTarget,true,true,ENCPoolMethod::None);
+		PlumeInstance->Activate();
+	}
 }
 
 // Called every frame
@@ -121,7 +129,7 @@ void AMissle::Tick(float DeltaTime)
 	//Update Pos
 	CurrLocation = GetActorLocation();
 	//Move the missile
-	SM->AddImpulse(this->GetActorForwardVector() * Speed);
+	SM->AddForce(this->GetActorForwardVector() * Speed);
 	//Rotate to face target Location
 	MissleRot();
 	//Proximity check

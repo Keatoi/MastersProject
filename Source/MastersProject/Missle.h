@@ -25,7 +25,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Niagara")
 	UNiagaraSystem* PlumeSystem;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Niagara")
-	UNiagaraComponent* PlumeComponent;
+	UNiagaraComponent* PlumeInstance;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	class UBombComponent* HEComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
