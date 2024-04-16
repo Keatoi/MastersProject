@@ -7,8 +7,11 @@
 #include "Perception/PawnSensingComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "MathHelper.h"
+#include "Missle.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SplineComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -140,4 +143,48 @@ void AAI_ChaosTank::AimAtEnemy()
 void AAI_ChaosTank::Attack()
 {
 	//Attack Code here
+	if(UWorld* World = GetWorld())
+			{
+				
+				//Spawn Parameters
+				FActorSpawnParameters SParams;
+				SParams.Owner = this;
+				SParams.Instigator = GetInstigator();
+				//Spawn Projectile At location of the Main Barrels Socket
+				FVector SpawnLocation = GetMesh()->GetSocketLocation("Main_CaliberSocket");
+				FRotator SpawnRotation = GetMesh()->GetSocketRotation("Main_CaliberSocket");
+				if(!bUseMissile)
+				{
+					//Remove Ammo from two-tier Magazines
+					AmmoReserve--;
+					if(InteriorMagazine > 0) InteriorMagazine--;//Ensure Interior Magazine does not go into the negatives
+					ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
+					GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
+				
+					bCanShoot = false;//Disable firing until reloaded
+					if(InteriorMagazine > 0.f)ReloadTime = 3.f; else ReloadTime = 5.f;//Set ReloadTime based on Two-tier magazine ammo
+					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
+					if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//Play Fire Sound if valid
+				}
+				else if (MissleMagazine > 0.f)
+				{
+					MissleMagazine--;
+					
+					Missile = World->SpawnActor<AMissle>(MissileClass,SpawnLocation,SpawnRotation,SParams);//Spawn Projectile
+					GetMesh()->AddImpulse(FVector(-150.f,0.f,0.f),FName(NAME_None),true);//Add Impulse to simulate recoil
+				
+					bCanShoot = false;//Disable firing until reloaded
+					ReloadTime = 10.f;//Set ReloadTime based on Two-tier magazine ammo
+					World->GetTimerManager().SetTimer(ReloadTimerHandle,this,&AChaosTankPawn::Reload,ReloadTime,false);
+					if(SB_MainGun){UGameplayStatics::PlaySoundAtLocation(World,SB_MainGun,SpawnLocation,SpawnRotation);}//TODO: Replace with missile sound
+				}
+				//Start reload sequence
+				
+				if (MuzzleSystem)
+				{
+					FVector Scale = {1,1,1};
+					MuzzleInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),MuzzleSystem,SpawnLocation,FRotator::ZeroRotator,Scale);
+					MuzzleInstance->Activate();
+				}
+			}
 }

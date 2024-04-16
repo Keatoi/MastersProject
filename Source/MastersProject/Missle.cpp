@@ -113,7 +113,7 @@ void AMissle::BeginPlay()
 	if(PlumeSystem)
 	{
 		FVector Scale = {1,1,1};
-		PlumeInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(PlumeSystem,SM,FName("Exhaust"),GetActorLocation(),-GetActorRotation(),EAttachLocation::SnapToTarget,true,true,ENCPoolMethod::None);
+		PlumeInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(PlumeSystem,SM,FName("Exhaust"),GetActorLocation(),GetActorRotation(),EAttachLocation::SnapToTarget,true,true,ENCPoolMethod::None);
 		PlumeInstance->Activate();
 	}
 }
