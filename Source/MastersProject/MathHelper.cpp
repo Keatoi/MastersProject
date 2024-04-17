@@ -116,6 +116,14 @@ float MathHelper::GetDistance(FVector LocationA, FVector LocationB)
 	return (LocationA - LocationB).Size();
 }
 
+float MathHelper::GetDamage(float BaseDamage, float ImpactDistance, float Armour)
+{
+	//Damage Calculation
+	
+	float Damage = 0.5 * BaseDamage + (1 - ImpactDistance/Armour);
+	return Damage;
+}
+
 float MathHelper::CalculateBlastRadius(float BombMass)
 {
 	//Based on Hopkinson-Cranz Scaling law and assumes an Bare explosion. Can be checked against https://unsaferguard.org/un-saferguard/explosion-danger-area. Should be accurate within 1 or 2 metres

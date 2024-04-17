@@ -32,6 +32,8 @@ public:
 	static float GetDistance(AActor* ActorA, AActor* ActorB);
 	UFUNCTION(BlueprintCallable)
 	static float GetDistance(FVector LocationA, FVector LocationB);
+	UFUNCTION(BlueprintCallable)
+	static float GetDamage(float BaseDamage,float ImpactDistance,float Armour);
 	/*================Explosion Functions============================================*/
 	static float CalculateBlastRadius(float BombMass);
 	

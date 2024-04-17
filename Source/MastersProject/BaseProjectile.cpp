@@ -130,9 +130,10 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if(PenetrationAmount > RelativeArmourThickness)
 		{
 			float Damage = PenetrationAmount - RelativeArmourThickness;
-			OtherActor->TakeDamage(Damage,FDamageEvent(),GetInstigatorController(),this);
+			float ActualDamage = MathHelper::GetDamage(Damage,DistanceTravelled(),RelativeArmourThickness);
+			OtherActor->TakeDamage(ActualDamage,FDamageEvent(),GetInstigatorController(),this);
 			float PostPenAmount = PenetrationAmount - RelativeArmourThickness;//Change Penetration amount
-			UE_LOG(LogTemp, Log, TEXT("Remaining Penetration: %f"), PostPenAmount);
+			UE_LOG(LogTemp, Log, TEXT("Actual Damage : %f"), ActualDamage);
 			bPenetrated = true;
 		}
 		else
