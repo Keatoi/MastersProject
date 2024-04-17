@@ -94,7 +94,7 @@ void AMissle::Detonate()
 void AMissle::SetTargetLocation_Implementation(FVector TargetLocation)
 {
 	TargetLoc = TargetLocation;
-	UE_LOG(LogTemp,Warning,TEXT("Implementation Called"));
+	
 	//IGuidedInterface::SetTargetLocation_Implementation(TargetLocation);
 }
 

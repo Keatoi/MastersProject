@@ -20,8 +20,17 @@ AObjectiveactor::AObjectiveactor()
 	CaptureZone->SetupAttachment(ObjectiveRoot);
 	CaptureZone->OnComponentBeginOverlap.AddDynamic(this,&AObjectiveactor::OnOverlapBegin);
 	CaptureZone->OnComponentEndOverlap.AddDynamic(this,&AObjectiveactor::OnOverlapEnd);
-	GM = Cast<ATankGameMode>(UGameplayStatics::GetGameMode(this));
-	GS = Cast<ATankStateBase>(UGameplayStatics::GetGameState(this));
+	UWorld* World = GetWorld();
+	if(World)
+	{
+		GM = Cast<ATankGameMode>(UGameplayStatics::GetGameMode(World));
+		GS = Cast<ATankStateBase>(UGameplayStatics::GetGameState(World));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO World"));
+	}
+	
 }
 
 // Called when the game starts or when spawned
@@ -82,12 +91,15 @@ void AObjectiveactor::CompareCaptureScores()
 	{
 		//Blue team has more points so set to blue
 		CaptureTeamEnum = EBLU;
+		
 		//GS->DecreaseRed(50.f);
 	}
 	else if (RedCaptureScore > BlueCaptureScore)
 	{
 		//Red team has more points than Blue so set to red
 		CaptureTeamEnum = ERED;
+		
+		
 		//GS->DecreaseBlue(50.f);
 	}
 	else
@@ -102,24 +114,44 @@ void AObjectiveactor::IncreaseBlueScore()
 {
 	BlueCaptureScore += 10.f;
 	UE_LOG(LogTemp,Warning,TEXT("Blue Score: %d"),BlueCaptureScore);
+	
 }
 
 void AObjectiveactor::DecreaseBlueScore()
 {
 	BlueCaptureScore -= 5.f;
 	UE_LOG(LogTemp,Warning,TEXT("Blue Score: %d"),BlueCaptureScore);
+	if(GS)
+	{
+		GS->DecreaseBlue(5.f);
+		UE_LOG(LogTemp,Warning,TEXT("Blue Tickets: %f"),GS->BlueTickets);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO GS"));
+	}
 }
 
 void AObjectiveactor::IncreaseRedScore()
 {
 	RedCaptureScore += 10.f;
 	UE_LOG(LogTemp,Warning,TEXT("Red Score: %d"),RedCaptureScore);
+	
 }
 
 void AObjectiveactor::DecreaseRedScore()
 {
 	RedCaptureScore -= 5.f;
 	UE_LOG(LogTemp,Warning,TEXT("Red Score: %d"),RedCaptureScore);
+	if(GS)
+	{
+		GS->DecreaseRed(5.f);
+		UE_LOG(LogTemp,Warning,TEXT("Red Tickets: %f"),GS->RedTickets);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO GS"));
+	}
 }
 
 

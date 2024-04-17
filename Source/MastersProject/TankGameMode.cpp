@@ -13,7 +13,7 @@ ATankGameMode::ATankGameMode()
 	//Set Defaults
 	PlayerControllerClass = ATankAIController::StaticClass();
 	GameStateClass = ATankStateBase::StaticClass();
-	GS = Cast<ATankStateBase>(UGameplayStatics::GetGameState(this));
+	GS = Cast<ATankStateBase>(GetWorld());
 }
 
 void ATankGameMode::GameOverCheck()

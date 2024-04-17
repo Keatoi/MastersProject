@@ -32,9 +32,9 @@ UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	USceneComponent* ObjectiveRoot;
 	UPROPERTY(	EditAnywhere,BlueprintReadWrite,Category="Obj")
 	class USphereComponent* CaptureZone;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Obj")
 	class ATankGameMode* GM;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Obj")
 	class ATankStateBase* GS;
     UPROPERTY()
 	FTimerHandle RedCaptureHandle;
