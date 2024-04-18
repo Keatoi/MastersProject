@@ -142,11 +142,11 @@ void AChaosTankPawn::Tick(float DeltaTime)
 	{
 		FVector2D InRange(-30.f,30.f);
 		FVector2D OutRange(0.f,1.f);
-		EngineRPM = FMath::GetMappedRangeValueClamped(InRange,OutRange,UKismetMathLibrary::Abs(GetVehicleMovement()->GetForwardSpeedMPH()));
-		
-		//MS_Turbine->SetFloatParameter("input",EngineRPM);
-		MS_Turbine->SetIntParameter("input",EngineRPM);
-		//UE_LOG(LogTemp, Display, TEXT("look value: %f"), EngineRPM);
+		//EngineRPM = FMath::GetMappedRangeValueClamped(InRange,OutRange,UKismetMathLibrary::Abs(GetVehicleMovement()->GetForwardSpeedMPH()));
+		EngineRPM = GetVehicleMovement()->GetForwardSpeedMPH();
+		MS_Turbine->SetFloatParameter("input",EngineRPM);
+		//MS_Turbine->SetIntParameter("input",EngineRPM);
+		UE_LOG(LogTemp, Display, TEXT("look value: %f"), EngineRPM);
 	}
 }
 
