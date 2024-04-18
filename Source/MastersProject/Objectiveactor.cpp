@@ -20,6 +20,14 @@ AObjectiveactor::AObjectiveactor()
 	CaptureZone->SetupAttachment(ObjectiveRoot);
 	CaptureZone->OnComponentBeginOverlap.AddDynamic(this,&AObjectiveactor::OnOverlapBegin);
 	CaptureZone->OnComponentEndOverlap.AddDynamic(this,&AObjectiveactor::OnOverlapEnd);
+	
+	
+}
+
+// Called when the game starts or when spawned
+void AObjectiveactor::BeginPlay()
+{
+	Super::BeginPlay();
 	UWorld* World = GetWorld();
 	if(World)
 	{
@@ -30,13 +38,6 @@ AObjectiveactor::AObjectiveactor()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NO World"));
 	}
-	
-}
-
-// Called when the game starts or when spawned
-void AObjectiveactor::BeginPlay()
-{
-	Super::BeginPlay();
 	
 }
 
