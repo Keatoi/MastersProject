@@ -344,6 +344,10 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 		}
 		else
 		{
+			if(ProjectileClass->GetClass()->ImplementsInterface(ULocationInterface::StaticClass()))
+			{
+				ILocationInterface::Execute_SetLocation(ProjectileClass,GetMesh()->GetSocketLocation(FName("gun_jntSocket")));
+			}
 			
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Firing!!!"));
 			//Spawn Parameters
@@ -635,6 +639,14 @@ void AChaosTankPawn::ReloadInteriorMagazine(const FInputActionValue& Value)
 		}
 	}
 	
+}
+
+float AChaosTankPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	TankHealth -= Damage;
+	HealthCheck();
+	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void AChaosTankPawn::SetMatScalarSpeed(int Index, float Speed)

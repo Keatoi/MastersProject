@@ -18,11 +18,13 @@
 #pragma once
 #include "Components/SphereComponent.h"
 #include "CoreMinimal.h"
+#include "LocationInterface.h"
+
 #include "GameFramework/Actor.h"
 #include "BaseProjectile.generated.h"
 
 UCLASS()
-class MASTERSPROJECT_API ABaseProjectile : public AActor
+class MASTERSPROJECT_API ABaseProjectile : public AActor, public ILocationInterface
 {
 	GENERATED_BODY()
 	
@@ -47,7 +49,8 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USphereComponent* Sphere;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	class UBombComponent* HEComponent;
+	class UBombComponent* HEComp;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
 	FName ProjectileName = "Solid Shot";
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Properties")
@@ -129,6 +132,8 @@ UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
 	// Use Custom Movement Component
 	bool bUseCustomMove;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug", meta = (ExposeOnSpawn = true))
+	FVector Origin;
 	UFUNCTION()
 	virtual void Launch(FVector MoveDirection);
 	UFUNCTION()    
@@ -147,6 +152,8 @@ protected:
 	void NullVelocity();
 	void ProxCheck();
 	float DistanceTravelled();
+	UFUNCTION()
+	virtual FVector SetLocation_Implementation(FVector Location) override;
 
 	
 	

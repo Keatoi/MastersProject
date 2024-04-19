@@ -23,7 +23,7 @@ AAI_ChaosTank::AAI_ChaosTank()
 	ZoomCamera->SetActive(false);
 	PawnSense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Tank Vision"));
 	PawnSense->SetPeripheralVisionAngle(125.f);
-	
+	PawnSense->SightRadius = 2500.f;
 	PawnSense->SensingInterval = .25f;//Sense every 0.25 seconds
 	GetVehicleMovement()->SetThrottleInput(1.f);
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Path"));
@@ -62,7 +62,7 @@ void AAI_ChaosTank::Tick(float DeltaTime)
 		GetVehicleMovement()->SetThrottleInput(0.f);
 		GetVehicleMovement()->SetBrakeInput(0.5f);
 	}
-	else if(MathHelper::GetDistance(GetActorLocation(),TargetLoc) < MaxSpeedDistance)
+	else if(MathHelper::GetDistance(GetActorLocation(),TargetLoc) > MaxSpeedDistance)
 	{
 		GetVehicleMovement()->SetThrottleInput(1.f);
 		GetVehicleMovement()->SetBrakeInput(0.f);
@@ -137,6 +137,7 @@ void AAI_ChaosTank::AimAtEnemy()
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(FName()),EnemyLoc);
 	FRotator DeltaRotator = UKismetMathLibrary::NormalizedDeltaRotator(GetMesh()->GetSocketRotation(FName()),LookAtRotation);
 	TurretRot = DeltaRotator;
+	//SetActorRotation(TurretRot);
 	
 }
 

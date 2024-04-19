@@ -76,7 +76,7 @@ float MathHelper::CalculateAngleofImpact(FVector normal, FVector impactForwardVe
 	//impactForwardVector = forward vector from projectile
 	//note both inputs must already be normalised
 	float DotP = FVector::DotProduct(normal,impactForwardVector);
-	return FMath::RadiansToDegrees(acosf(-DotP));
+	return FMath::RadiansToDegrees((acosf(-DotP)));
 	
 }
 
@@ -126,13 +126,14 @@ float MathHelper::GetDamage(float BaseDamage, float ImpactDistance, float Armour
 {
 	//Damage Calculation
 	
-	float Damage = 0.5 * BaseDamage + (1 - ImpactDistance/Armour);
+	float Damage = BaseDamage + (1 - ImpactDistance/Armour)/3;
 	return Damage;
 }
 
 float MathHelper::CalculateBlastRadius(float BombMass)
 {
-	//Based on Hopkinson-Cranz Scaling law and assumes an Bare explosion. Can be checked against https://unsaferguard.org/un-saferguard/explosion-danger-area. Should be accurate within 1 or 2 metres
+	//Based on Hopkinson-Cranz Scaling law and assumes an Bare explosion. Can be checked against https://unsaferguard.org/un-saferguard/explosion-danger-area.
+	//Should be accurate within 10% or so, unit conversion from m to uu and from kg to g kinda borked the formula a bit
 	//R=ZW^1/3
 	//W = Mass, Z = Scaled Distance assumes TNT or TNT equivalent
 	float MassCubed = std::cbrt(BombMass);

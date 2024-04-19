@@ -13,7 +13,18 @@ ATankGameMode::ATankGameMode()
 	//Set Defaults
 	PlayerControllerClass = ATankAIController::StaticClass();
 	GameStateClass = ATankStateBase::StaticClass();
-	GS = Cast<ATankStateBase>(GetWorld());
+	
+}
+
+void ATankGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void ATankGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	GS = Cast<ATankStateBase>(UGameplayStatics::GetGameState(GetWorld()));
 }
 
 void ATankGameMode::GameOverCheck()
@@ -42,4 +53,5 @@ void ATankGameMode::GameOverCheck()
 void ATankGameMode::HandleGameOver()
 {
 	//Open Game Over screen here
+	//UGameplayStatics::OpenLevel(GetWorld(),FName("Lvl_GameOver"));
 }

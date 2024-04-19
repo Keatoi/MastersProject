@@ -36,7 +36,8 @@ public:
 	UParticleSystem* FireballEmitter;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX")
 	UNiagaraSystem* BombSystem;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX")
+	USoundBase* SB_Bomb;
 	UPROPERTY()
 	UNiagaraComponent* BombInstance;
 	

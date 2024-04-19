@@ -15,6 +15,8 @@ class MASTERSPROJECT_API ATankGameMode : public AGameModeBase
 	GENERATED_BODY()
 public:
 	ATankGameMode();
+	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 	UFUNCTION()
 	void GameOverCheck();
 	UFUNCTION()

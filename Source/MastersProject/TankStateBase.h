@@ -20,9 +20,9 @@ class MASTERSPROJECT_API ATankStateBase : public AGameStateBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
-	float BlueTickets = 0.f;
+	float BlueTickets = 100.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
-	float RedTickets = 0.f;
+	float RedTickets = 100.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
 	float NeutralTickets = 0.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)

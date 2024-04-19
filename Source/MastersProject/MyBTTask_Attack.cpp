@@ -26,10 +26,13 @@ EBTNodeResult::Type UMyBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 				//Movement Code
 				//Cast To AITank
 				AAI_ChaosTank* tank = Cast<AAI_ChaosTank>(Npc);
-				FVector TargetLocation = tank->GetActorLocation();
-				OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
+				//Set location to self
+				tank->TargetLoc = tank->GetActorLocation();
+				//set throttle to 0
+				tank->SetThrottle(0.f);
+				//start attack
 				tank->Attack();
-			
+				return EBTNodeResult::Succeeded;
 			}
 			
 		}

@@ -318,6 +318,7 @@ public:
 	void ReloadMG();
 	UFUNCTION()
 	void ReloadInteriorMagazine(const FInputActionValue& Value);//Reload the InteriorMagazine
+	float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 	//====Helper Functions===
 	UFUNCTION()
 	void SetMatScalarSpeed(int Index,float Speed);

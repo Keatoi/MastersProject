@@ -61,6 +61,7 @@ void UBombComponent::CreateFireball(FVector Location,float range,float strength)
 		BombInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),BombSystem,Location,FRotator::ZeroRotator,Scale);
 		BombInstance->Activate();
 	}
+	if(SB_Bomb){UGameplayStatics::PlaySoundAtLocation(GetWorld(),SB_Bomb,Location,FRotator::ZeroRotator);}
 	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),NSFireball,Location);
 	for(AActor* Actors : OverlapArray)
 	{

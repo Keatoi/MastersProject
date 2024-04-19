@@ -131,6 +131,7 @@ void AObjectiveactor::DecreaseBlueScore()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NO GS"));
 	}
+	if(GM){GM->GameOverCheck();}
 }
 
 void AObjectiveactor::IncreaseRedScore()
@@ -153,6 +154,7 @@ void AObjectiveactor::DecreaseRedScore()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NO GS"));
 	}
+	if(GM){GM->GameOverCheck();}
 }
 
 

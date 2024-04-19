@@ -28,7 +28,7 @@ ABaseProjectile::ABaseProjectile()
 	RootComponent = Sphere;
 	Shell = CreateDefaultSubobject<UStaticMeshComponent>("Shell");
 	Shell->SetupAttachment(Sphere);
-	HEComponent = CreateDefaultSubobject<UBombComponent>(TEXT("Bomb Component"));
+	HEComp = CreateDefaultSubobject<UBombComponent>(TEXT("Bomb Component"));
 	Speed = 3000.f;//Used if the simple custom projectile movement is used
 	if(!ProjectileMovementComponent)
 	{
@@ -113,8 +113,9 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	{
 		UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *Hit.GetActor()->GetName());
 	//Calculate the angle the projectile hits another actor and output to log
-	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
-	float Angle = 180.f - MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
+	FVector NormalFWD = GetActorForwardVector();
+		NormalFWD.Normalize();
+		float Angle = MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
 	UE_LOG(LogTemp, Log, TEXT("Angle: %f"), Angle);
 	//check if hit object uses a physical material(this is what the tank armour relies upon)
 	if(Hit.PhysMaterial->IsValidLowLevel())
@@ -187,14 +188,14 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	//check if bomb component is valid and there is explosive filler in the projectile
 	//if so detonate
-	if(!HEComponent->IsValidLowLevelFast())
+	if(!HEComp->IsValidLowLevelFast())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Bomb not valid"));
 	}
-	if(ExplosiveFiller > 1.f && HEComponent->IsValidLowLevelFast())
+	if(ExplosiveFiller > 1.f && HEComp->IsValidLowLevelFast())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Exploding"));
-		HEComponent->CreateFireball(GetActorLocation(),ExplosiveFiller,500.f);
+		HEComp->CreateFireball(GetActorLocation(),MathHelper::CalculateBlastRadius(ExplosiveFiller),ExplosiveFiller);
 		
 	
 	}
@@ -330,10 +331,10 @@ void ABaseProjectile::ProxCheck()
 		if(isHit)
 		{
 			//Explosion code stuff here- see onHit.
-			if(ExplosiveFiller > 1.f && HEComponent->IsValidLowLevelFast())
+			if(ExplosiveFiller > 1.f && HEComp->IsValidLowLevelFast())
 			{
 				UE_LOG(LogTemp, Log, TEXT("Exploding(PROX)"));
-				HEComponent->CreateFireball(GetActorLocation(),ExplosiveFiller,500.f);
+				HEComp->CreateFireball(GetActorLocation(),ExplosiveFiller,500.f);
 			}
 		}
 			
@@ -345,6 +346,13 @@ float ABaseProjectile::DistanceTravelled()
 	//gets the distance travelled by the actor since spawn, used for Proximity check
 	FVector DistanceVector =  GetActorLocation() - InitialLocation;
 	return DistanceVector.Length();
+}
+
+FVector ABaseProjectile::SetLocation_Implementation(FVector Location)
+{
+	//ILocationInterface::SetLocation_Implementation(Location);
+	Origin = Location;
+	return Location;
 }
 
 

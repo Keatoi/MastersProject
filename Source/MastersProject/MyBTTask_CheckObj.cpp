@@ -2,6 +2,8 @@
 
 
 #include "MyBTTask_CheckObj.h"
+
+#include "AI_ChaosTank.h"
 #include "MathHelper.h"
 #include "Objectiveactor.h"
 #include "TankAIController.h"
@@ -21,29 +23,66 @@ EBTNodeResult::Type UMyBTTask_CheckObj::ExecuteTask(UBehaviorTreeComponent& Owne
 		{
 			TArray<AActor*>Arr;
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(),AObjectiveactor::StaticClass(),Arr);
-			for(int i =0; i <Arr.Num();i++)
+			if (npc->IsA<AAI_ChaosTank>())
 			{
-				AObjectiveactor* ObjAct = Cast<AObjectiveactor>(Arr[i]);
-				UE_LOG(LogTemp,Warning,TEXT("Objective found"));
-				
-				if(ObjAct->CaptureTeamEnum != ERED && MathHelper::GetDistance(npc,ObjAct) <= AcceptableDistance)
+				//Movement Code
+				//Cast To AITank
+				AAI_ChaosTank* tank = Cast<AAI_ChaosTank>(npc);
+				if(npc->ActorHasTag("Red"))
 				{
-					FVector TargetLocation = ObjAct->GetActorLocation();
-					OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
-					OwnerComp.GetBlackboardComponent()->SetValueAsBool("bShouldCapture",true);
-					UE_LOG(LogTemp,Warning,TEXT("Objective found"));
+					for(int i =0; i <Arr.Num();i++)
+					{
+						AObjectiveactor* ObjAct = Cast<AObjectiveactor>(Arr[i]);
+						UE_LOG(LogTemp,Warning,TEXT("Objective found"));
+				
+						if(ObjAct->CaptureTeamEnum != ERED && MathHelper::GetDistance(npc,ObjAct) <= AcceptableDistance)
+						{
+							FVector TargetLocation = ObjAct->GetActorLocation();
+							OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool("bShouldCapture",true);
+							UE_LOG(LogTemp,Warning,TEXT("Objective found"));
+						}
+						else
+						{
+							UE_LOG(LogTemp,Warning,TEXT("Objective Invalid"));
+					
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool("bShouldCapture",false);
+							FinishLatentTask(OwnerComp,EBTNodeResult::Failed);
+							return EBTNodeResult::Failed;
+						}
+						FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
+						return EBTNodeResult::Succeeded;
+					}
 				}
 				else
 				{
-					UE_LOG(LogTemp,Warning,TEXT("Objective Invalid"));
+					for(int i =0; i <Arr.Num();i++)
+					{
+						AObjectiveactor* ObjAct = Cast<AObjectiveactor>(Arr[i]);
+						UE_LOG(LogTemp,Warning,TEXT("Objective found"));
+				
+						if(ObjAct->CaptureTeamEnum != EBLU && MathHelper::GetDistance(npc,ObjAct) <= AcceptableDistance)
+						{
+							FVector TargetLocation = ObjAct->GetActorLocation();
+							OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool("bShouldCapture",true);
+							UE_LOG(LogTemp,Warning,TEXT("Objective found"));
+						}
+						else
+						{
+							UE_LOG(LogTemp,Warning,TEXT("Objective Invalid"));
 					
-					OwnerComp.GetBlackboardComponent()->SetValueAsBool("bShouldCapture",false);
-					FinishLatentTask(OwnerComp,EBTNodeResult::Failed);
-					return EBTNodeResult::Failed;
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool("bShouldCapture",false);
+							FinishLatentTask(OwnerComp,EBTNodeResult::Failed);
+							return EBTNodeResult::Failed;
+						}
+						FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
+						return EBTNodeResult::Succeeded;
+					}
 				}
-				FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
-				return EBTNodeResult::Succeeded;
+				
 			}
+			
 			return EBTNodeResult::Failed;
 		}
 		
