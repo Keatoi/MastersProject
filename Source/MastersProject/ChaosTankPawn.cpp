@@ -231,7 +231,7 @@ void AChaosTankPawn::MoveTriggered(const FInputActionValue& Value)
 		GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
 	}
 	//Move tracks
-	SetMatScalarSpeed(2,MoveValue.Y * 50.f);
+	SetMatScalarSpeed(2,MoveValue.Y);
 	
 }
 
@@ -250,7 +250,7 @@ void AChaosTankPawn::MoveCompleted(const FInputActionValue& Value)
 		GetVehicleMovement()->SetThrottleInput(MoveValue.Y );
 		GetVehicleMovement()->SetBrakeInput(MoveValue.Y * -1.f);
 	}
-	SetMatScalarSpeed(2,MoveValue.Y*50.f);
+	SetMatScalarSpeed(2,MoveValue.Y);
 }
 
 void AChaosTankPawn::MoveStarted(const FInputActionValue& Value)
@@ -400,15 +400,14 @@ void AChaosTankPawn::PrimaryFire(const FInputActionValue& Value)
 void AChaosTankPawn::SecondaryFireStart(const FInputActionValue& Value)
 {
 	//Machine gun is an automatic weapon so works a little differently, we are using a timer to give us control over the Rate of Fire (ROF) of the gun.
-	if(const bool FireValue = Value.Get<bool>())
-	{
+
 		if(MGMagazine > 0)
 		{
 			//If we have bullets left in magazine start the MGTimer to fire every 0.1 sec
 			GetWorld()->GetTimerManager().SetTimer(MGFireRateHandle,this,&AChaosTankPawn::SecondaryFire,0.1f,true);
 		}
 		
-	}
+	
 }
 
 void AChaosTankPawn::SecondaryFire()
@@ -647,14 +646,15 @@ void AChaosTankPawn::SetMatScalarSpeed(int Index, float Speed)
 		switch (Index)
 		{
 		case 0 :
-			DynamicLeftTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			DynamicLeftTrack->SetVectorParameterValue(FName("Speed"),FVector(0.0f,Speed,0.0f));
+			DynamicLeftTrack->SetVectorParameterValue(FName("Speed"),FVector(0.0f,Speed,0.0f));
 			break;
 		case 1:
-			DynamicRightTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			DynamicRightTrack->SetVectorParameterValue(FName("Speed"),FVector(0.0f,Speed,0.0f));
 			break;
 		case 2:
-			DynamicLeftTrack->SetScalarParameterValue(FName("Speed"),Speed);
-			DynamicRightTrack->SetScalarParameterValue(FName("Speed"),Speed);
+			DynamicLeftTrack->SetVectorParameterValue(FName("Speed"),FVector(0.0f,Speed,0.0f));
+			DynamicRightTrack->SetVectorParameterValue(FName("Speed"),FVector(0.0f,Speed,0.0f));
 			break;
 		default:
 			break;

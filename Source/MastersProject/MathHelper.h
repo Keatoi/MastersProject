@@ -29,6 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static float LineOfSightThickness(float L, float a);
 	UFUNCTION(BlueprintCallable)
+	static float BernoulliEquation(float ProjLength,float ProjDensity);
+	UFUNCTION(BlueprintCallable)
 	static float GetDistance(AActor* ActorA, AActor* ActorB);
 	UFUNCTION(BlueprintCallable)
 	static float GetDistance(FVector LocationA, FVector LocationB);

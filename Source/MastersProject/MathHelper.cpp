@@ -106,6 +106,12 @@ float MathHelper::LineOfSightThickness(float L, float a)
 	return L/cos(a);
 }
 
+float MathHelper::BernoulliEquation(float ProjLength, float ProjDensity)
+{
+	
+	return 0;
+}
+
 float MathHelper::GetDistance(AActor* ActorA, AActor* ActorB)
 {
 	return (ActorA->GetActorLocation()-ActorB->GetActorLocation()).Size();
