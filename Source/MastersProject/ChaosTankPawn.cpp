@@ -145,8 +145,8 @@ void AChaosTankPawn::Tick(float DeltaTime)
 		//EngineRPM = FMath::GetMappedRangeValueClamped(InRange,OutRange,UKismetMathLibrary::Abs(GetVehicleMovement()->GetForwardSpeedMPH()));
 		EngineRPM = GetVehicleMovement()->GetForwardSpeedMPH();
 		MS_Turbine->SetFloatParameter("input",EngineRPM);
-		//MS_Turbine->SetIntParameter("input",EngineRPM);
-		UE_LOG(LogTemp, Display, TEXT("look value: %f"), EngineRPM);
+		
+		//UE_LOG(LogTemp, Display, TEXT("look value: %f"), EngineRPM);
 	}
 }
 
@@ -521,7 +521,7 @@ void AChaosTankPawn::GunnerView(const FInputActionValue& Value)
 
 void AChaosTankPawn::ThermalCam(const FInputActionValue& Value)
 {
-	//apply post processing settings to give a thermal effect to the camera
+	
 	
 }
 
@@ -536,24 +536,22 @@ void AChaosTankPawn::HealthCheck()
 	//If tank is dead call detonate function and stop possession
 	
 	if (TankHealth <= 0){Detonate();}
-	UnPossessed();
+	
 }
 
 void AChaosTankPawn::Detonate()
 {
 	const FVector TurretImpulse = {-15000.f,0.f,1000000.f};
+	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->BreakConstraint(TurretImpulse,GetMesh()->GetSocketLocation(TurretBone),TurretBone);
-	float FinishTime = 5.f;
-	TimeLine->SetPlayRate(1/FinishTime);
 	
-	TimeLine->SetTimelinePostUpdateFunc(TimeLineUpdateEvent);
-	TimeLine->PlayFromStart();
 	if(DeathSystem)
 	{
 		FVector Scale = {1,1,1};
 		DeathInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),DeathSystem,GetMesh()->GetSocketLocation(TurretBone),FRotator::ZeroRotator,Scale);
 		DeathInstance->Activate();
 	}
+	Destroy();
 	
 }
 
@@ -595,10 +593,10 @@ void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponen
 	{
 		AmmoStowageEnum = EAMMODESTROYED;
 		TankHealth = 0;
-		Detonate();
+		
 		UE_LOG(LogTemp,Warning,TEXT("Breech Destroyed"));
 	}
-	
+	HealthCheck();
 	//IDamageInterface::SetHitComponent_Implementation(HitComponent);
 }
 

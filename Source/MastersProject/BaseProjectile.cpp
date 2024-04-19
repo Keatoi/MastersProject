@@ -109,7 +109,9 @@ void ABaseProjectile::Launch(FVector MoveDirection)
 void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *Hit.GetActor()->GetName());
+	if(OtherActor)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Actor: %s"), *Hit.GetActor()->GetName());
 	//Calculate the angle the projectile hits another actor and output to log
 	FVector NormalFWD = GetActorForwardVector().GetSafeNormal();
 	float Angle = 180.f - MathHelper::CalculateAngleofImpact(Hit.Normal,NormalFWD);
@@ -124,7 +126,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		//The projectiles base penetration
 		UE_LOG(LogTemp, Log, TEXT("Penetration: %f"), PenetrationAmount);
 		//Calculate the effective amount of armour using the actual armour thickness and hit angle
-		float RelativeArmourThickness = MathHelper::LineOfSightThickness(HitArmourThickness,Angle);
+		float RelativeArmourThickness = MathHelper::CalculateRelativeArmourThickness(HitArmourThickness,Angle);
 		UE_LOG(LogTemp, Log, TEXT("Relative Armour: %f"), RelativeArmourThickness);
 		//If the projectile can penetrate proceed with damage implementation
 		if(PenetrationAmount > RelativeArmourThickness)
@@ -161,7 +163,7 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	//if projectile penetrated and the hit actor implements the damage interface, for each hit component call the interface func,
 	//which adds the component to an array accessible by the Hit Actor allowing for mechanics such as component based damage models
-	if(bPenetrated && Hit.GetActor()->GetClass()->ImplementsInterface(UDamageInterface::StaticClass()))
+	if(Hit.GetActor() && bPenetrated && Hit.GetActor()->GetClass()->ImplementsInterface(UDamageInterface::StaticClass()))
 	{
 		TArray<FHitResult> InteriorHit;
 		FVector StartLocation = Sphere->GetComponentLocation();
@@ -172,10 +174,13 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		GetWorld()->LineTraceMultiByProfile(InteriorHit,StartLocation,EndLocation,FName("Interior"),QueryParams);
 		for(int i = 0; i <= InteriorHit.Num() - 1; i++)
 		{
+			if(InteriorHit[i].GetComponent())
+			{
+				FString HitCompName = InteriorHit[i].GetComponent()->GetName();
+				UE_LOG(LogTemp, Log, TEXT("Hit Interior Comp: %s"), *HitCompName);
+				IDamageInterface::Execute_SetHitComponent(Hit.GetActor(),InteriorHit[i].GetComponent());
+			}
 			
-			FString HitCompName = InteriorHit[i].GetComponent()->GetName();
-			UE_LOG(LogTemp, Log, TEXT("Hit Interior Comp: %s"), *HitCompName);
-			IDamageInterface::Execute_SetHitComponent(Hit.GetActor(),InteriorHit[i].GetComponent());
 			
 		}
 		
@@ -193,6 +198,8 @@ void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		
 	
 	}
+	}
+	
 	
 	
 	
