@@ -143,6 +143,7 @@ void AAI_ChaosTank::AimAtEnemy()
 void AAI_ChaosTank::Attack()
 {
 	//Attack Code here
+	UE_LOG(LogTemp,Warning,TEXT("attacking"));
 	if(UWorld* World = GetWorld())
 			{
 				

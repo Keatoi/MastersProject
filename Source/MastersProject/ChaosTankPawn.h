@@ -248,9 +248,8 @@ public:
 	FVector GetGunSightScreenPos();
 protected:
 	//==============Timers======================
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTimelineComponent* TimeLine;
-	FOnTimelineEvent TimeLineUpdateEvent;
+	
+	
 	UPROPERTY()
 	UCurveFloat* DetonateCurve;
 	UPROPERTY(BlueprintReadOnly)
@@ -259,6 +258,8 @@ protected:
 	FTimerHandle MGFireRateHandle;
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle IMDelayHandle;
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle DeathTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 bCanShoot:1;
 public:
@@ -308,7 +309,7 @@ public:
 	UFUNCTION()
 	void Detonate();
 	UFUNCTION()
-	void TurretDetonationImpulse();
+	void Die();
 	UFUNCTION()
 	virtual void SetHitComponent_Implementation(USceneComponent* HitComponent) override;
 	UFUNCTION()

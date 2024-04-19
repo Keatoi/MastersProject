@@ -73,8 +73,7 @@ AChaosTankPawn::AChaosTankPawn()
 	MS_Turbine = CreateDefaultSubobject<UAudioComponent>(TEXT("MS_Engine"));
 	/*Timeline setup 
 	 */
-	TimeLineUpdateEvent.BindDynamic(this, &AChaosTankPawn::TurretDetonationImpulse);
-	TimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("Detonation TimeLine"));
+	
 	bCanShoot = true;//Ensure we can shoot at spawn
 	Tags.Add(Team);//Add actor Tag for team detection purposes
 	
@@ -551,13 +550,16 @@ void AChaosTankPawn::Detonate()
 		DeathInstance = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),DeathSystem,GetMesh()->GetSocketLocation(TurretBone),FRotator::ZeroRotator,Scale);
 		DeathInstance->Activate();
 	}
-	Destroy();
+	GetVehicleMovement()->SetBrakeInput(1.f);
+	GetVehicleMovement()->SetThrottleInput(0.f);
+	GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle,this,&AChaosTankPawn::Die,3.f,true);
 	
 }
 
-void AChaosTankPawn::TurretDetonationImpulse()
+void AChaosTankPawn::Die()
 {
-	
+	//functionality merged with Detonate(), just destroys the actor now
+	Destroy();
 }
 
 void AChaosTankPawn::SetHitComponent_Implementation(USceneComponent* HitComponent)
