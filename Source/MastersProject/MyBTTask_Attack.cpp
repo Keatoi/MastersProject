@@ -5,6 +5,7 @@
 
 #include "AI_ChaosTank.h"
 #include "TankAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 class AAI_ChaosTank;
 
@@ -25,6 +26,8 @@ EBTNodeResult::Type UMyBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 				//Movement Code
 				//Cast To AITank
 				AAI_ChaosTank* tank = Cast<AAI_ChaosTank>(Npc);
+				FVector TargetLocation = tank->GetActorLocation();
+				OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation",TargetLocation);
 				tank->Attack();
 			
 			}

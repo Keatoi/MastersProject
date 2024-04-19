@@ -95,7 +95,7 @@ void AAI_ChaosTank::OnSeePawn(APawn* OtherPawn)
 		EnemyLoc = OtherPawn->GetActorLocation();
 		bEnemySpotted = true;
 		UE_LOG(LogTemp,Warning,TEXT("Enemy Location: %s"),*EnemyLoc.ToString())
-		GetWorld()->GetTimerManager().SetTimer(AimDelayHandle,this,&AAI_ChaosTank::Attack,1.f,false);
+		AimAtEnemy();
 	}
 	else
 	{

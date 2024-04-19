@@ -86,7 +86,7 @@ void ABaseProjectile::SetInitialPosition()
 void ABaseProjectile::SetInitialVelocity()
 {
 	//Push actor forward by a speed dependant on the force applied to it
-	Velocity = GetActorForwardVector() * Speed;
+	Velocity = {Speed,0.f,0.f};
 }
 
 void ABaseProjectile::Move()
@@ -304,11 +304,6 @@ void ABaseProjectile::CheckCollision()
             		UGameplayStatics::SpawnDecalAttached(GenericDecal,DecalSize,HitResult.GetComponent(),NAME_None,HitResult.ImpactPoint,RandomDecalRotation,EAttachLocation::KeepWorldPosition,DecalLifespan);
             bDoOnce = false;
         }*/
-		
-		
-		
-		
-	
 	
 }
 
