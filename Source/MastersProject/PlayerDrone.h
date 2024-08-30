@@ -23,8 +23,24 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
+	UPROPERTY()
+	FVector StartLocation;
+	UPROPERTY()
+	FVector CurrLocation;
+	UPROPERTY()
+	float Accel;
+public:
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
+	float Speed;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
+	float AccelRate = 2000.f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
+	float InterpSpeed = 10.f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
+	float MaxRange = 40000.f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Missle")
+	float BatteryLifespan = 40000.f;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

@@ -21,13 +21,22 @@ APlayerDrone::APlayerDrone()
 void APlayerDrone::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	StartLocation = GetActorLocation();
 }
 
 // Called every frame
 void APlayerDrone::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	//Update Acceleration
+	Accel += DeltaTime * AccelRate;
+	//Update missile speed
+	Speed += Accel * DeltaTime;
+	//Update Pos
+	CurrLocation = GetActorLocation();
+	//Move the missile
+	DroneMesh->AddForce(this->GetActorForwardVector() * Speed);
 
 }
 
